@@ -1,8 +1,8 @@
 import  Express  from "express"
+import router from "./router"
 
 const server = Express()
 
-server.get('/', (request, response)=>{
-    response.send('hola mundo API express')
-})
+server.use("/api",router)
+
 export default server
