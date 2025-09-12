@@ -1,7 +1,13 @@
-export default function Home(){
-    return(
-        <>
-        <h1>Home</h1>
-        </>
-    )
-}
+import CarouselComponent from "../components/Carrusel";
+import ServiciosC from "../components/ServiciosCirculo";
+
+const Home = () => {
+  return (
+    <>
+      <CarouselComponent />
+      <ServiciosC/>
+    </>
+  );
+};
+
+export default Home;

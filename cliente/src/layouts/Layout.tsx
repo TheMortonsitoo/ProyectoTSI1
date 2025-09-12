@@ -1,18 +1,13 @@
-import { Outlet } from "react-router-dom";
-import NavBar from "../components/NavBar";
+import { Container } from "react-bootstrap";
+import NavbarComponent from "../components/NavBar";
 
-export default function Layout(){
-    return(
-        <>
-        {/* NavBar */}
-        <NavBar/>
+const MainLayout = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <>
+      <NavbarComponent />
+      <Container className="mt-4">{children}</Container>
+    </>
+  );
+};
 
-
-        {/* Contenido principal */}
-
-        <main className="container-fluid">
-            <Outlet/>
-        </main>
-        </>
-    )
-}
+export default MainLayout
