@@ -4,19 +4,19 @@ import { Column, DataType, Model, Table } from "sequelize-typescript";
 class Producto extends Model{
 
     @Column({type: DataType.SMALLINT(), primaryKey: true, allowNull: false, field:"cod_producto" })
-        declare codProducto: string
+        declare codProducto: number
 
     @Column({type: DataType.STRING(30), allowNull: false, field:"nombre_producto" })
         declare nombreProducto: string
 
     @Column({type: DataType.INTEGER(), allowNull: false, field:"precio_unitario" })
-        declare precioUnitario: string
+        declare precioUnitario: number
 
     @Column({type: DataType.STRING(50), allowNull: true, field:"descripcion" })
         declare descripcion: string
 
     @Column({type: DataType.SMALLINT(), allowNull: true, field:"stock" })
-        declare stock: string
+        declare stock: number
 }
 
-
+export default Producto
