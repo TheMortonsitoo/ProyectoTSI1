@@ -7,7 +7,7 @@ class Pago extends Model{
     @Column({type: DataType.SMALLINT, primaryKey: true, allowNull: false, field:"cod_pago" })
         declare codPago: number
     
-    @Column({type: DataType.INTEGER, allowNull: false, field:"cod_venta" })
+    @Column({type: DataType.SMALLINT, allowNull: false, field:"cod_venta" })
     @ForeignKey(()=>Venta)
         declare codVenta: number
     @BelongsTo(()=>Venta)
