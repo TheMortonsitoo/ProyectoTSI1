@@ -5,7 +5,7 @@ import Vehiculo from "./Vehiculo";
 
 @Table({tableName: "agendas"})
 class Agenda extends Model{
-    @Column({type: DataType.STRING(10), primaryKey: true, allowNull: false, field:"cod_agenda" })
+    @Column({type: DataType.STRING(30), primaryKey: true, allowNull: false, field:"cod_agenda" })
         declare codAgenda: string
 
     @Column({type: DataType.STRING(15), allowNull: false, field:"rut_empleado" })
@@ -26,16 +26,16 @@ class Agenda extends Model{
     @BelongsTo(() => Vehiculo)
         declare vehiculo: Vehiculo
 
-    @Column({type: DataType.DATEONLY, allowNull: false, field:"fecha" })
+    @Column({type: DataType.DATEONLY, allowNull: true, field:"fecha" })
         declare fecha: string
     
-    @Column({type: DataType.STRING(5), allowNull: false, field:"hora" })
+    @Column({type: DataType.STRING(5), allowNull: true, field:"hora" })
         declare hora: string
 
-    @Column({type: DataType.STRING(20), allowNull: false, field:"estado" })
+    @Column({type: DataType.STRING(20), allowNull: true, field:"estado" })
         declare estado: string
 
-    @Column({type: DataType.STRING(100), allowNull: false, field:"razon_visita" })
+    @Column({type: DataType.STRING(100), allowNull: true, field:"razon_visita" })
         declare razonVisita: string
 }
 

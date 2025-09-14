@@ -7,16 +7,16 @@ class Vehiculo extends Model{
     @Column({type: DataType.STRING(10), primaryKey: true, allowNull: false, field:"patente" })
         declare patente: string
     
-    @Column({type: DataType.STRING(30), allowNull: false, field:"marca" })
+    @Column({type: DataType.STRING(30), allowNull: true, field:"marca" })
         declare marca: string
 
-    @Column({type: DataType.STRING(30), allowNull: false, field:"modelo" })
+    @Column({type: DataType.STRING(30), allowNull: true, field:"modelo" })
         declare modelo: string
 
-    @Column({type: DataType.SMALLINT, allowNull: false, field:"anio" })
+    @Column({type: DataType.SMALLINT, allowNull: true, field:"anio" })
         declare anio: number
 
-    @Column({type: DataType.STRING(15), allowNull: false, field:"rut_cliente" })
+    @Column({type: DataType.STRING(15), allowNull: true, field:"rut_cliente" })
     @ForeignKey(()=>Cliente)
         declare rutCliente: string
 

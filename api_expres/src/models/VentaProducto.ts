@@ -6,28 +6,28 @@ import Venta from "./Venta";
 @Table({tableName: "venta_productos" })
 class VentaProductos extends Model{
 
-    @Column({type: DataType.SMALLINT(), primaryKey: true, allowNull: false, field:"cod_producto" })
+    @Column({type: DataType.STRING(30), primaryKey: true, allowNull: false, field:"cod_producto" })
     @ForeignKey(()=>Producto)
-        declare codProducto: number
+        declare codProducto: string
     @BelongsTo(()=>Producto)
         declare producto: Producto
 
-    @Column({type: DataType.SMALLINT(), primaryKey: true, allowNull: false, field:"cod_venta" })
+    @Column({type: DataType.STRING(30), primaryKey: true, allowNull: false, field:"cod_venta" })
     @ForeignKey(()=>Venta)
-        declare codVenta: number
+        declare codVenta: string
     @BelongsTo(()=>Venta)
         declare venta: Venta
     
-    @Column({type: DataType.INTEGER, allowNull: false, field:"cantidad" })
+    @Column({type: DataType.INTEGER, allowNull: true, field:"cantidad" })
         declare cantidad: number
     
-    @Column({type: DataType.STRING(100), allowNull: false, field:"observaciones" })
+    @Column({type: DataType.STRING(100), allowNull: true, field:"observaciones" })
         declare observaciones: string
     
-    @Column({type: DataType.INTEGER, allowNull: false, field:"precio_venta" })
+    @Column({type: DataType.INTEGER, allowNull: true, field:"precio_venta" })
         declare precioVenta: number
     
-    @Column({type: DataType.INTEGER, allowNull: false, field:"subtotal" })
+    @Column({type: DataType.INTEGER, allowNull: true, field:"subtotal" })
         declare subtotal: number
     
 }

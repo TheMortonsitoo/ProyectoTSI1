@@ -5,22 +5,22 @@ class Empleado extends Model{
     @Column({type: DataType.STRING(15), primaryKey: true, allowNull: false, field:"rut_empleado" })
         declare rutEmpleado: string
 
-    @Column({type: DataType.STRING(50), allowNull: false, field:"nombres" })
+    @Column({type: DataType.STRING(50), allowNull: true, field:"nombres" })
         declare nombres: string
 
-    @Column({type: DataType.STRING(30), allowNull: false, field:"apellido_paterno" })
+    @Column({type: DataType.STRING(30), allowNull: true, field:"apellido_paterno" })
         declare apellidoPaterno: string
 
-    @Column({type: DataType.STRING(30), allowNull: false, field:"apellido_materno" })
+    @Column({type: DataType.STRING(30), allowNull: true, field:"apellido_materno" })
         declare apellidoMaterno: string
 
-    @Column({type: DataType.INTEGER, allowNull: false, field:"telefono" })
+    @Column({type: DataType.INTEGER, allowNull: true, field:"telefono" })
         declare fono: number
     
-    @Column({type: DataType.STRING(40), allowNull: false, field:"mail" })
+    @Column({type: DataType.STRING(40), allowNull: true, field:"mail" })
         declare mail: string
     
-    @Column({type: DataType.STRING(50), allowNull: false, field:"contrasena" })
+    @Column({type: DataType.STRING(50), allowNull: true, field:"contrasena" })
         declare contrasena: string
 }
 

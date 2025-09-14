@@ -4,22 +4,22 @@ import Venta from "./Venta";
 @Table({tableName: "pagos"})
 class Pago extends Model{
 
-    @Column({type: DataType.SMALLINT, primaryKey: true, allowNull: false, field:"cod_pago" })
-        declare codPago: number
+    @Column({type: DataType.STRING(30), primaryKey: true, allowNull: false, field:"cod_pago" })
+        declare codPago: string
     
-    @Column({type: DataType.SMALLINT, allowNull: false, field:"cod_venta" })
+    @Column({type: DataType.STRING(30), allowNull:false, field:"cod_venta" })
     @ForeignKey(()=>Venta)
-        declare codVenta: number
+        declare codVenta: string
     @BelongsTo(()=>Venta)
         declare venta: Venta
     
-    @Column({type: DataType.STRING, allowNull: false, field:"metodo_pago" })
+    @Column({type: DataType.STRING, allowNull:true, field:"metodo_pago" })
         declare metodoPago: string
 
-    @Column({type: DataType.DATEONLY, allowNull: false, field:"fecha" })
+    @Column({type: DataType.DATEONLY, allowNull:true, field:"fecha" })
         declare fecha: string
 
-    @Column({type: DataType.INTEGER, allowNull: false, field:"monto_pagado" })
+    @Column({type: DataType.INTEGER, allowNull: true, field:"monto_pagado" })
         declare montoPagado: string
     
 }
