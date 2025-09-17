@@ -6,6 +6,8 @@ import Mantención from "./pages/servicios/Mantecion";
 import Baterías from "./pages/servicios/CambioBaterias";
 import Pintura from "./pages/servicios/CambioPintura";
 import Frenos from "./pages/servicios/Frenos";
+import Registro from "./pages/Registro";
+import Login from "./pages/Login";
 
 
 const router = createBrowserRouter([
@@ -33,6 +35,14 @@ const router = createBrowserRouter([
     path: "/servicios/baterias",
     element: <MainLayout><Baterías /></MainLayout>,
   },
+  {
+    path: "/registrar",
+    element: <MainLayout><Registro /></MainLayout>,
+  },
+  {
+    path: "/login",
+    element: <MainLayout><Login /></MainLayout>,
+  }
 
 ]);
 

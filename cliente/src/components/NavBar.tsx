@@ -1,5 +1,5 @@
 import { Container, Nav, Navbar } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
 const NavbarComponent = () => {
   return (
@@ -15,6 +15,18 @@ const NavbarComponent = () => {
           </Nav>
         </Navbar.Collapse>
       </Container>
+      <ul className="nav justify-content-end"> {  /*Si no esta logeado tira esta*/}
+              <li className="nav-item active">
+                <NavLink to="/registrar" className="nav-link">
+                  <img
+                    src="/Images/persona.jpg"
+                    alt="Registrarse"
+                    style={{ width: "20px", height: "20px", marginRight: "8px" }}
+                  />
+                  
+                </NavLink>
+              </li>
+            </ul>
     </Navbar>
   );
 };
