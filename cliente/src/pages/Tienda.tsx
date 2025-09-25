@@ -91,74 +91,74 @@ const Tienda = () => {
                 )}
             </Button>
             <Offcanvas show={ver} onHide={() => setVer(false)} placement="end">
-                <Offcanvas.Header closeButton>
-                  <Offcanvas.Title>Carrito</Offcanvas.Title>
-                </Offcanvas.Header>
-                <Offcanvas.Body>
-                  {carrito.length === 0 ? (
-                    <p>El carrito está vacío.</p>
-                  ) : (
-                    <>
-                    <ListGroup>
-                      {carrito.map((item, id) => (
-                        <ListGroup.Item key={id}>{item.titulo}
-                          <div>   
-                            <small>
-                              
-                            </small>
-                          </div>
-                            <a>Cantidad :</a>
-                            <span>{item.cantidad}</span>
-                            <Button
-                              size="sm"
-                              variant="outline-secondary"
-                              onClick={() => incrementarCantidad(item.titulo)}
-                              style={{ marginLeft: '20px' }}
-                            >
-                              ➕
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="outline-secondary"
-                              onClick={() => disminuirCantidad(item.titulo)}
-                            >
-                              ➖
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="outline-danger"
-                              onClick={() => eliminarDelCarrito(item.titulo)}
-                              style={{ marginLeft: '20px' }}
-                            >
-                              ❌
-                            </Button>
+              <Offcanvas.Header closeButton>
+                <Offcanvas.Title>Carrito</Offcanvas.Title>
+              </Offcanvas.Header>
+              <Offcanvas.Body>
+                {carrito.length === 0 ? (
+                  <p>El carrito está vacío.</p>
+                ) : (
+                  <>
+                  <ListGroup>
+                    {carrito.map((item, id) => (
+                      <ListGroup.Item key={id}>{item.titulo}
+                        <div>   
+                          <small>
+                            
+                          </small>
+                        </div>
+                          <a>Cantidad :</a>
+                          <span>{item.cantidad}</span>
+                          <Button
+                            size="sm"
+                            variant="outline-secondary"
+                            onClick={() => incrementarCantidad(item.titulo)}
+                            style={{ marginLeft: '20px' }}
+                          >
+                            ➕
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline-secondary"
+                            onClick={() => disminuirCantidad(item.titulo)}
+                          >
+                            ➖
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline-danger"
+                            onClick={() => eliminarDelCarrito(item.titulo)}
+                            style={{ marginLeft: '20px' }}
+                          >
+                            ❌
+                          </Button>
+                          <br />
+                          <small>Subtotal: ${(item.precio ?? 0) * item.cantidad}</small>
 
-                        </ListGroup.Item>
-                      ))}
-                    </ListGroup>
-                      <h5 className="mt-3">
-                      Total: ${calcularTotal().toLocaleString()}
-                    </h5>
-                    <Button
-                      variant="danger"
-                      className="mt-2"
-                      onClick={() => setCarrito([])}
-                    >
-                      Vaciar carrito
-                    </Button>
-                    </>
-                  )}
-                
-                </Offcanvas.Body>
+                      </ListGroup.Item>
+                    ))}
+                  </ListGroup>
+                    <h5 className="mt-3">
+                    Total: ${calcularTotal().toLocaleString()}
+                  </h5>
+                  <Button
+                    variant="danger"
+                    className="mt-2"
+                    onClick={() => setCarrito([])}
+                  >
+                    Vaciar carrito
+                  </Button>
+                  </>
+                )}
+              </Offcanvas.Body>
             </Offcanvas>
-                </div>
-              </div>
+        </div>
+      </div>
     </Col>
-
     <Row className="g-2">
       {productos.map((producto, id) => (
           <Col xs={12} sm={6} md={4} lg={3} key={id}>
-              <Cards titulo={producto.titulo} imagen={producto.imagen} descripcion={producto.descripcion} onAgregar={()=> agregarAlCarrito(producto)}/>
+              <Cards titulo={producto.titulo} imagen={producto.imagen} descripcion={producto.descripcion} precio={producto.precio} onAgregar={()=> agregarAlCarrito(producto)}/>
           </Col>
       ))}
     </Row>
