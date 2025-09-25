@@ -7,8 +7,8 @@ export async function cargarProductosIniciales() {
     for (const producto of productos) {
       await Producto.upsert(producto); // Inserta o actualiza según clave única
     }
-    console.log("✅ Productos cargados o actualizados sin duplicados.");
+    console.log("Productos cargados o actualizados sin duplicados.");
   } catch (error) {
-    console.error("❌ Error al cargar productos:", error);
+    console.error("Error al cargar productos:", error);
   }
 }

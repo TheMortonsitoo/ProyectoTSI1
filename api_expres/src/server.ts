@@ -3,6 +3,7 @@ import router from "./router"
 import db from "./config/database"
 import cors, {CorsOptions} from 'cors'
 import { cargarProductosIniciales } from "./config/data/cargarProductos"
+import { cargarServiciosIniciales } from "./config/data/cargarServicios"
 
 const server = Express()
 
@@ -13,6 +14,7 @@ async function conectarBD() {
         await db.authenticate()
         await db.sync()
         await cargarProductosIniciales()
+        await cargarServiciosIniciales()
         console.log('Conexion exitosa a la BASE DE DATOS')
     }
     catch(error){
