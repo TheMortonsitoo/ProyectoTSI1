@@ -1,6 +1,7 @@
 import server from "./server";
 import Servicio from './models/Servicio';
-
+import { productos } from "./config/data/productosbd";
+import Producto from "./models/Producto";
 
 (async () => {
   await Servicio.sync(); // No uses force si no quieres borrar la tabla

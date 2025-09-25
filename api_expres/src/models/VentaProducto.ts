@@ -12,9 +12,9 @@ class VentaProductos extends Model{
     @BelongsTo(()=>Producto)
         declare producto: Producto
 
-    @Column({type: DataType.STRING(30), primaryKey: true, allowNull: false, field:"cod_venta" })
+    @Column({type: DataType.INTEGER, primaryKey: true, allowNull: false, field:"cod_venta" })
     @ForeignKey(()=>Venta)
-        declare codVenta: string
+        declare codVenta: number
     @BelongsTo(()=>Venta)
         declare venta: Venta
     
