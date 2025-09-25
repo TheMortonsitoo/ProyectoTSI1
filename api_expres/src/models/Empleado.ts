@@ -14,8 +14,8 @@ class Empleado extends Model{
     @Column({type: DataType.STRING(30), allowNull: true, field:"apellido_materno" })
         declare apellidoMaterno: string
 
-    @Column({type: DataType.INTEGER, allowNull: true, field:"telefono" })
-        declare fono: number
+    @Column({type: DataType.STRING(15), allowNull: true, field:"telefono" })
+        declare fono: string
     
     @Column({type: DataType.STRING(40), allowNull: true, field:"mail" })
         declare mail: string
