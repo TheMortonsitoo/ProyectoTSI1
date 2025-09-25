@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, ListGroup, Offcanvas,} from "react-bootstrap"
+import { Button, ListGroup, Offcanvas } from "react-bootstrap"
 import { BsCart } from "react-icons/bs"
 
 const CarroCompra = () => {
@@ -19,7 +19,11 @@ const CarroCompra = () => {
     localStorage.setItem("carrito", JSON.stringify(carrito));
   }, [carrito]);
   //--------------------------------------------------- Todo eso es el localStorage
-
+  /*Ese para agregar el producto al carro asd
+  const agregarAlCarrito = (producto: any) => {
+    setCarrito((carritoActual) => [...carritoActual, producto]);
+  };
+    */
   return (
     <>
     <Button //Boton del carrito
@@ -45,8 +49,8 @@ const CarroCompra = () => {
             <p>El carrito está vacío.</p>
           ) : (
             <ListGroup>
-              {carrito.map((item, id) => (
-                <ListGroup.Item key={id}>{item.titulo}</ListGroup.Item>
+              {carrito.map((item, idx) => (
+                <ListGroup.Item key={idx}>{item.titulo}</ListGroup.Item>
               ))}
             </ListGroup>
           )}

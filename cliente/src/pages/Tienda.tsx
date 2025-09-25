@@ -1,29 +1,158 @@
-import { Col, Row } from "react-bootstrap";
-import CarroCompra from "../components/CarroCompra";
+import { Button, Col, ListGroup, Offcanvas, Row } from "react-bootstrap";
 import { productos } from "../data/productos";
 import Cards from "../components/Cards";
+import { useEffect, useState } from "react";
+import { BsCart } from "react-icons/bs";
 
 const Tienda = () => {
 
-   const agregarAlCarrito = (producto: any) => {
+  const [carrito, setCarrito] = useState<any[]>([]);
+  const [ver, setVer] = useState(false);
+
+  useEffect(() => {
     const carritoStorage = localStorage.getItem("carrito");
-    const carrito = carritoStorage ? JSON.parse(carritoStorage) : [];
-    const nuevoCarrito = [...carrito, producto];
-    localStorage.setItem("carrito", JSON.stringify(nuevoCarrito));
+    if (carritoStorage) {
+      setCarrito(JSON.parse(carritoStorage));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+  }, [carrito]);
+  //--------------------------------------------------- Todo eso es el localStorage
+  const agregarAlCarrito = (producto: any) => {
+    setCarrito((carritoActual) => {
+      const existe = carritoActual.find((item) => item.titulo === producto.titulo);
+      if (existe) {
+        return carritoActual.map((item) =>
+          item.titulo === producto.titulo
+            ? { ...item, cantidad: item.cantidad + 1 }
+            : item
+        );
+      }
+      return [...carritoActual, { ...producto, cantidad: 1 }];
+    });
+  };
+  //suma 1
+    const incrementarCantidad = (titulo: string) => {
+    setCarrito((carritoActual) =>
+      carritoActual.map((item) =>
+        item.titulo === titulo
+          ? { ...item, cantidad: item.cantidad + 1 }
+          : item
+      )
+    );
+  };
+//resta 1
+  const disminuirCantidad = (titulo: string) => {
+    setCarrito((carritoActual) =>
+      carritoActual
+        .map((item) =>
+          item.titulo === titulo
+            ? { ...item, cantidad: item.cantidad - 1 }
+            : item
+        )
+        .filter((item) => item.cantidad > 0)
+    );
+  };
+  //elimina todo
+   const eliminarDelCarrito = (titulo: string) => {
+    setCarrito((carritoActual) =>
+      carritoActual.filter((item) => item.titulo !== titulo)
+    );
+  };
+
+  //calcula total
+  const calcularTotal = () => {
+    return carrito.reduce(
+      (acc, item) => acc + (item.precio ?? 0) * item.cantidad,
+      0
+    );
   };
 
   return(
     <>
     <Col>
       <div className="position-relative mb-4">
-        {/* Título centrado */}
         <h2 className="mt-1 mb-0 text-center">Tienda</h2>
-
-        {/* Carrito fijo a la derecha */}
         <div className="position-absolute end-0 top-50 translate-middle-y">
-          <CarroCompra />
-        </div>
-      </div>
+             <Button //Boton del carrito
+                variant="light" 
+                className="position-relative mb-3" 
+                onClick={() => setVer(true)}
+                >
+                <BsCart size={24} />
+                {carrito.length > 0 && (
+                  <span 
+                    className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                  >
+                    {carrito.length}
+                  </span>
+                )}
+            </Button>
+            <Offcanvas show={ver} onHide={() => setVer(false)} placement="end">
+                <Offcanvas.Header closeButton>
+                  <Offcanvas.Title>Carrito</Offcanvas.Title>
+                </Offcanvas.Header>
+                <Offcanvas.Body>
+                  {carrito.length === 0 ? (
+                    <p>El carrito está vacío.</p>
+                  ) : (
+                    <>
+                    <ListGroup>
+                      {carrito.map((item, id) => (
+                        <ListGroup.Item key={id}>{item.titulo}
+                          <div>   
+                            <small>
+                              
+                            </small>
+                          </div>
+                            <a>Cantidad :</a>
+                            <span>{item.cantidad}</span>
+                            <Button
+                              size="sm"
+                              variant="outline-secondary"
+                              onClick={() => incrementarCantidad(item.titulo)}
+                              style={{ marginLeft: '20px' }}
+                            >
+                              ➕
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline-secondary"
+                              onClick={() => disminuirCantidad(item.titulo)}
+                            >
+                              ➖
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline-danger"
+                              onClick={() => eliminarDelCarrito(item.titulo)}
+                              style={{ marginLeft: '20px' }}
+                            >
+                              ❌
+                            </Button>
+
+                        </ListGroup.Item>
+                      ))}
+                    </ListGroup>
+                      <h5 className="mt-3">
+                      Total: ${calcularTotal().toLocaleString()}
+                    </h5>
+                    <Button
+                      variant="danger"
+                      className="mt-2"
+                      onClick={() => setCarrito([])}
+                    >
+                      Vaciar carrito
+                    </Button>
+                    </>
+                  )}
+                
+                </Offcanvas.Body>
+            </Offcanvas>
+                </div>
+              </div>
     </Col>
 
     <Row className="g-2">
