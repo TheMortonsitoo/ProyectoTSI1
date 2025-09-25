@@ -21,9 +21,6 @@ class VentaProductos extends Model{
     @Column({type: DataType.INTEGER, allowNull: true, field:"cantidad" })
         declare cantidad: number
     
-    @Column({type: DataType.STRING(100), allowNull: true, field:"observaciones" })
-        declare observaciones: string
-    
     @Column({type: DataType.INTEGER, allowNull: true, field:"precio_venta" })
         declare precioVenta: number
     

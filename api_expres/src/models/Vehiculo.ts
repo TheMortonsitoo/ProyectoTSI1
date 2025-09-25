@@ -19,7 +19,6 @@ class Vehiculo extends Model{
     @Column({type: DataType.STRING(15), allowNull: true, field:"rut_cliente" })
     @ForeignKey(()=>Cliente)
         declare rutCliente: string
-
     @BelongsTo(()=> Cliente)
         declare cliente: Cliente
 }

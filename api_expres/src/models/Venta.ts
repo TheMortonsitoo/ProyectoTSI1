@@ -15,10 +15,8 @@ class Venta extends Model{
     @Column({type: DataType.DATEONLY, allowNull: true, field:"fecha" })
         declare fecha: string
     
-    
     @Column({type: DataType.INTEGER, allowNull: true, field:"total" })
         declare total: number
-    
     
     @Column({type: DataType.STRING(20), allowNull: true, field:"estado_venta" })
         declare estadoVenta: string

@@ -19,6 +19,9 @@ class Empleado extends Model{
     
     @Column({type: DataType.STRING(40), allowNull: true, field:"mail" })
         declare mail: string
+
+    @Column({type: DataType.STRING(40), allowNull: true, field:"rol" })
+        declare rol: string
     
     @Column({type: DataType.STRING(50), allowNull: true, field:"contrasena" })
         declare contrasena: string
