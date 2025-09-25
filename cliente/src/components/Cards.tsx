@@ -4,10 +4,11 @@ interface CarCardProps {
   titulo: string;
   descripcion: string;
   imagen: string;
+  precio: string
   onAgregar: () => void;
 }
 
-const Cards = ({ titulo, imagen, descripcion, onAgregar }: CarCardProps) => {
+const Cards = ({ titulo, imagen, descripcion, precio, onAgregar }: CarCardProps) => {
   return (
     <Card className="mb-1 shadow-sm"
       style={{ height: "100%" }}>
@@ -15,6 +16,7 @@ const Cards = ({ titulo, imagen, descripcion, onAgregar }: CarCardProps) => {
       <Card.Body>
         <Card.Title>{titulo}</Card.Title>
         <Card.Text>{descripcion}</Card.Text>
+        <Card.Text>Precio: ${precio}</Card.Text>
         <Button className="w-100" onClick={onAgregar}> Agregar al carrito</Button>
       </Card.Body>
     </Card>
