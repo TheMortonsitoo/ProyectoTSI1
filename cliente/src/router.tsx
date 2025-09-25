@@ -8,6 +8,7 @@ import Pintura from "./pages/servicios/CambioPintura";
 import Frenos from "./pages/servicios/Frenos";
 import Registro from "./pages/Registro";
 import Login from "./pages/Login";
+import CheckOut from "./pages/CheckOut";
 
 
 const router = createBrowserRouter([
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <MainLayout><Login /></MainLayout>,
+  },
+  {
+    path: "/checkout",
+    element: <MainLayout><CheckOut /></MainLayout>,
   }
 
 ]);

@@ -3,22 +3,26 @@ import { productos } from "../data/productos";
 import Cards from "../components/Cards";
 import { useEffect, useState } from "react";
 import { BsCart } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
 
 const Tienda = () => {
 
-  const [carrito, setCarrito] = useState<any[]>([]);
-  const [ver, setVer] = useState(false);
-
-  useEffect(() => {
+  const [carrito, setCarrito] = useState<any[]>(() => {
     const carritoStorage = localStorage.getItem("carrito");
-    if (carritoStorage) {
-      setCarrito(JSON.parse(carritoStorage));
-    }
-  }, []);
+    return carritoStorage ? JSON.parse(carritoStorage) : [];
+  });
+
+  const [ver, setVer] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
+  if (carrito.length > 0) {
     localStorage.setItem("carrito", JSON.stringify(carrito));
-  }, [carrito]);
+  } else {
+    localStorage.removeItem("carrito"); 
+  }
+}, [carrito]);;
+
   //--------------------------------------------------- Todo eso es el localStorage
   const agregarAlCarrito = (producto: any) => {
     setCarrito((carritoActual) => {
@@ -35,39 +39,24 @@ const Tienda = () => {
   };
   //suma 1
     const incrementarCantidad = (titulo: string) => {
-    setCarrito((carritoActual) =>
-      carritoActual.map((item) =>
-        item.titulo === titulo
-          ? { ...item, cantidad: item.cantidad + 1 }
-          : item
-      )
-    );
+    setCarrito((carritoActual) =>carritoActual.map((item) =>item.titulo === titulo? { ...item, cantidad: item.cantidad + 1 }: item));
   };
 //resta 1
   const disminuirCantidad = (titulo: string) => {
     setCarrito((carritoActual) =>
-      carritoActual
-        .map((item) =>
-          item.titulo === titulo
-            ? { ...item, cantidad: item.cantidad - 1 }
-            : item
-        )
-        .filter((item) => item.cantidad > 0)
+      carritoActual.map((item) => item.titulo === titulo ? { ...item, cantidad: item.cantidad - 1 } : item).filter((item) => item.cantidad > 0)
     );
   };
   //elimina todo
-   const eliminarDelCarrito = (titulo: string) => {
-    setCarrito((carritoActual) =>
-      carritoActual.filter((item) => item.titulo !== titulo)
-    );
-  };
+  const eliminarDelCarrito = () => {
+     setCarrito([]);              
+  localStorage.removeItem("carrito"); 
+};
 
   //calcula total
   const calcularTotal = () => {
     return carrito.reduce(
-      (acc, item) => acc + (item.precio ?? 0) * item.cantidad,
-      0
-    );
+      (acc, item) => acc + (item.precio ?? 0) * item.cantidad,0);
   };
 
   return(
@@ -127,7 +116,7 @@ const Tienda = () => {
                           <Button
                             size="sm"
                             variant="outline-danger"
-                            onClick={() => eliminarDelCarrito(item.titulo)}
+                            onClick={eliminarDelCarrito}
                             style={{ marginLeft: '20px' }}
                           >
                             ❌
@@ -143,10 +132,17 @@ const Tienda = () => {
                   </h5>
                   <Button
                     variant="danger"
-                    className="mt-2"
+                    className="mt-2 me-2"
                     onClick={() => setCarrito([])}
                   >
                     Vaciar carrito
+                  </Button>
+                  <Button
+                    variant="primary"
+                    className="mt-2 ms-2"
+                    onClick={() => navigate('/checkout')}
+                  >
+                    Finalizar Compra
                   </Button>
                   </>
                 )}

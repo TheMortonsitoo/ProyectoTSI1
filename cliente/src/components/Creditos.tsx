@@ -1,7 +1,12 @@
+import { Element } from 'react-scroll';
+
 const Creditos = () => {
   return (
     <>
-        <div className="container mt-4 text-center">Contacto</div>
+        <Element name="contacto" >
+            <h2>📞 Contacto</h2>
+            <p>Aquí va tu sección de contacto.</p>
+        </Element>
     </>
   );
 };
