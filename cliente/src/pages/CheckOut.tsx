@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import { Button } from "react-bootstrap";
+import { registrarVenta } from "../utils/ventas";
+
 
 const Checkout = () => {
   const [carrito, setCarrito] = useState<any[]>([]);
@@ -7,6 +10,14 @@ const Checkout = () => {
     const data = localStorage.getItem("carrito");
     if (data) setCarrito(JSON.parse(data));
   }, []);
+
+  const handleFinalizarCompra = async () => {
+  const cod_venta = Date.now();
+  await registrarVenta(carrito, cod_venta);
+  localStorage.removeItem("carrito");
+  setCarrito([]);
+  alert("Compra registrada con éxito");
+};
 
   return (
     <div>
@@ -24,6 +35,13 @@ const Checkout = () => {
           ))}
         </ul>
       )}
+       <Button
+          variant="primary"
+          className="mt-2 ms-2"
+          onClick={handleFinalizarCompra}
+          >
+          Finalizar Compra
+      </Button>
     </div>
   );
 };

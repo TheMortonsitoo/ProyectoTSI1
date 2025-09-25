@@ -52,7 +52,6 @@ const Tienda = () => {
      setCarrito([]);              
   localStorage.removeItem("carrito"); 
 };
-
   //calcula total
   const calcularTotal = () => {
     return carrito.reduce(
