@@ -1,5 +1,7 @@
 import { Request, Response } from "express"
 import Cliente from "../models/Cliente"
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 export const getClientes = async (request: Request, response: Response) => {
     const clientes = await Cliente.findAll()
@@ -12,10 +14,62 @@ export const getClienteByRut = async (request: Request, response: Response) => {
     response.json({data:cliente})
 }
 
-export const agregarCliente = async(request: Request, response: Response) => {
-    console.log(request.body)
-    const cliente = await Cliente.create(request.body)
-    response.json({data: cliente})
+export const agregarCliente = async (req: Request, res: Response) => {
+  try {
+    console.log("Body recibido:", req.body); // 👀 log del body
+    const cliente = await Cliente.create({
+      rutCliente: req.body.rutCliente,
+      nombre: req.body.nombre,
+      apellidoPaterno: req.body.apellidoPaterno,
+      apellidoMaterno: req.body.apellidoMaterno,
+      direccion: req.body.direccion,
+      fono: req.body.fono, 
+      mail: req.body.mail,
+      contrasena: req.body.contrasena
+    });
+    console.log("Contraseña guardada en BD:", cliente.contrasena);
+    res.json(cliente);
+  } catch (error: any) {
+    console.error("Error en Sequelize:", error); // 👀 log completo
+    res.status(500).json({
+      mensaje: "Error en el servidor",
+      error: error.message || error
+    });
+  }
+};
+
+export const login = async(request:Request, response:Response) => {
+   const { mail, contrasena } = request.body
+   const SECRET = process.env.SECRET_KEY
+   try {
+       const usuario = await Cliente.findOne({where:{mail}})
+       if (!usuario ) {
+            response.status(401).json({ message: 'Usuario no encontrado' });
+            return console.error('Usuario no encontrado:', mail);
+       }
+        console.log("Contraseña enviada:", contrasena);
+        console.log("Contraseña en BD:", usuario.contrasena);
+        const passwordValido = await bcrypt.compare(contrasena, usuario.contrasena);
+        console.log("¿Contraseña válida?", passwordValido);
+        if (!passwordValido) {
+            response.status(401).json({ message: 'Contraseña incorrecta' });
+            return
+        }
+        
+       const token = jwt.sign({ mail: usuario.mail, rut: usuario.rutCliente, rol: usuario.rol }, SECRET, { expiresIn: '1h' });
+       response.json({ message: "Inicio de sesión exitoso", 
+        token, 
+        usuario: {
+          rutCliente: usuario.rutCliente,
+          nombre: usuario.nombre,
+          mail: usuario.mail,
+          rol: usuario.rol
+        } 
+    });
+   }catch (error) {
+       console.error('Error al iniciar sesión:', error);
+       response.status(500).json({ error: 'Error interno del servidor' });
+   }
 }
 
 export const editarCliente = async(request: Request, response: Response) => {

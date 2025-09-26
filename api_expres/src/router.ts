@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { agregarFecha, borrarFecha, editarCalendario, getCalendario } from "./handlers/calendario";
 import { agregarProducto, borrarProducto, editarProducto, getProductos, getProductosByID } from "./handlers/productos";
-import { agregarCliente, borrarCliente, editarCliente, getClienteByRut, getClientes } from "./handlers/clientes";
+import { agregarCliente, borrarCliente, editarCliente, getClienteByRut, getClientes, login } from "./handlers/clientes";
 import { agregarEmpleado, borrarEmpleado, editarEmpleado, getEmpleadoByRut, getEmpleados } from "./handlers/empleados";
 import { agregarPago, getPago, getPagoByID } from "./handlers/pagos";
 import { agregarServicio, borrarServicio, editarServicio, getServicioByID, getServicios } from "./handlers/servicios";
@@ -79,5 +79,6 @@ router.post("/ventasServicios", agregarVentaServicio)
 router.put("/ventasServicios/:id", editarVentaServicio)
 router.delete("/ventasServicios/:id", borrarVentaServicio)
 
-
+router.post('/login', login)
+router.post('/cliente/registrar', agregarCliente)
 export default router

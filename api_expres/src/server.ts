@@ -5,9 +5,10 @@ import cors, {CorsOptions} from 'cors'
 import { cargarProductosIniciales } from "./config/data/cargarProductos"
 import { cargarServiciosIniciales } from "./config/data/cargarServicios"
 import { cargarEmpleadosIniciales } from "./config/data/cargarEmpleados"
+import dotenv from "dotenv";
 
 const server = Express()
-
+dotenv.config();
 
 //conectar a la BASE DE DATOS
 async function conectarBD() {
