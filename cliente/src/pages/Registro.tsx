@@ -6,8 +6,14 @@ const Registro = () => {
 
   const [verContra, setVerContra] = useState(false);
   const [datos, setDatos] = useState({
-    email: "",
-    password: "",
+    rutCliente: "",
+    nombre: "",
+    apellidoPaterno: "",
+    apellidoMaterno: "",
+    direccion: "",
+    fono: "",  
+    mail: "",
+    contrasena: ""
   })
   
   const ir = useNavigate();
@@ -17,7 +23,7 @@ const Registro = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       try{
-          const response = await axios.post("http://localhost:3000/api/usuarios/registrar", datos)
+          const response = await axios.post("http://localhost:3000/api/cliente/registrar", datos)
           if (response.status === 200) {
           console.log("Cuenta creada");
           alert("Cuenta creada correctamente");
@@ -47,6 +53,20 @@ const Registro = () => {
       >
         <h2 className="text-center fw-bold mb-4">Registro</h2>
         <form onSubmit={handleSubmit}>
+            {/* rut */}
+          <div className="mb-3">
+            <label htmlFor="rut" className="form-label">
+              Rut
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              id="rutCliente"
+              placeholder="Ingrese rut"
+              onChange={handleChange}
+            />
+          </div>
+
           {/* Nombres */}
           <div className="mb-3">
             <label htmlFor="nombre" className="form-label">
@@ -60,30 +80,69 @@ const Registro = () => {
               onChange={handleChange}
             />
           </div>
-
-          {/* Apellidos */}
+          {/* Apellidos P */}
           <div className="mb-3">
-            <label htmlFor="apellido" className="form-label">
-              Apellidos
+            <label htmlFor="apellidop" className="form-label">
+              Apellido Paterno
             </label>
             <input
               type="text"
               className="form-control"
-              id="apellido"
-              placeholder="Ingrese apellido"
+              id="apellidoPaterno"
+              placeholder="Ingrese apellido paterno"
+              onChange={handleChange}
+            />
+          </div>
+
+          {/* Apellidos M*/}
+          <div className="mb-3">
+            <label htmlFor="apellidom" className="form-label">
+              Apellidos Materna
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              id="apellidoMaterno"
+              placeholder="Ingrese apellido materno"
+              onChange={handleChange}
+            />
+          </div>
+          {/* Direccion */}
+          <div className="mb-3">
+            <label htmlFor="direccion" className="form-label">
+              Direccion
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              id="direccion"
+              placeholder="Ingrese direccion"
+              onChange={handleChange}
+            />
+          </div>
+          {/* Telefono */}
+          <div className="mb-3">
+            <label htmlFor="fono" className="form-label">
+              Ingrese Telefono
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              id="fono"
+              placeholder="Ingrese telefono"
               onChange={handleChange}
             />
           </div>
 
           {/* Email */}
           <div className="mb-3">
-            <label htmlFor="email" className="form-label">
+            <label htmlFor="mail" className="form-label">
               Correo electrónico
             </label>
             <input
               type="email"
               className="form-control"
-              id="email"
+              id="mail"
               placeholder="example@gmail.com"
               onChange={handleChange}
             />
@@ -91,13 +150,13 @@ const Registro = () => {
 
           {/* Contraseña */}
           <div className="mb-3">
-            <label htmlFor="password" className="form-label">
+            <label htmlFor="contrasena" className="form-label">
               Contraseña
             </label>
             <input
               type={verContra ? "text" : "password"}
               className="form-control"
-              id="password"
+              id="contrasena"
               placeholder="Ingrese contraseña"
               onChange={handleChange}
             />

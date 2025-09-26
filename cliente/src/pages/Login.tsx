@@ -4,8 +4,8 @@ import { useNavigate } from "react-router-dom";
 
 const Login = ()=> {
 
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
+    const [mail, setEmail] = useState("")
+    const [contrasena, setPassword] = useState("")
     const [verContra, setVerContra] = useState(false)
     const ir = useNavigate();
 
@@ -14,11 +14,11 @@ const Login = ()=> {
         e.preventDefault();
         try {
       const response = await axios.post("http://localhost:3000/api/login", {
-        email,
-        password,
+        mail,
+        contrasena,
       });
       localStorage.setItem("token", response.data.token);
-      localStorage.setItem("email", email)
+      localStorage.setItem("email", mail)
       ir("/");
       window.location.reload();
       if (response.status === 200) {
@@ -56,7 +56,7 @@ const Login = ()=> {
             </label>
             <input
               type="email"
-              value={email}
+              value={mail}
               className="form-control"
               id="email"
               placeholder="example@gmail.com"
@@ -72,7 +72,7 @@ const Login = ()=> {
             </label>
             <input
               type={verContra ? "text" : "password"}
-              value={password}
+              value={contrasena}
               className="form-control"
               id="password"
               placeholder="Ingrese Contraseña"
