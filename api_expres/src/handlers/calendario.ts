@@ -1,5 +1,6 @@
 import { Request, Response } from "express"
 import Agenda from "../models/Agenda"
+import { AuthRequest } from "../middleware/auth"
 
 export const getCalendario = async(request: Request, response: Response) => {
     const calendario = await Agenda.findAll()
@@ -27,3 +28,22 @@ export const borrarFecha = async(request: Request, response: Response) => {
     await borrarfecha.destroy()
     response.json({data: "Fecha eliminado"})
 }
+
+
+export const agendarServicio = async (req: AuthRequest, res: Response) => {
+  try {
+    const rutCliente = req.user.rut; // ← viene del token
+    const { codServicio, fecha, hora } = req.body;
+
+    const agendamiento = await Agenda.create({
+      rutCliente,
+      codServicio,
+      fecha,
+      hora
+    });
+
+    res.json({ mensaje: "Servicio agendado con éxito", agendamiento });
+  } catch (error) {
+    res.status(500).json({ mensaje: "Error al agendar servicio", error });
+  }
+};

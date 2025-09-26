@@ -2,6 +2,7 @@ import { Request, Response } from "express"
 import Cliente from "../models/Cliente"
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { AuthRequest } from "../middleware/auth";
 
 export const getClientes = async (request: Request, response: Response) => {
     const clientes = await Cliente.findAll()
@@ -86,3 +87,34 @@ export const borrarCliente = async(request: Request, response: Response) => {
     await borrarCliente.destroy()
     response.json({data: "Cliente eliminado"})
 }
+
+export const perfilCliente = async (req: AuthRequest, res: Response) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ mensaje: "No autorizado" });
+    }
+
+    const rut = req.user.rut; // el rut lo pusiste en el token al hacer login
+    const cliente = await Cliente.findByPk(rut, {
+      attributes: [
+        "rutCliente",
+        "nombre",
+        "apellidoPaterno",
+        "apellidoMaterno",
+        "direccion",
+        "fono",
+        "mail",
+        "rol"
+      ],
+    });
+
+    if (!cliente) {
+      return res.status(404).json({ mensaje: "Cliente no encontrado" });
+    }
+
+    res.json(cliente);
+  } catch (error) {
+    console.error("Error al obtener perfil:", error);
+    res.status(500).json({ mensaje: "Error interno del servidor" });
+  }
+};

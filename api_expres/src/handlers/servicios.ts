@@ -2,8 +2,14 @@ import { Request, Response } from "express"
 import Servicio from "../models/Servicio"
 
 export const getServicios = async (request: Request, response: Response) => {
-    const servicio = await Servicio.findAll()
-    response.json({data:servicio})
+    try {
+    const servicios = await Servicio.findAll({
+      attributes: ["codServicio", "nombreServicio", "precio", "tiempo"]
+    });
+    response.json(servicios);
+  } catch (error) {
+    response.status(500).json({ mensaje: "Error al obtener servicios", error });
+  }
 }
 
 export const getServicioByID = async (request: Request, response: Response) => {

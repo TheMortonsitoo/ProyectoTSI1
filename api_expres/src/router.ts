@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { agregarFecha, borrarFecha, editarCalendario, getCalendario } from "./handlers/calendario";
+import { agendarServicio, agregarFecha, borrarFecha, editarCalendario, getCalendario } from "./handlers/calendario";
 import { agregarProducto, borrarProducto, editarProducto, getProductos, getProductosByID } from "./handlers/productos";
-import { agregarCliente, borrarCliente, editarCliente, getClienteByRut, getClientes, login } from "./handlers/clientes";
+import { agregarCliente, borrarCliente, editarCliente, getClienteByRut, getClientes, login, perfilCliente } from "./handlers/clientes";
 import { agregarEmpleado, borrarEmpleado, editarEmpleado, getEmpleadoByRut, getEmpleados } from "./handlers/empleados";
 import { agregarPago, getPago, getPagoByID } from "./handlers/pagos";
 import { agregarServicio, borrarServicio, editarServicio, getServicioByID, getServicios } from "./handlers/servicios";
@@ -9,6 +9,9 @@ import { agregarVehiculo, borrarVehiculo, editarVehiculo, getVehiculoByPatente, 
 import { agregarVenta, borrarVenta, editarVenta, getVentaByID, getVentas } from "./handlers/ventas";
 import { agregarVentaProducto, borrarVentaProducto, editarVentaProducto, getVentaProductoByID, getVentasProductos } from "./handlers/ventasProductos";
 import { agregarVentaServicio, borrarVentaServicio, editarVentaServicio, getVentaServicioByID, getVentasServicios } from "./handlers/ventasServicios";
+import { autenticar } from "./middleware/auth";
+
+
 
 const router = Router()
 
@@ -17,6 +20,7 @@ router.get("/calendario", getCalendario)
 router.post("/calendario", agregarFecha)
 router.put("/calendario/:id", editarCalendario)
 router.delete("/calendario/:id", borrarFecha)
+router.post("/calendario/agendar", agendarServicio)
 
 //RUTA DE CLIENTES
 router.get("/clientes", getClientes)
@@ -81,4 +85,5 @@ router.delete("/ventasServicios/:id", borrarVentaServicio)
 
 router.post('/login', login)
 router.post('/cliente/registrar', agregarCliente)
+router.get("/cliente/perfil", autenticar, perfilCliente);
 export default router

@@ -1,10 +1,16 @@
 import { Request, Response } from "express"
 import Empleado from "../models/Empleado"
 
-export const getEmpleados = async (request: Request, response: Response) => {
-    const empleado = await Empleado.findAll()
-    response.json({data:empleado})
-}
+export const getEmpleados = async (req: Request, res: Response) => {
+  try {
+    const empleados = await Empleado.findAll({
+      attributes: ["rut_empleado", "nombres", "apellido_paterno", "telefono"]
+    });
+    res.json(empleados);
+  } catch (error) {
+    res.status(500).json({ mensaje: "Error al obtener empleados", error });
+  }
+};
 
 export const getEmpleadoByRut = async (request: Request, response: Response) => {
     const {rut} = request.params
