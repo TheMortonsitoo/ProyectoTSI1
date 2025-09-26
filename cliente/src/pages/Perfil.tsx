@@ -33,7 +33,7 @@ const Perfil = () => {
     fetchPerfil();
   }, []);
 
-  if (!cliente) return <p>Los Datos no se lograron cargar, Intente nuevamente...</p>;
+  if (!cliente) return <p>Ha expirado el token de autenticacion, inicia sesion nuevamente...</p>;
 
   return (
     <div className="container mt-5">
