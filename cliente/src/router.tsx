@@ -9,6 +9,8 @@ import Frenos from "./pages/servicios/Frenos";
 import Registro from "./pages/Registro";
 import Login from "./pages/Login";
 import CheckOut from "./pages/CheckOut";
+import Perfil from "./pages/Perfil";
+import Agendar from "./pages/Agenda";
 
 
 const router = createBrowserRouter([
@@ -47,7 +49,15 @@ const router = createBrowserRouter([
   {
     path: "/checkout",
     element: <MainLayout><CheckOut /></MainLayout>,
-  }
+  },
+  {
+    path: "/perfil",
+    element: <MainLayout><Perfil /></MainLayout>,
+  },
+  {
+    path: "/agenda",
+    element: <MainLayout><Agendar /></MainLayout>,
+  },
 
 ]);
 

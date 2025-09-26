@@ -1,0 +1,222 @@
+import { Container, Row, Col, Button, Form } from "react-bootstrap";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
+import { useEffect, useState } from "react";
+import axios from "axios";
+
+interface Servicio {
+  codServicio: number;
+  nombreServicio: string;
+  precio: number;
+  tiempo: string;
+}
+
+interface Empleado {
+  rut_empleado: string;
+  nombres: string;
+  apellido_paterno: string;
+  apellido_materno: string;
+}
+
+const Agendar = () => {
+  const [date, setDate] = useState(new Date());
+  const [hora, setHora] = useState("");
+  const [servicios, setServicios] = useState<Servicio[]>([]);
+  const [servicioSeleccionado, setServicioSeleccionado] = useState("");
+  const [empleados, setEmpleados] = useState<Empleado[]>([]);
+  const [empleadoRut, setEmpleadoRut] = useState("");
+    const [patente, setPatente] = useState("");
+    const [marca, setMarca] = useState("");
+    const [modelo, setModelo] = useState("");
+    const [anio, setAnio] = useState("");
+
+  const horasDisponibles = ["09:00","10:00","11:00","12:00","15:00","16:00","17:00"];
+
+  // Cargar servicios
+  useEffect(() => {
+    axios.get("http://localhost:3000/api/servicios")
+      .then((res) => setServicios(res.data))
+      .catch((err) => console.error("Error cargando servicios:", err));
+  }, []);
+
+  // Cargar empleados
+  useEffect(() => {
+    axios.get("http://localhost:3000/api/empleados")
+      .then((res) => setEmpleados(res.data))
+      .catch((err) => console.error("Error cargando empleados:", err));
+  }, []);
+
+  // Agendar servicio
+  const handleAgendar = async () => {
+    if (!servicioSeleccionado || !hora || !empleadoRut) {
+      alert("⚠️ Debes rellenar todos los campos.");
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("Debes iniciar sesión.");
+        return;
+      }
+
+      await axios.post("http://localhost:3000/api/calendario/agendar", {
+        codServicio: servicioSeleccionado,
+        fecha: date.toISOString().split("T")[0], // YYYY-MM-DD
+        hora,
+        rut_empleado: empleadoRut
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      alert(`✅ Agendaste el ${date.toLocaleDateString()} a las ${hora}`);
+    } catch (error) {
+      console.error("Error al agendar:", error);
+      alert("❌ Error al agendar servicio.");
+    }
+  };
+
+  return (
+    <Container fluid className="my-5">
+      <Row>
+        {/* Columna izquierda con info */}
+        <Col md={6} className="text-white d-flex flex-column justify-content-center p-5"
+          style={{
+            backgroundImage: "url('/images/TallerMoto.jpg')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            minHeight: "500px"
+          }}
+        >
+          <div style={{ backgroundColor: "rgba(0,0,0,0.6)", padding: "30px" }}>
+            <h2 className="fw-bold mb-4">¿CÓMO AGENDAR?</h2>
+            <p>
+              Para brindarle una atención personalizada y valorando su tiempo,
+              hemos implementado un sistema de agendamiento de servicios.
+              Sigue estos tres simples pasos para reservar tu cita:
+            </p>
+
+            <h4 className="fw-bold mt-4">PASO 1</h4>
+            <p>Selecciona el servicio que necesites agendar.</p>
+
+            <h4 className="fw-bold">PASO 2</h4>
+            <p>Escoge el día y la hora que más te acomoda.</p>
+
+            <h4 className="fw-bold">PASO 3</h4>
+            <p>
+              Llena tus datos y los de tu vehículo. Al agendar te enviaremos un
+              correo confirmando tu cita.
+            </p>
+          </div>
+
+        </Col>
+
+        {/* Columna derecha con formulario */}
+        <Col md={6} className="d-flex flex-column align-items-center justify-content-center p-5">
+          <h4 className="fw-bold text-danger mb-3">
+            {date.toLocaleDateString("es-CL", { month: "long", year: "numeric" }).toUpperCase()}
+          </h4>
+
+          {/* Calendario */}
+          <Calendar
+            onChange={(value) => value instanceof Date && setDate(value)}
+            tileDisabled={({ date, view }) =>
+              view === "month" && date < new Date(new Date().setHours(0, 0, 0, 0))
+            }
+            value={date}
+          />
+
+          {/* Select servicio */}
+          <Form.Select
+            className="mt-3"
+            value={servicioSeleccionado}
+            onChange={(e) => setServicioSeleccionado(e.target.value)}
+          >
+            <option value="">Selecciona un servicio</option>
+            {servicios.map((s) => (
+              <option key={s.codServicio}  value={s.codServicio}>
+                {s.nombreServicio} - ${s.precio} ({s.tiempo})
+              </option>
+            ))}
+          </Form.Select>
+
+          {/* Select hora */}
+          <Form.Select
+            className="mt-3"
+            value={hora}
+            onChange={(e) => setHora(e.target.value)}
+          >
+            <option value="">Selecciona una hora</option>
+            {horasDisponibles.map((h) => (
+              <option key={h} value={h}>{h}</option>
+            ))}
+          </Form.Select>
+
+          {/* Select empleado */}
+          <Form.Select
+            className="mt-3"
+            value={empleadoRut}
+            onChange={(e) => setEmpleadoRut(e.target.value)}
+          >
+            <option value="">Selecciona un mecánico</option>
+            {empleados.map((emp) => (
+              <option key={emp.rut_empleado} value={emp.rut_empleado}>
+                {emp.nombres} {emp.apellido_paterno} {emp.apellido_materno}
+              </option>
+            ))}
+          </Form.Select>
+          <Form.Group className="mt-3">
+            <Form.Label>Patente</Form.Label>
+            <Form.Control
+                type="text"
+                placeholder="Ej: ABCD12"
+                value={patente}
+                onChange={(e) => setPatente(e.target.value)}
+            />
+            </Form.Group>
+
+            <Form.Group className="mt-3">
+            <Form.Label>Marca</Form.Label>
+            <Form.Control
+                type="text"
+                placeholder="Ej: Toyota"
+                value={marca}
+                onChange={(e) => setMarca(e.target.value)}
+            />
+            </Form.Group>
+
+            <Form.Group className="mt-3">
+            <Form.Label>Modelo</Form.Label>
+            <Form.Control
+                type="text"
+                placeholder="Ej: Corolla"
+                value={modelo}
+                onChange={(e) => setModelo(e.target.value)}
+            />
+            </Form.Group>
+
+            <Form.Group className="mt-3">
+            <Form.Label>Año</Form.Label>
+            <Form.Control
+                type="number"
+                placeholder="Ej: 2020"
+                value={anio}
+                onChange={(e) => setAnio(e.target.value)}
+            />
+            </Form.Group>
+
+          {/* Botón */}
+          <Button
+            variant="danger"
+            className="px-4 py-2 rounded-pill shadow-lg mt-4"
+            onClick={handleAgendar}
+          >
+            <i className="bi bi-calendar-check me-2"></i>
+            AGENDAR SERVICIO
+          </Button>
+        </Col>
+      </Row>
+    </Container>
+  );
+};
+export default Agendar;

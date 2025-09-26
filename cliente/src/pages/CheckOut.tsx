@@ -27,8 +27,8 @@ const Checkout = () => {
       ) : (
         <ul>
            <h4 className="mt-5">Carrito</h4>
-          {carrito.map((item, idx) => (
-            <li key={idx}>
+          {carrito.map((item, id) => (
+            <li key={id}>
                 a
               {item.titulo} - {item.cantidad} x ${item.precio}
             </li>
