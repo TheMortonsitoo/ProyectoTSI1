@@ -48,9 +48,16 @@ const Tienda = () => {
     );
   };
   //elimina todo
-  const eliminarDelCarrito = () => {
-     setCarrito([]);              
-  localStorage.removeItem("carrito"); 
+  const eliminarDelCarrito = (titulo: string) => {
+  setCarrito((carritoActual) => {
+    // Filtrar todos los que NO sean el producto con ese título
+    const nuevoCarrito = carritoActual.filter((item) => item.titulo !== titulo);
+
+    // Guardar en localStorage
+    localStorage.setItem("carrito", JSON.stringify(nuevoCarrito));
+
+    return nuevoCarrito;
+  });
 };
   //calcula total
   const calcularTotal = () => {
@@ -115,7 +122,7 @@ const Tienda = () => {
                           <Button
                             size="sm"
                             variant="outline-danger"
-                            onClick={eliminarDelCarrito}
+                            onClick={() => eliminarDelCarrito(item.titulo)}
                             style={{ marginLeft: '20px' }}
                           >
                             ❌

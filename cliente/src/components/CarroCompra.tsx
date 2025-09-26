@@ -49,8 +49,8 @@ const CarroCompra = () => {
             <p>El carrito está vacío.</p>
           ) : (
             <ListGroup>
-              {carrito.map((item, idx) => (
-                <ListGroup.Item key={idx}>{item.titulo}</ListGroup.Item>
+              {carrito.map((item, id) => (
+                <ListGroup.Item key={id}>{item.titulo}</ListGroup.Item>
               ))}
             </ListGroup>
           )}
