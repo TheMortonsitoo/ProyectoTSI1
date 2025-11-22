@@ -3,6 +3,7 @@ import Cliente from "../models/Cliente"
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { AuthRequest } from "../middleware/auth";
+import Empleado from "../models/Empleado";
 
 export const getClientes = async (request: Request, response: Response) => {
     const clientes = await Cliente.findAll()
@@ -17,27 +18,49 @@ export const getClienteByRut = async (request: Request, response: Response) => {
 
 export const agregarCliente = async (req: Request, res: Response) => {
   try {
-    console.log("Body recibido:", req.body); // 👀 log del body
+    console.log("Body recibido:", req.body);
+
+    const hashedPassword = await bcrypt.hash(req.body.contrasena, 10);
+
     const cliente = await Cliente.create({
       rutCliente: req.body.rutCliente,
       nombre: req.body.nombre,
       apellidoPaterno: req.body.apellidoPaterno,
       apellidoMaterno: req.body.apellidoMaterno,
       direccion: req.body.direccion,
-      fono: req.body.fono, 
+      fono: req.body.fono,
       mail: req.body.mail,
-      contrasena: req.body.contrasena
+      rol: req.body.rol,
+      contrasena: hashedPassword
     });
-    console.log("Contraseña guardada en BD:", cliente.contrasena);
+
+    if (req.body.rol === "Admin") {
+      const existe = await Empleado.findByPk(req.body.rutCliente);
+      if (!existe) {
+        await Empleado.create({
+          rutEmpleado: req.body.rutCliente,
+          nombres: req.body.nombre,
+          apellidoPaterno: req.body.apellidoPaterno,
+          apellidoMaterno: req.body.apellidoMaterno,
+          telefono: req.body.fono,
+          mail: req.body.mail,
+          rol: "admin",
+          contrasena: hashedPassword
+        });
+        console.log("Admin también registrado en empleados");
+      }
+    }
+
     res.json(cliente);
   } catch (error: any) {
-    console.error("Error en Sequelize:", error); // 👀 log completo
+    console.error("Error en Sequelize:", error);
     res.status(500).json({
       mensaje: "Error en el servidor",
       error: error.message || error
     });
   }
 };
+
 
 export const login = async(request:Request, response:Response) => {
    const { mail, contrasena } = request.body

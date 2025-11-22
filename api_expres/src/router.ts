@@ -10,6 +10,7 @@ import { agregarVenta, borrarVenta, editarVenta, getVentaByID, getVentas } from 
 import { agregarVentaProducto, borrarVentaProducto, editarVentaProducto, getVentaProductoByID, getVentasProductos } from "./handlers/ventasProductos";
 import { agregarVentaServicio, borrarVentaServicio, editarVentaServicio, getVentaServicioByID, getVentasServicios } from "./handlers/ventasServicios";
 import { autenticar, verificarRol } from "./middleware/auth";
+import { sincronizarAdmins } from "./handlers/sincronizarAdmins";
 
 const router = Router();
 
@@ -83,5 +84,7 @@ router.get("/ventasServicios/:id", autenticar, verificarRol(["Admin"]), getVenta
 router.post("/ventasServicios", autenticar, verificarRol(["Admin"]), agregarVentaServicio);
 router.put("/ventasServicios/:id", autenticar, verificarRol(["Admin"]), editarVentaServicio);
 router.delete("/ventasServicios/:id", autenticar, verificarRol(["Admin"]), borrarVentaServicio);
+
+router.post("/sincronizar-admins", autenticar, verificarRol(["Admin"]), sincronizarAdmins);
 
 export default router;

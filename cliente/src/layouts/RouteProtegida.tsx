@@ -1,4 +1,4 @@
-import { useEffect, useState, type JSX } from "react";
+import { type JSX } from "react";
 import { Navigate } from "react-router-dom";
 
 interface ProtectedRouteProps {
@@ -7,19 +7,20 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute = ({ allowedRoles, children }: ProtectedRouteProps) => {
-  const [rol, setRol] = useState<string | null>(null);
+  // Leer directamente desde localStorage en cada render
+  const storedRol = localStorage.getItem("rol");
+  console.log("Rol leído en ProtectedRoute:", storedRol);
 
-  useEffect(() => {
-    const storedRol = localStorage.getItem("rol");
-    console.log("Rol leído en ProtectedRoute: ", storedRol);
-    setRol(storedRol ? storedRol.toLowerCase() : null);
-  }, []);
-
-  if (rol === null) {
-    return <div>Verificando acceso...</div>; // loader temporal
+  // Si no hay rol guardado, redirigir
+  if (!storedRol) {
+    return <Navigate to="/unauthorized" />;
   }
 
+  // Normalizar a minúsculas para comparar
+  const rol = storedRol.toLowerCase();
   const allowed = allowedRoles.map(r => r.toLowerCase());
+
+  // Validar acceso
   return allowed.includes(rol) ? children : <Navigate to="/unauthorized" />;
 };
 
