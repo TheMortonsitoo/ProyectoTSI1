@@ -1,5 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
-import MainLayout from "./layouts/Layout";
+import MainLayout from "./Layouts/Layout";
 import Home from "./pages/Home";
 import Tienda from "./pages/Tienda";
 import Mantención from "./pages/servicios/Mantecion";
@@ -11,7 +11,9 @@ import Login from "./pages/Login";
 import CheckOut from "./pages/CheckOut";
 import Perfil from "./pages/Perfil";
 import Agendar from "./pages/Agenda";
-
+import ProtectedRoute from "./Layouts/RouteProtegida";
+import AdminPanel from "./pages/PaginaAdmin";
+import Unauthorized from "./pages/NoAutorizacion";
 
 const router = createBrowserRouter([
   {
@@ -58,7 +60,18 @@ const router = createBrowserRouter([
     path: "/agenda",
     element: <MainLayout><Agendar /></MainLayout>,
   },
-
+  {
+  path: "/admin",
+  element: (
+    <ProtectedRoute allowedRoles={["admin"]}>
+      <MainLayout><AdminPanel /></MainLayout>
+    </ProtectedRoute>
+  ),
+},
+{
+  path: "/unauthorized",
+  element: <MainLayout><Unauthorized /></MainLayout>,
+}
 ]);
 
 export default router;

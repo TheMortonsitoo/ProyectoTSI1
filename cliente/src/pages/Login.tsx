@@ -2,32 +2,36 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const Login = ()=> {
+const Login = () => {
+  const [mail, setEmail] = useState("");
+  const [contrasena, setPassword] = useState("");
+  const [verContra, setVerContra] = useState(false);
+  const ir = useNavigate();
 
-    const [mail, setEmail] = useState("")
-    const [contrasena, setPassword] = useState("")
-    const [verContra, setVerContra] = useState(false)
-    const ir = useNavigate();
-
-
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        try {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
       const response = await axios.post("http://localhost:3000/api/login", {
         mail,
         contrasena,
       });
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("email", mail)
-      ir("/");
-      window.location.reload();
+
       if (response.status === 200) {
-        console.log("Login exitoso");
+        // Guardar datos en localStorage
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("email", mail);
+        localStorage.setItem("rol", response.data.usuario.rol);
+
+        console.log("Rol recibido del backend:", response.data.usuario.rol);
+        console.log("Rol guardado en localStorage:", localStorage.getItem("rol"));
+
+        // Redirigir al home sin recargar la página
+        ir("/");
       }
-      }catch(error) {
-        console.error("Error al iniciar Sesion:", error);
-      }
+    } catch (error) {
+      console.error("Error al iniciar sesión:", error);
     }
+  };
 
   return (
     <div
@@ -60,7 +64,7 @@ const Login = ()=> {
               className="form-control"
               id="email"
               placeholder="example@gmail.com"
-              onChange={e => setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
@@ -76,7 +80,7 @@ const Login = ()=> {
               className="form-control"
               id="password"
               placeholder="Ingrese Contraseña"
-              onChange={e => setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
           </div>
@@ -100,15 +104,15 @@ const Login = ()=> {
             Iniciar Sesión
           </button>
         </form>
-        <div className = "mt-3 text-center">
-            <span>No tiene cuenta?</span>
-            <a href="/registrar" className="text-decoration-none ms-2">
-              Registrate
-            </a>
+        <div className="mt-3 text-center">
+          <span>No tiene cuenta?</span>
+          <a href="/registrar" className="text-decoration-none ms-2">
+            Registrate
+          </a>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default Login;

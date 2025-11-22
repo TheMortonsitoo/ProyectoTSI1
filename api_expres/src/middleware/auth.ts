@@ -20,3 +20,13 @@ export const autenticar = (req: AuthRequest, res: Response, next: NextFunction) 
     return res.status(401).json({ mensaje: "Token inválido o expirado" });
   }
 };
+
+export const verificarRol = (rolesPermitidos: string[]) => {
+  return (req: Request & { user?: any }, res: Response, next: NextFunction) => {
+    const rol = req.user?.rol;
+    if (!rol || !rolesPermitidos.includes(rol)) {
+      return res.status(403).json({ mensaje: "Acceso denegado: rol insuficiente" });
+    }
+    next();
+  };
+};
