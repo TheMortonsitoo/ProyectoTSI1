@@ -20,13 +20,14 @@ const Login = () => {
         // Guardar datos en localStorage
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("email", mail);
-        localStorage.setItem("rol", response.data.usuario.rol);
+        localStorage.setItem("rol", response.data.usuario.rol.toLowerCase());
 
         console.log("Rol recibido del backend:", response.data.usuario.rol);
         console.log("Rol guardado en localStorage:", localStorage.getItem("rol"));
 
         // Redirigir al home sin recargar la página
         ir("/");
+        window.location.reload()
       }
     } catch (error) {
       console.error("Error al iniciar sesión:", error);

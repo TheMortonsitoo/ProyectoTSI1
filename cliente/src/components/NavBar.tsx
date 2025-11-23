@@ -4,34 +4,54 @@ import { Container, Nav, Navbar } from "react-bootstrap";
 import { Link, NavLink } from "react-router-dom";
 import { Link as ScrollLink } from "react-scroll";
 
+const API = "http://localhost:3000/api";
+
 const NavbarComponent = () => {
-  const [logeado, setLogeado] = useState(() => !!localStorage.getItem("token"));
-  const [mail, setEmail] = useState("");
+  const [logeado, setLogeado] = useState<boolean>(() => !!localStorage.getItem("token"));
+  const [mail, setEmail] = useState<string>("");
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("email");
+    localStorage.removeItem("rol");
     setLogeado(false);
     setEmail("");
-  }
-    useEffect(() => {
-      const AxiosUsuario = async () => {
-        const token = localStorage.getItem("token");
-        if (!token) return;
+  };
 
-        try {
-          const response = await axios.get("http://localhost:3000/api/clientes", {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          setEmail(response.data.email); 
-        } catch (error) {
-          console.error("Token invalido o expirado", error);
+  useEffect(() => {
+    const cargarUsuario = async () => {
+      const token = localStorage.getItem("token");
+      const rol = localStorage.getItem("rol")?.toLowerCase();
+
+      if (!token || !rol) return;
+
+      const endpoint =
+        rol === "admin"
+          ? `${API}/empleados/perfil`
+          : `${API}/clientes/perfil`;
+
+      try {
+        const response = await axios.get(endpoint, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        const correo = response.data?.mail ?? response.data?.email ?? "";
+        setEmail(correo);
+        setLogeado(true);
+      } catch (error: any) {
+        const status = error?.response?.status;
+        if (status === 401) {
           handleLogout();
         }
       }
-      AxiosUsuario();
-    }, [logeado]);
+    };
+
+    cargarUsuario();
+    const onStorage = () => setLogeado(!!localStorage.getItem("token"));
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
+
   return (
     <Navbar bg="dark" variant="dark" expand="lg" sticky="top">
       <Container>
@@ -45,6 +65,7 @@ const NavbarComponent = () => {
           </Nav>
         </Navbar.Collapse>
       </Container>
+
       {logeado ? (
         <ul className="nav justify-content-end">
           <div className="dropdown">
@@ -57,38 +78,43 @@ const NavbarComponent = () => {
               <img
                 src="public/Images/persona.png"
                 alt="Cuenta"
-                style={{ width: "25px", height: "25px", marginRight: "8px", backgroundColor: "white", borderRadius: "50%" }}
+                style={{
+                  width: "25px",
+                  height: "25px",
+                  marginRight: "8px",
+                  backgroundColor: "white",
+                  borderRadius: "50%",
+                }}
               />
-              {mail}
+              {mail || "Mi cuenta"}
             </button>
             <ul className="dropdown-menu dropdown-menu-end">
               <li>
-              </li>
-              <li>
-                <NavLink className="dropdown-item" to="/perfil">
-                  Perfil
-                </NavLink>
+                <NavLink className="dropdown-item" to="/perfil">Perfil</NavLink>
               </li>
               <li>
                 <NavLink className="dropdown-item" to="/login" onClick={handleLogout}>
-                  Cerrar Sesion
-                  <button className="dropdown-item"  >
-                    
-                  </button>
+                  Cerrar Sesión
                 </NavLink>
               </li>
             </ul>
           </div>
         </ul>
-        ) : ( 
-        <ul className="nav justify-content-end"> {  /*Si no esta logeado tira esta*/}
+      ) : (
+        <ul className="nav justify-content-end">
           <li className="nav-item active">
             <NavLink to="/login" className="nav-link">
               <img
                 src="public/Images/persona.png"
                 alt="Registrarse"
-                style={{ width: "25px", height: "25px", marginRight: "8px", backgroundColor: "white", borderRadius: "50%"  }}
-              />             
+                style={{
+                  width: "25px",
+                  height: "25px",
+                  marginRight: "8px",
+                  backgroundColor: "white",
+                  borderRadius: "50%",
+                }}
+              />
             </NavLink>
           </li>
         </ul>

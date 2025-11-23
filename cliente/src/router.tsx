@@ -16,62 +16,45 @@ import AdminPanel from "./pages/PaginaAdmin";
 import Unauthorized from "./pages/NoAutorizacion";
 
 const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <MainLayout><Home /></MainLayout>,
-  },
-  {
-    path: "/tienda",
-    element: <MainLayout><Tienda /></MainLayout>,
-  },
-  {
-    path: "/servicios/mantencion",
-    element: <MainLayout><Mantención /></MainLayout>,
-  },
-  {
-    path: "/servicios/frenos",
-    element: <MainLayout><Frenos /></MainLayout>,
-  },
-  {
-    path: "/servicios/pintura",
-    element: <MainLayout><Pintura /></MainLayout>,
-  },
-  {
-    path: "/servicios/baterias",
-    element: <MainLayout><Baterías /></MainLayout>,
-  },
-  {
-    path: "/registrar",
-    element: <MainLayout><Registro /></MainLayout>,
-  },
-  {
-    path: "/login",
-    element: <MainLayout><Login /></MainLayout>,
-  },
-  {
-    path: "/checkout",
-    element: <MainLayout><CheckOut /></MainLayout>,
-  },
+  { path: "/", element: <MainLayout><Home /></MainLayout> },
+  { path: "/tienda", element: <MainLayout><Tienda /></MainLayout> },
+  { path: "/servicios/mantencion", element: <MainLayout><Mantención /></MainLayout> },
+  { path: "/servicios/frenos", element: <MainLayout><Frenos /></MainLayout> },
+  { path: "/servicios/pintura", element: <MainLayout><Pintura /></MainLayout> },
+  { path: "/servicios/baterias", element: <MainLayout><Baterías /></MainLayout> },
+  { path: "/registrar", element: <MainLayout><Registro /></MainLayout> },
+  { path: "/login", element: <MainLayout><Login /></MainLayout> },
+  { path: "/checkout", element: <MainLayout><CheckOut /></MainLayout> },
+
+  // Rutas protegidas para clientes y admins
   {
     path: "/perfil",
-    element: <MainLayout><Perfil /></MainLayout>,
+    element: (
+      <ProtectedRoute allowedRoles={["cliente", "admin"]}>
+        <MainLayout><Perfil /></MainLayout>
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/agenda",
-    element: <MainLayout><Agendar /></MainLayout>,
+    element: (
+      <ProtectedRoute allowedRoles={["cliente", "admin"]}>
+        <MainLayout><Agendar /></MainLayout>
+      </ProtectedRoute>
+    ),
   },
+
+  // Ruta protegida solo para admin
   {
-  path: "/admin",
-  element: (
-    <ProtectedRoute allowedRoles={["Admin"]}>
-      <MainLayout><AdminPanel /></MainLayout>
-    </ProtectedRoute>
-  ),
-},
-{
-  path: "/unauthorized",
-  element: <MainLayout><Unauthorized /></MainLayout>,
-}
+    path: "/admin",
+    element: (
+      <ProtectedRoute allowedRoles={["admin"]}>
+        <MainLayout><AdminPanel /></MainLayout>
+      </ProtectedRoute>
+    ),
+  },
+
+  { path: "/unauthorized", element: <MainLayout><Unauthorized /></MainLayout> },
 ]);
 
 export default router;
