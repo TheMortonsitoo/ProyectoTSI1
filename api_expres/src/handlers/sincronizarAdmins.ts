@@ -17,7 +17,7 @@ export const sincronizarAdmins = async (req: Request, res: Response) => {
           apellidoMaterno: admin.apellidoMaterno,
           telefono: admin.fono,
           mail: admin.mail,
-          rol: "admin",
+          rol: "Admin",
           contrasena: admin.contrasena
         });
         agregados++;
