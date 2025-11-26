@@ -1,5 +1,5 @@
 import  Express  from "express"
-import router from "./router"
+import router from "./routes/router"
 import db from "./config/database"
 import cors, {CorsOptions} from 'cors'
 import { cargarProductosIniciales } from "./config/data/cargarProductos"

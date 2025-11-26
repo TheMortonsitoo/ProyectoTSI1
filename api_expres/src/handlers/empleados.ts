@@ -1,10 +1,12 @@
-import { Request, Response } from "express"
-import Empleado from "../models/Empleado"
+import { Request, Response } from "express";
+import Empleado from "../models/Empleado";
+import bcrypt from "bcrypt";
 
+// Obtener empleados
 export const getEmpleados = async (req: Request, res: Response) => {
   try {
     const empleados = await Empleado.findAll({
-      attributes: ["rut_empleado", "nombres", "apellido_paterno", "telefono"]
+      attributes: ["rutEmpleado", "nombres", "apellidoPaterno", "fono", "mail", "rol"]
     });
     res.json(empleados);
   } catch (error) {
@@ -12,29 +14,52 @@ export const getEmpleados = async (req: Request, res: Response) => {
   }
 };
 
-export const getEmpleadoByRut = async (request: Request, response: Response) => {
-    const {rut} = request.params
-    const empleado = await Empleado.findByPk(rut)
-    response.json({data:empleado})
-}
+// Obtener empleado por RUT
+export const getEmpleadoByRut = async (req: Request, res: Response) => {
+  const { rut } = req.params;
+  const empleado = await Empleado.findByPk(rut);
+  res.json({ data: empleado });
+};
 
-export const agregarEmpleado = async(request: Request, response: Response) => {
-    console.log(request.body)
-    const empleado = await Empleado.create(request.body)
-    response.json({data: empleado})
-}
+// Crear empleado
+export const agregarEmpleado = async (req: Request, res: Response) => {
+  try {
+    const { contrasena, ...resto } = req.body;
 
-export const editarEmpleado = async(request: Request, response: Response) => {
-    const {rut} = request.params
-    const editarEmpleado = await Empleado.findByPk(rut)
-    await editarEmpleado.update(request.body)
-    await editarEmpleado.save()
-    response.json({data: editarEmpleado})
-}
+    if (!contrasena) {
+      return res.status(400).json({ error: "La contraseña es obligatoria" });
+    }
 
-export const borrarEmpleado = async(request: Request, response: Response) => {
-    const {rut} = request.params
-    const borrarEmpleado = await Empleado.findByPk(rut)
-    await borrarEmpleado.destroy()
-    response.json({data: "Empleado eliminado"})
-}
+    const hashedPassword = await bcrypt.hash(contrasena, 10);
+
+    const empleado = await Empleado.create({
+      ...resto,
+      contrasena: hashedPassword
+    });
+
+    res.json({ data: empleado });
+
+  } catch (error: any) {
+    res.status(500).json({ error: "Error al crear empleado", detalle: error.message });
+  }
+};
+
+// Editar empleado
+export const editarEmpleado = async (req: Request, res: Response) => {
+  const { rut } = req.params;
+  const empleado = await Empleado.findByPk(rut);
+
+  await empleado.update(req.body);
+  await empleado.save();
+
+  res.json({ data: empleado });
+};
+
+// Borrar empleado
+export const borrarEmpleado = async (req: Request, res: Response) => {
+  const { rut } = req.params;
+  const empleado = await Empleado.findByPk(rut);
+
+  await empleado.destroy();
+  res.json({ data: "Empleado eliminado" });
+};

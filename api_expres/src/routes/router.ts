@@ -1,18 +1,22 @@
+import { agendarServicio, agregarFecha, borrarFecha, editarCalendario, getCalendario } from "../handlers/calendario";
+import { agregarProducto, borrarProducto, editarProducto, getProductos, getProductosByID } from "../handlers/productos";
+import { agregarCliente, borrarCliente, editarCliente, getClienteByRut, getClientes, perfilCliente } from "../handlers/clientes";
+import { agregarEmpleado, borrarEmpleado, editarEmpleado, getEmpleadoByRut, getEmpleados } from "../handlers/empleados";
+import { agregarPago, getPago, getPagoByID } from "../handlers/pagos";
+import { agregarServicio, borrarServicio, editarServicio, getServicioByID, getServicios } from "../handlers/servicios";
+import { agregarVehiculo, borrarVehiculo, editarVehiculo, getVehiculoByPatente, getVehiculos } from "../handlers/vehiculosjiji";
+import { agregarVenta, borrarVenta, editarVenta, getVentaByID, getVentas } from "../handlers/ventas";
+import { agregarVentaProducto, borrarVentaProducto, editarVentaProducto, getVentaProductoByID, getVentasProductos } from "../handlers/ventasProductos";
+import { agregarVentaServicio, borrarVentaServicio, editarVentaServicio, getVentaServicioByID, getVentasServicios } from "../handlers/ventasServicios";
+import { autenticar, verificarRol } from "../middleware/auth";
+import { sincronizarAdmins } from "../handlers/sincronizarAdmins";
 import { Router } from "express";
-import { agendarServicio, agregarFecha, borrarFecha, editarCalendario, getCalendario } from "./handlers/calendario";
-import { agregarProducto, borrarProducto, editarProducto, getProductos, getProductosByID } from "./handlers/productos";
-import { agregarCliente, borrarCliente, editarCliente, getClienteByRut, getClientes, login, perfilCliente } from "./handlers/clientes";
-import { agregarEmpleado, borrarEmpleado, editarEmpleado, getEmpleadoByRut, getEmpleados } from "./handlers/empleados";
-import { agregarPago, getPago, getPagoByID } from "./handlers/pagos";
-import { agregarServicio, borrarServicio, editarServicio, getServicioByID, getServicios } from "./handlers/servicios";
-import { agregarVehiculo, borrarVehiculo, editarVehiculo, getVehiculoByPatente, getVehiculos } from "./handlers/vehiculosjiji";
-import { agregarVenta, borrarVenta, editarVenta, getVentaByID, getVentas } from "./handlers/ventas";
-import { agregarVentaProducto, borrarVentaProducto, editarVentaProducto, getVentaProductoByID, getVentasProductos } from "./handlers/ventasProductos";
-import { agregarVentaServicio, borrarVentaServicio, editarVentaServicio, getVentaServicioByID, getVentasServicios } from "./handlers/ventasServicios";
-import { autenticar, verificarRol } from "./middleware/auth";
-import { sincronizarAdmins } from "./handlers/sincronizarAdmins";
+
+import { login } from "../controllers/authController";
+import authRoutes from "./auth.routes";
 
 const router = Router();
+router.use("/auth", authRoutes);
 
 // 📅 CALENDARIO
 router.get("/calendario", getCalendario);
@@ -23,9 +27,7 @@ router.post("/calendario/agendar", agendarServicio);
 
 // 👤 CLIENTES
 router.post("/cliente/registrar", agregarCliente); // registro abierto
-router.post("/login", login);
 router.get("/cliente/perfil", autenticar, perfilCliente);
-
 router.get("/clientes", autenticar, verificarRol(["Admin"]), getClientes);
 router.get("/clientes/:rut", autenticar, verificarRol(["Admin"]), getClienteByRut);
 router.put("/clientes/:rut", autenticar, verificarRol(["Admin"]), editarCliente);
@@ -86,5 +88,6 @@ router.put("/ventasServicios/:id", autenticar, verificarRol(["Admin"]), editarVe
 router.delete("/ventasServicios/:id", autenticar, verificarRol(["Admin"]), borrarVentaServicio);
 
 router.post("/sincronizar-admins", autenticar, verificarRol(["Admin"]), sincronizarAdmins);
+
 
 export default router;

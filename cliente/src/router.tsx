@@ -1,29 +1,30 @@
 import { createBrowserRouter } from "react-router-dom";
-import MainLayout from "./Layouts/Layout";
 import Home from "./pages/Home";
+import { action as loginAction } from "./pages/Login";
 import Tienda from "./pages/Tienda";
 import Mantención from "./pages/servicios/Mantecion";
 import Baterías from "./pages/servicios/CambioBaterias";
 import Pintura from "./pages/servicios/CambioPintura";
 import Frenos from "./pages/servicios/Frenos";
-import Registro from "./pages/Registro";
 import Login from "./pages/Login";
 import CheckOut from "./pages/CheckOut";
 import Perfil from "./pages/Perfil";
 import Agendar from "./pages/Agenda";
-import ProtectedRoute from "./Layouts/RouteProtegida";
 import AdminPanel from "./pages/PaginaAdmin";
 import Unauthorized from "./pages/NoAutorizacion";
+import MainLayout from "./layouts/Layout";
+import ProtectedRoute from "./layouts/RouteProtegida";
+import Registro, { actionRegistro } from "./pages/Registro";
 
 const router = createBrowserRouter([
   { path: "/", element: <MainLayout><Home /></MainLayout> },
+  { path: "/login", element: <MainLayout><Login /></MainLayout>, action: loginAction },
+  { path: "/registrar", element: <MainLayout><Registro /></MainLayout>, action: actionRegistro },
   { path: "/tienda", element: <MainLayout><Tienda /></MainLayout> },
   { path: "/servicios/mantencion", element: <MainLayout><Mantención /></MainLayout> },
   { path: "/servicios/frenos", element: <MainLayout><Frenos /></MainLayout> },
   { path: "/servicios/pintura", element: <MainLayout><Pintura /></MainLayout> },
   { path: "/servicios/baterias", element: <MainLayout><Baterías /></MainLayout> },
-  { path: "/registrar", element: <MainLayout><Registro /></MainLayout> },
-  { path: "/login", element: <MainLayout><Login /></MainLayout> },
   { path: "/checkout", element: <MainLayout><CheckOut /></MainLayout> },
 
   // Rutas protegidas para clientes y admins

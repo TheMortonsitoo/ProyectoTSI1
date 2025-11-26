@@ -23,7 +23,7 @@ class Empleado extends Model{
     @Column({type: DataType.STRING(40), allowNull: true, field:"rol" })
         declare rol: string
     
-    @Column({type: DataType.STRING(50), allowNull: true, field:"contrasena" })
+    @Column({type: DataType.STRING(60), allowNull: true, field:"contrasena" })
         declare contrasena: string
 }
 

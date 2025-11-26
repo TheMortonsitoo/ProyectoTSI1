@@ -1,13 +1,13 @@
 export const empleados = [
   {
-    rutEmpleado: '12.345.678-5',
-    nombres: 'Camila Fernanda',
-    apellidoPaterno: 'Soto',
-    apellidoMaterno: 'López',
-    fono: '+56987654321',
-    mail: 'camila.soto@example.com',
-    rol: 'admin',
-    contrasena: '1234admin',
+    rutEmpleado: "1-9",
+    nombres: "Administrador",
+    apellidoPaterno: "Admin",
+    apellidoMaterno: "System",
+    fono: "00000000",
+    mail: "admin@admin.com",
+    rol: "admin",
+    contrasena: "admin"
   },
   {
     rutEmpleado: '15.678.912-3',
@@ -38,15 +38,5 @@ export const empleados = [
     mail: 'diego.perez@example.com',
     rol: 'usuario',
     contrasena: 'diegopass',
-  },
-  {
-    rutEmpleado: '22.987.654-0',
-    nombres: 'Isidora Paz',
-    apellidoPaterno: 'Reyes',
-    apellidoMaterno: 'Morales',
-    fono: '+56955667788',
-    mail: 'isidora.reyes@example.com',
-    rol: 'admin',
-    contrasena: 'adminpass',
   },
 ];

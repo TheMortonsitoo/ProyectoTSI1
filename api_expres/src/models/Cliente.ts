@@ -1,8 +1,4 @@
 import { BeforeCreate, Column, DataType, Model, Table } from "sequelize-typescript";
-import bcrypt from "bcrypt";
-
-
-
 @Table({tableName: "clientes"})
 class Cliente extends Model{
 
@@ -22,21 +18,16 @@ class Cliente extends Model{
         declare direccion: string
     
     @Column({type: DataType.STRING(15), allowNull: true, field:"fono" })
-        declare fono: number
+        declare fono: string
     
     @Column({type: DataType.STRING(40), allowNull: true, field:"mail" })
         declare mail: string
     
-    @Column({type: DataType.STRING(40), defaultValue:'Cliente', allowNull: true, field:"rol" })
+    @Column({type: DataType.STRING(40), defaultValue:'cliente', allowNull: true, field:"rol" })
         declare rol: string 
         
 
     @Column({type: DataType.STRING(60), field:"contrasena" })
-        declare contrasena: string
-    @BeforeCreate
-    static async hashPassword(cliente: Cliente) {
-        cliente.contrasena = await bcrypt.hash(cliente.contrasena, 10);
-    }
+        declare contrasena: string    
 }
-
 export default Cliente
