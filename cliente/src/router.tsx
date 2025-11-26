@@ -10,11 +10,12 @@ import Login from "./pages/Login";
 import CheckOut from "./pages/CheckOut";
 import Perfil from "./pages/Perfil";
 import Agendar from "./pages/Agenda";
-import AdminPanel from "./pages/PaginaAdmin";
+import AdminPanel from "./pages/Admin/PaginaAdmin";
 import Unauthorized from "./pages/NoAutorizacion";
-import MainLayout from "./layouts/Layout";
-import ProtectedRoute from "./layouts/RouteProtegida";
 import Registro, { actionRegistro } from "./pages/Registro";
+import MainLayout from "./Layouts/Layout";
+import ProtectedRoute from "./Layouts/RouteProtegida";
+import ViewAgregarProducto from "./pages/Admin/ViewAgregarProducto";
 
 const router = createBrowserRouter([
   { path: "/", element: <MainLayout><Home /></MainLayout> },
@@ -51,6 +52,15 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute allowedRoles={["admin"]}>
         <MainLayout><AdminPanel /></MainLayout>
+      </ProtectedRoute>
+    ),
+  },
+
+    {
+    path: "/agregar-producto",
+    element: (
+      <ProtectedRoute allowedRoles={["admin"]}>
+        <MainLayout><ViewAgregarProducto/></MainLayout>
       </ProtectedRoute>
     ),
   },

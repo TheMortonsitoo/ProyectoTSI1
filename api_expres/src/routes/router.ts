@@ -28,66 +28,66 @@ router.post("/calendario/agendar", agendarServicio);
 // 👤 CLIENTES
 router.post("/cliente/registrar", agregarCliente); // registro abierto
 router.get("/cliente/perfil", autenticar, perfilCliente);
-router.get("/clientes", autenticar, verificarRol(["Admin"]), getClientes);
-router.get("/clientes/:rut", autenticar, verificarRol(["Admin"]), getClienteByRut);
-router.put("/clientes/:rut", autenticar, verificarRol(["Admin"]), editarCliente);
-router.delete("/clientes/:rut", autenticar, verificarRol(["Admin"]), borrarCliente);
+router.get("/clientes", autenticar, verificarRol(["admin"]), getClientes);
+router.get("/clientes/:rut", autenticar, verificarRol(["admin"]), getClienteByRut);
+router.put("/clientes/:rut", autenticar, verificarRol(["admin"]), editarCliente);
+router.delete("/clientes/:rut", autenticar, verificarRol(["admin"]), borrarCliente);
 
 // 👨‍💼 EMPLEADOS
-router.get("/empleados", autenticar, verificarRol(["Admin"]), getEmpleados);
-router.get("/empleados/:rut", autenticar, verificarRol(["Admin"]), getEmpleadoByRut);
-router.post("/empleados", autenticar, verificarRol(["Admin"]), agregarEmpleado);
-router.put("/empleados/:rut", autenticar, verificarRol(["Admin"]), editarEmpleado);
-router.delete("/empleados/:rut", autenticar, verificarRol(["Admin"]), borrarEmpleado);
+router.get("/empleados", autenticar, verificarRol(["admin"]), getEmpleados);
+router.get("/empleados/:rut", autenticar, verificarRol(["admin"]), getEmpleadoByRut);
+router.post("/empleados", autenticar, verificarRol(["admin"]), agregarEmpleado);
+router.put("/empleados/:rut", autenticar, verificarRol(["admin"]), editarEmpleado);
+router.delete("/empleados/:rut", autenticar, verificarRol(["admin"]), borrarEmpleado);
 
 // 💳 PAGOS
-router.get("/pagos", autenticar, verificarRol(["Admin"]), getPago);
-router.get("/pagos/:id", autenticar, verificarRol(["Admin"]), getPagoByID);
-router.post("/pagos", autenticar, verificarRol(["Admin"]), agregarPago);
+router.get("/pagos", autenticar, verificarRol(["admin"]), getPago);
+router.get("/pagos/:id", autenticar, verificarRol(["admin"]), getPagoByID);
+router.post("/pagos", autenticar, verificarRol(["admin"]), agregarPago);
 
 // 🛒 PRODUCTOS
 router.get("/productos", getProductos); // público
 router.get("/productos/:id", getProductosByID); // público
-router.post("/productos", autenticar, verificarRol(["Admin"]), agregarProducto);
-router.put("/productos/:id", autenticar, verificarRol(["Admin"]), editarProducto);
-router.delete("/productos/:id", autenticar, verificarRol(["Admin"]), borrarProducto);
+router.post("/productos", autenticar, verificarRol(["admin"]), agregarProducto);
+router.put("/productos/:id", autenticar, verificarRol(["admin"]), editarProducto);
+router.delete("/productos/:id", autenticar, verificarRol(["admin"]), borrarProducto);
 
 // 🛠 SERVICIOS
 router.get("/servicios", getServicios); // público
 router.get("/servicios/:id", getServicioByID); // público
-router.post("/servicios", autenticar, verificarRol(["Admin"]), agregarServicio);
-router.put("/servicios/:id", autenticar, verificarRol(["Admin"]), editarServicio);
-router.delete("/servicios/:id", autenticar, verificarRol(["Admin"]), borrarServicio);
+router.post("/servicios", autenticar, verificarRol(["admin"]), agregarServicio);
+router.put("/servicios/:id", autenticar, verificarRol(["admin"]), editarServicio);
+router.delete("/servicios/:id", autenticar, verificarRol(["admin"]), borrarServicio);
 
 // 🚗 VEHÍCULOS
-router.get("/vehiculosjiji", autenticar, verificarRol(["Admin"]), getVehiculos);
-router.get("/vehiculosjiji/:patente", autenticar, verificarRol(["Admin"]), getVehiculoByPatente);
-router.post("/vehiculosjiji", autenticar, verificarRol(["Admin"]), agregarVehiculo);
-router.put("/vehiculosjiji/:patente", autenticar, verificarRol(["Admin"]), editarVehiculo);
-router.delete("/vehiculosjiji/:patente", autenticar, verificarRol(["Admin"]), borrarVehiculo);
+router.get("/vehiculosjiji", autenticar, verificarRol(["admin"]), getVehiculos);
+router.get("/vehiculosjiji/:patente", autenticar, verificarRol(["admin"]), getVehiculoByPatente);
+router.post("/vehiculosjiji", autenticar, verificarRol(["admin"]), agregarVehiculo);
+router.put("/vehiculosjiji/:patente", autenticar, verificarRol(["admin"]), editarVehiculo);
+router.delete("/vehiculosjiji/:patente", autenticar, verificarRol(["admin"]), borrarVehiculo);
 
 // 💰 VENTAS
-router.get("/ventas", autenticar, verificarRol(["Admin"]), getVentas);
-router.get("/ventas/:id", autenticar, verificarRol(["Admin"]), getVentaByID);
-router.post("/ventas", autenticar, verificarRol(["Admin"]), agregarVenta);
-router.put("/ventas/:id", autenticar, verificarRol(["Admin"]), editarVenta);
-router.delete("/ventas/:id", autenticar, verificarRol(["Admin"]), borrarVenta);
+router.get("/ventas", autenticar, verificarRol(["admin"]), getVentas);
+router.get("/ventas/:id", autenticar, verificarRol(["admin"]), getVentaByID);
+router.post("/ventas", autenticar, verificarRol(["admin"]), agregarVenta);
+router.put("/ventas/:id", autenticar, verificarRol(["admin"]), editarVenta);
+router.delete("/ventas/:id", autenticar, verificarRol(["admin"]), borrarVenta);
 
 // 📦 VENTA DE PRODUCTOS
-router.get("/ventasProductos", autenticar, verificarRol(["Admin"]), getVentasProductos);
-router.get("/ventasProductos/:id", autenticar, verificarRol(["Admin"]), getVentaProductoByID);
-router.post("/ventasProductos", autenticar, verificarRol(["Admin"]), agregarVentaProducto);
-router.put("/ventasProductos/:id", autenticar, verificarRol(["Admin"]), editarVentaProducto);
-router.delete("/ventasProductos/:id", autenticar, verificarRol(["Admin"]), borrarVentaProducto);
+router.get("/ventasProductos", autenticar, verificarRol(["admin"]), getVentasProductos);
+router.get("/ventasProductos/:id", autenticar, verificarRol(["admin"]), getVentaProductoByID);
+router.post("/ventasProductos", autenticar, verificarRol(["admin"]), agregarVentaProducto);
+router.put("/ventasProductos/:id", autenticar, verificarRol(["admin"]), editarVentaProducto);
+router.delete("/ventasProductos/:id", autenticar, verificarRol(["admin"]), borrarVentaProducto);
 
 // 🛠 VENTA DE SERVICIOS
-router.get("/ventasServicios", autenticar, verificarRol(["Admin"]), getVentasServicios);
-router.get("/ventasServicios/:id", autenticar, verificarRol(["Admin"]), getVentaServicioByID);
-router.post("/ventasServicios", autenticar, verificarRol(["Admin"]), agregarVentaServicio);
-router.put("/ventasServicios/:id", autenticar, verificarRol(["Admin"]), editarVentaServicio);
-router.delete("/ventasServicios/:id", autenticar, verificarRol(["Admin"]), borrarVentaServicio);
+router.get("/ventasServicios", autenticar, verificarRol(["admin"]), getVentasServicios);
+router.get("/ventasServicios/:id", autenticar, verificarRol(["admin"]), getVentaServicioByID);
+router.post("/ventasServicios", autenticar, verificarRol(["admin"]), agregarVentaServicio);
+router.put("/ventasServicios/:id", autenticar, verificarRol(["admin"]), editarVentaServicio);
+router.delete("/ventasServicios/:id", autenticar, verificarRol(["admin"]), borrarVentaServicio);
 
-router.post("/sincronizar-admins", autenticar, verificarRol(["Admin"]), sincronizarAdmins);
+router.post("/sincronizar-admins", autenticar, verificarRol(["admin"]), sincronizarAdmins);
 
 
 export default router;

@@ -1,7 +1,12 @@
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
+
 
 const AdminPanel = () => {
+
+  const navigate = useNavigate();
   const [mensaje, setMensaje] = useState("");
 
   const sincronizarAdmins = async () => {
@@ -31,10 +36,12 @@ const AdminPanel = () => {
       <h1>Panel de Administración</h1>
       <p>Solo accesible para usuarios con rol admin.</p>
 
-      <button onClick={sincronizarAdmins}>🔄 Sincronizar Admins</button>
+      <button onClick={sincronizarAdmins}> Sincronizar Admins</button>
 
       {mensaje && <p>{mensaje}</p>}
-    </div>
+
+      <button onClick={() => navigate('/agregar-producto')}>Agregar producto</button>
+    </div> 
   );
 };
 
