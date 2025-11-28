@@ -14,6 +14,7 @@ const NavbarComponent = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("email");
     localStorage.removeItem("rol");
+    localStorage.removeItem("rut");
     setLogeado(false);
     setEmail("");
   };

@@ -11,9 +11,9 @@ class VentaServicio extends Model{
     @BelongsTo(()=>Servicio)
         declare servicio: Servicio
 
-    @Column({type: DataType.INTEGER, primaryKey: true, allowNull: false, field:"cod_venta" })
+    @Column({type: DataType.STRING(30), primaryKey: true, allowNull: false, field:"cod_venta" })
     @ForeignKey(()=>Venta)
-        declare codVenta: number
+        declare codVenta: string
     @BelongsTo(()=>Venta)
         declare venta: Venta
     

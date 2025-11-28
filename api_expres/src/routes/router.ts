@@ -67,9 +67,9 @@ router.put("/vehiculosjiji/:patente", autenticar, verificarRol(["admin"]), edita
 router.delete("/vehiculosjiji/:patente", autenticar, verificarRol(["admin"]), borrarVehiculo);
 
 // 💰 VENTAS
-router.get("/ventas", autenticar, verificarRol(["admin"]), getVentas);
+router.get("/ventas", autenticar, verificarRol(["admin", "cliente"]), getVentas);
 router.get("/ventas/:id", autenticar, verificarRol(["admin"]), getVentaByID);
-router.post("/ventas", autenticar, verificarRol(["admin"]), agregarVenta);
+router.post("/ventas", autenticar, verificarRol(["admin", "cliente"]), agregarVenta);
 router.put("/ventas/:id", autenticar, verificarRol(["admin"]), editarVenta);
 router.delete("/ventas/:id", autenticar, verificarRol(["admin"]), borrarVenta);
 

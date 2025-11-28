@@ -11,12 +11,16 @@ const Checkout = () => {
     if (data) setCarrito(JSON.parse(data));
   }, []);
 
-  const handleFinalizarCompra = async () => {
-  const cod_venta = Date.now();
-  await registrarVenta(carrito, cod_venta);
-  localStorage.removeItem("carrito");
-  setCarrito([]);
-  alert("Compra registrada con éxito");
+const handleFinalizarCompra = async () => {
+  try {
+    const codVenta = await registrarVenta(carrito);
+    localStorage.removeItem("carrito");
+    setCarrito([]);
+    alert(`Compra registrada con éxito. Código: ${codVenta}`);
+  } catch (error) {
+    console.error("Error al finalizar compra:", error);
+    alert("Hubo un problema al registrar la venta");
+  }
 };
 
   return (

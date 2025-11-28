@@ -7,9 +7,9 @@ class Pago extends Model{
     @Column({type: DataType.INTEGER, primaryKey: true, allowNull: false, field:"cod_pago" })
         declare codPago: number
     
-    @Column({type: DataType.INTEGER, allowNull:false, field:"cod_venta" })
+    @Column({type: DataType.STRING(30), allowNull:false, field:"cod_venta" })
     @ForeignKey(()=>Venta)
-        declare codVenta: number
+        declare codVenta: string
     @BelongsTo(()=>Venta)
         declare venta: Venta
     

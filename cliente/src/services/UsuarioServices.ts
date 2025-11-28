@@ -7,12 +7,15 @@ export async function login(formData: Record<string, any>) {
 
     const data = await response.json();
 
+    console.log("Respuesta login:", data);
+
     if (!data.success) {
         return { success: false, error: data.error };
     }
 
     localStorage.setItem("token", data.token);
     localStorage.setItem("rol", data.user.rol);
+    localStorage.setItem("rut", data.user.rut);
 
     return { success: true };
 }
