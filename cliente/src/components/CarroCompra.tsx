@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
-import { Button, ListGroup, Offcanvas } from "react-bootstrap"
-import { BsCart } from "react-icons/bs"
+import { Button, ListGroup, Offcanvas } from "react-bootstrap";
+import { BsCart } from "react-icons/bs";
 
 const CarroCompra = () => {
-
-      //---------------------------------------------------
   const [carrito, setCarrito] = useState<any[]>([]);
   const [ver, setVer] = useState(false);
 
@@ -18,29 +16,51 @@ const CarroCompra = () => {
   useEffect(() => {
     localStorage.setItem("carrito", JSON.stringify(carrito));
   }, [carrito]);
-  //--------------------------------------------------- Todo eso es el localStorage
-  /*Ese para agregar el producto al carro asd
-  const agregarAlCarrito = (producto: any) => {
-    setCarrito((carritoActual) => [...carritoActual, producto]);
+
+  // funciones para modificar carrito
+  const incrementarCantidad = (titulo: string) => {
+    setCarrito((carritoActual) =>
+      carritoActual.map((item) =>
+        item.titulo === titulo ? { ...item, cantidad: item.cantidad + 1 } : item
+      )
+    );
   };
-    */
+
+  const disminuirCantidad = (titulo: string) => {
+    setCarrito((carritoActual) =>
+      carritoActual
+        .map((item) =>
+          item.titulo === titulo ? { ...item, cantidad: item.cantidad - 1 } : item
+        )
+        .filter((item) => item.cantidad > 0)
+    );
+  };
+
+  const eliminarDelCarrito = (titulo: string) => {
+    setCarrito((carritoActual) =>
+      carritoActual.filter((item) => item.titulo !== titulo)
+    );
+  };
+
+  const calcularTotal = () =>
+    carrito.reduce((acc, item) => acc + (item.precio ?? 0) * item.cantidad, 0);
+
   return (
     <>
-    <Button //Boton del carrito
-        variant="light" 
-        className="position-relative mb-3" 
+      <Button
+        variant="light"
+        className="position-relative mb-3"
         onClick={() => setVer(true)}
-        >
+      >
         <BsCart size={24} />
         {carrito.length > 0 && (
-          <span 
-            className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-          >
+          <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
             {carrito.length}
           </span>
         )}
-    </Button>
-    <Offcanvas show={ver} onHide={() => setVer(false)} placement="end">
+      </Button>
+
+      <Offcanvas show={ver} onHide={() => setVer(false)} placement="end">
         <Offcanvas.Header closeButton>
           <Offcanvas.Title>Carrito</Offcanvas.Title>
         </Offcanvas.Header>
@@ -48,15 +68,52 @@ const CarroCompra = () => {
           {carrito.length === 0 ? (
             <p>El carrito está vacío.</p>
           ) : (
-            <ListGroup>
-              {carrito.map((item, id) => (
-                <ListGroup.Item key={id}>{item.titulo}</ListGroup.Item>
-              ))}
-            </ListGroup>
+            <>
+              <ListGroup>
+                {carrito.map((item, id) => (
+                  <ListGroup.Item key={id}>
+                    <strong>{item.titulo}</strong>
+                    <br />
+                    Precio: ${item.precio}
+                    <br />
+                    Cantidad: {item.cantidad}
+                    <br />
+                    Subtotal: ${(item.precio ?? 0) * item.cantidad}
+                    <div className="mt-2">
+                      <Button
+                        size="sm"
+                        variant="outline-secondary"
+                        onClick={() => incrementarCantidad(item.titulo)}
+                      >
+                        ➕
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline-secondary"
+                        onClick={() => disminuirCantidad(item.titulo)}
+                        className="ms-2"
+                      >
+                        ➖
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline-danger"
+                        onClick={() => eliminarDelCarrito(item.titulo)}
+                        className="ms-2"
+                      >
+                        ❌
+                      </Button>
+                    </div>
+                  </ListGroup.Item>
+                ))}
+              </ListGroup>
+              <h5 className="mt-3">Total: ${calcularTotal()}</h5>
+            </>
           )}
         </Offcanvas.Body>
-    </Offcanvas>
+      </Offcanvas>
     </>
-  )
-}
-export default CarroCompra
+  );
+};
+
+export default CarroCompra;

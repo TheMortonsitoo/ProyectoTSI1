@@ -1,5 +1,4 @@
 import { Button, Col, ListGroup, Offcanvas, Row } from "react-bootstrap";
-import { productos } from "../data/productos";
 import Cards from "../components/Cards";
 import { useEffect, useState } from "react";
 import { BsCart } from "react-icons/bs";
@@ -37,6 +36,22 @@ const Tienda = () => {
       return [...carritoActual, { ...producto, cantidad: 1 }];
     });
   };
+
+  const [productos, setProductos] = useState<any[]>([]);
+
+useEffect(() => {
+  fetch("http://localhost:3000/api/productos")
+    .then((res) => res.json())
+    .then((data) => {
+      console.log("Productos cargados:", data); // esto debe mostrar algo
+      setProductos(data.data);
+    })
+    .catch((err) => {
+      console.error("Error cargando productos:", err); // asegúrate de ver esto si falla
+    });
+}, []);
+
+
   //suma 1
     const incrementarCantidad = (titulo: string) => {
     setCarrito((carritoActual) =>carritoActual.map((item) =>item.titulo === titulo? { ...item, cantidad: item.cantidad + 1 }: item));
@@ -158,11 +173,26 @@ const Tienda = () => {
       </div>
     </Col>
     <Row className="g-2">
-      {productos.map((producto, id) => (
-          <Col xs={12} sm={6} md={4} lg={3} key={id}>
-              <Cards titulo={producto.titulo} imagen={producto.imagen} descripcion={producto.descripcion} precio={producto.precio} onAgregar={()=> agregarAlCarrito(producto)}/>
-          </Col>
-      ))}
+{Array.isArray(productos) &&
+  productos.map((producto, id) => (
+    <Col xs={12} sm={6} md={4} lg={3} key={id}>
+      <Cards
+        titulo={producto.nombreProducto}
+        descripcion={producto.descripcion}
+        precio={Number(producto.precioUnitario ?? 0)}
+        onAgregar={() =>
+          agregarAlCarrito({
+            cod_producto: producto.codProducto,
+            titulo: producto.nombreProducto,
+            descripcion: producto.descripcion,
+            precio: Number(producto.precioUnitario ?? 0),
+            cantidad: 1
+          })
+        }
+      />
+    </Col>
+  ))}
+
     </Row>
     </>
   )

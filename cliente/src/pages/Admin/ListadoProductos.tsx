@@ -9,14 +9,15 @@ interface Producto {
 }
 
 const ProductosList = () => {
-
   const [productos, setProductos] = useState<Producto[]>([]);
+
   useEffect(() => {
     const fetchProductos = async () => {
       try {
         const response = await fetch("http://localhost:3000/api/productos");
         const data = await response.json();
-        setProductos(data.data); // tu backend devuelve {data:[...]}
+        console.log("Productos cargados:", data); // 👈 confirma que es un array
+        setProductos(data.data); // 👈 usa directamente el array
       } catch (error) {
         console.error("Error al cargar productos:", error);
       }
@@ -36,22 +37,26 @@ const ProductosList = () => {
     >
       <h3>Listado de productos</h3>
       <ul style={{ listStyle: "none", padding: 0 }}>
-        {productos.map((p) => (
-          <li
-            key={p.codProducto}
-            style={{
-              marginBottom: "10px",
-              borderBottom: "1px solid #eee",
-              paddingBottom: "5px",
-            }}
-          >
-            <strong>{p.nombreProducto}</strong> 
-            <br />
-            precio: ${p.precioUnitario} 
-            <br/>
-            <span>Unidades: {p.stock !== null && p.stock !== undefined ? p.stock : 0}</span>
-          </li>
-        ))}
+        {Array.isArray(productos) &&
+          productos.map((p) => (
+            <li
+              key={p.codProducto}
+              style={{
+                marginBottom: "10px",
+                borderBottom: "1px solid #eee",
+                paddingBottom: "5px",
+              }}
+            >
+              <strong>{p.nombreProducto}</strong>
+              <br />
+              precio: ${p.precioUnitario}
+              <br />
+              <span>
+                Unidades:{" "}
+                {p.stock !== null && p.stock !== undefined ? p.stock : 0}
+              </span>
+            </li>
+          ))}
       </ul>
     </div>
   );
