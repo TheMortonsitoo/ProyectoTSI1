@@ -4,10 +4,12 @@ import { login } from "../services/UsuarioServices";
 export async function action({ request}: ActionFunctionArgs){
   const formData = Object.fromEntries(await request.formData())
   const resultado = await login(formData)
-  if(!resultado.success){
-    return resultado
+  if(resultado.success){
+    return redirect("/");
+    
   }
-  return redirect("/")
+  return resultado
+  
 }
 
 export default function Login() {
@@ -45,10 +47,13 @@ export default function Login() {
             <input
               type="email"
               name="mail"
-              className="form-control"
+              className={`form-control${actionData?.detalleErrores?.mail ? " is-invalid" : ""}`}
               id="email"
               placeholder="example@gmail.com"
             />
+            {actionData?.detalleErrores?.mail && (
+              <p className="text-danger small">{actionData.detalleErrores.mail}</p>
+            )}
           </div>
 
           {/* Contraseña */}
@@ -59,10 +64,13 @@ export default function Login() {
             <input
               type="password"
               name="contrasena"
-              className="form-control"
+              className={`form-control${actionData?.detalleErrores?.contrasena ? " is-invalid" : ""}`}
               id="password"
               placeholder="Ingrese Contraseña"
             />
+            {actionData?.detalleErrores?.contrasena && (
+              <p className="text-danger small">{actionData.detalleErrores.contrasena}</p>
+            )}
           </div>
 
           {/* Botón */}

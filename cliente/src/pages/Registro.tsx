@@ -31,7 +31,7 @@ export default function Registro() {
   const actionData = useActionData() as {
     success?: boolean;
     error?: string;
-    errors?: Record<string, string[]>;
+    errors?: { [key: string]: string[] };
   };
   const [verContra, setVerContra] = useState(false);
 
@@ -48,7 +48,10 @@ export default function Registro() {
           {/* RUT */}
           <div className="mb-3">
             <label>RUT</label>
-            <input name="rutCliente" className="form-control" />
+            <input 
+              name="rutCliente" 
+              className={`form-control${actionData?.errors?.rutCliente ? " is-invalid" : ""}`} 
+            />
             {actionData?.errors?.rutCliente && (
               <p className="text-danger small">{actionData.errors.rutCliente}</p>
             )}
@@ -57,7 +60,10 @@ export default function Registro() {
           {/* Nombre */}
           <div className="mb-3">
             <label>Nombre</label>
-            <input name="nombre" className="form-control" />
+            <input 
+              name="nombre" 
+              className={`form-control${actionData?.errors?.nombre ? " is-invalid" : ""}`}  
+            />
             {actionData?.errors?.nombre && (
               <p className="text-danger small">{actionData.errors.nombre}</p>
             )}
@@ -66,7 +72,10 @@ export default function Registro() {
           {/* Apellido Paterno */}
           <div className="mb-3">
             <label>Apellido Paterno</label>
-            <input name="apellidoPaterno" className="form-control" />
+            <input 
+              name="apellidoPaterno" 
+              className={`form-control${actionData?.errors?.apellidoPaterno ? " is-invalid" : ""}`} 
+            />
             {actionData?.errors?.apellidoPaterno && (
               <p className="text-danger small">{actionData.errors.apellidoPaterno}</p>
             )}
@@ -75,7 +84,10 @@ export default function Registro() {
           {/* Apellido Materno */}
           <div className="mb-3">
             <label>Apellido Materno</label>
-            <input name="apellidoMaterno" className="form-control" />
+            <input 
+              name="apellidoMaterno" 
+              className={`form-control${actionData?.errors?.apellidoMaterno ? " is-invalid" : ""}`}  
+            />
             {actionData?.errors?.apellidoMaterno && (
               <p className="text-danger small">{actionData.errors.apellidoMaterno}</p>
             )}
@@ -84,7 +96,10 @@ export default function Registro() {
           {/* Dirección */}
           <div className="mb-3">
             <label>Dirección</label>
-            <input name="direccion" className="form-control" />
+            <input 
+              name="direccion" 
+              className={`form-control${actionData?.errors?.direccion ? " is-invalid" : ""}`}  
+            />
             {actionData?.errors?.direccion && (
               <p className="text-danger small">{actionData.errors.direccion}</p>
             )}
@@ -93,7 +108,10 @@ export default function Registro() {
           {/* Teléfono */}
           <div className="mb-3">
             <label>Teléfono</label>
-            <input name="fono" className="form-control" />
+            <input 
+              name="fono" 
+              className={`form-control${actionData?.errors?.fono ? " is-invalid" : ""}`}  
+            />
             {actionData?.errors?.fono && (
               <p className="text-danger small">{actionData.errors.fono}</p>
             )}
@@ -102,7 +120,11 @@ export default function Registro() {
           {/* Correo */}
           <div className="mb-3">
             <label>Correo</label>
-            <input type="email" name="mail" className="form-control" />
+            <input 
+              type="email" 
+              name="mail" 
+              className={`form-control${actionData?.errors?.mail ? " is-invalid" : ""}`}  
+            />
             {actionData?.errors?.mail && (
               <p className="text-danger small">{actionData.errors.mail}</p>
             )}
@@ -114,7 +136,7 @@ export default function Registro() {
             <input
               type={verContra ? "text" : "password"}
               name="contrasena"
-              className="form-control"
+              className={`form-control${actionData?.errors?.contrasena ? " is-invalid" : ""}`} 
             />
             {actionData?.errors?.contrasena && (
               <p className="text-danger small">{actionData.errors.contrasena}</p>
