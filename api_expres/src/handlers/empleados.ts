@@ -21,6 +21,26 @@ export const getEmpleadoByRut = async (req: Request, res: Response) => {
   res.json({ data: empleado });
 };
 
+export const perfilEmpleado = async (req: Request, res: Response) => {
+  try {
+    const rut = (req as any).user?.rut;
+
+    const empleado = await Empleado.findOne({
+      where: { rutEmpleado: rut }
+    });
+
+    if (!empleado) {
+      return res.status(404).json({ mensaje: "Empleado no encontrado" });
+    }
+
+    return res.json(empleado);
+
+  } catch (error) {
+    return res.status(500).json({ mensaje: "Error interno" });
+  }
+};
+
+
 // Crear empleado
 export const agregarEmpleado = async (req: Request, res: Response) => {
   try {

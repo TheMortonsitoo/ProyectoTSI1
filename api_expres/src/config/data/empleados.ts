@@ -16,7 +16,7 @@ export const empleados = [
     apellidoMaterno: 'Torres',
     fono: '+56911223344',
     mail: 'jorge.ramirez@example.com',
-    rol: 'usuario',
+    rol: 'empleado',
     contrasena: 'jorgepass',
   },
   {
@@ -26,7 +26,7 @@ export const empleados = [
     apellidoMaterno: 'González',
     fono: '+56999887766',
     mail: 'valentina.munoz@example.com',
-    rol: 'supervisor',
+    rol: 'empleado',
     contrasena: 'valen123',
   },
   {
@@ -36,7 +36,7 @@ export const empleados = [
     apellidoMaterno: 'Castillo',
     fono: '+56933445566',
     mail: 'diego.perez@example.com',
-    rol: 'usuario',
+    rol: 'empleado',
     contrasena: 'diegopass',
   },
 ];

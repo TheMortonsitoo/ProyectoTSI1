@@ -1,7 +1,7 @@
 import { agendarServicio, agregarFecha, borrarFecha, editarCalendario, getCalendario } from "../handlers/calendario";
 import { agregarProducto, borrarProducto, editarProducto, getProductos, getProductosByID } from "../handlers/productos";
 import { agregarCliente, borrarCliente, editarCliente, getClienteByRut, getClientes, perfilCliente } from "../handlers/clientes";
-import { agregarEmpleado, borrarEmpleado, editarEmpleado, getEmpleadoByRut, getEmpleados } from "../handlers/empleados";
+import { agregarEmpleado, borrarEmpleado, editarEmpleado, getEmpleadoByRut, getEmpleados, perfilEmpleado } from "../handlers/empleados";
 import { agregarPago, getPago, getPagoByID } from "../handlers/pagos";
 import { agregarServicio, borrarServicio, editarServicio, getServicioByID, getServicios } from "../handlers/servicios";
 import { agregarVehiculo, borrarVehiculo, editarVehiculo, getVehiculoByPatente, getVehiculos } from "../handlers/vehiculosjiji";
@@ -14,6 +14,7 @@ import { Router } from "express";
 
 import { login } from "../controllers/authController";
 import authRoutes from "./auth.routes";
+import { perfilAdmin } from "../handlers/admin";
 
 const router = Router();
 router.use("/auth", authRoutes);
@@ -27,14 +28,19 @@ router.post("/calendario/agendar", agendarServicio);
 
 // 👤 CLIENTES
 router.post("/cliente/registrar", agregarCliente); // registro abierto
-router.get("/cliente/perfil", autenticar, perfilCliente);
+router.get("/clientes/perfil", autenticar,verificarRol(["cliente"]), perfilCliente);
 router.get("/clientes", autenticar, verificarRol(["admin"]), getClientes);
 router.get("/clientes/:rut", autenticar, verificarRol(["admin"]), getClienteByRut);
 router.put("/clientes/:rut", autenticar, verificarRol(["admin"]), editarCliente);
 router.delete("/clientes/:rut", autenticar, verificarRol(["admin"]), borrarCliente);
 
+//Admin
+router.get("/admin/perfil", autenticar, verificarRol(["admin"]), perfilAdmin);
+
+
 // 👨‍💼 EMPLEADOS
 router.get("/empleados", autenticar, verificarRol(["admin"]), getEmpleados);
+router.get("/empleados/perfil", autenticar, verificarRol(["empleado", "admin"]), perfilEmpleado);
 router.get("/empleados/:rut", autenticar, verificarRol(["admin"]), getEmpleadoByRut);
 router.post("/empleados", autenticar, verificarRol(["admin"]), agregarEmpleado);
 router.put("/empleados/:rut", autenticar, verificarRol(["admin"]), editarEmpleado);

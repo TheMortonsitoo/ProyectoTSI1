@@ -13,9 +13,11 @@ import Agendar from "./pages/Agenda";
 import AdminPanel from "./pages/Admin/PaginaAdmin";
 import Unauthorized from "./pages/NoAutorizacion";
 import Registro, { actionRegistro } from "./pages/Registro";
-import MainLayout from "./Layouts/Layout";
-import ProtectedRoute from "./Layouts/RouteProtegida";
+
+
 import ViewAgregarProducto from "./pages/Admin/ViewAgregarProducto";
+import MainLayout from "./layouts/Layout";
+import ProtectedRoute from "./layouts/RouteProtegida";
 
 const router = createBrowserRouter([
   { path: "/", element: <MainLayout><Home /></MainLayout> },
@@ -32,7 +34,7 @@ const router = createBrowserRouter([
   {
     path: "/perfil",
     element: (
-      <ProtectedRoute allowedRoles={["cliente", "admin"]}>
+      <ProtectedRoute allowedRoles={["cliente", "empleado", "admin"]}>
         <MainLayout><Perfil /></MainLayout>
       </ProtectedRoute>
     ),
