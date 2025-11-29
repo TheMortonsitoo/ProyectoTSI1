@@ -36,6 +36,23 @@ export default function Registro() {
   const [verContra, setVerContra] = useState(false);
 
   return (
+    <div
+      className="vh-50 vw-50 d-flex justify-content-center align-items-center"
+      style={{
+        backgroundImage: "url(/Images/paisajeE.png)",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        padding: "20px",
+      }}
+    >
+      <div
+        className="card shadow-lg p-4"
+        style={{
+          width: "24rem",
+          backgroundColor: "rgba(255, 255, 255, 0.85)",
+          borderRadius: "10px",
+        }}
+      >
     <div className="container mt-4">
       <h2>Registro de Cliente</h2>
 
@@ -44,7 +61,6 @@ export default function Registro() {
       )}
 
       <Form method="POST">
-
           {/* RUT */}
           <div className="mb-3">
             <label>RUT</label>
@@ -126,7 +142,7 @@ export default function Registro() {
               className={`form-control${actionData?.errors?.mail ? " is-invalid" : ""}`}  
             />
             {actionData?.errors?.mail && (
-              <p className="text-danger small">{actionData.errors.mail}</p>
+              <p className="text-danger small">{actionData.errors.mail[0]}</p>
             )}
           </div>
 
@@ -139,7 +155,7 @@ export default function Registro() {
               className={`form-control${actionData?.errors?.contrasena ? " is-invalid" : ""}`} 
             />
             {actionData?.errors?.contrasena && (
-              <p className="text-danger small">{actionData.errors.contrasena}</p>
+              <p className="text-danger small">{actionData.errors.contrasena[0]}</p>
             )}
           </div>
 
@@ -161,6 +177,8 @@ export default function Registro() {
           <span>¿Ya tienes cuenta?</span>
           <a href="/login" className="ms-2">Inicia sesión</a>
         </div>
+    </div>
+    </div>
     </div>
   );
 }
