@@ -25,8 +25,16 @@ export const login = async (req: Request, res: Response) => {
     }
 
     // Determinar rol y rut
-    const rol = cliente ? "cliente" : "admin";
-    const rut = cliente ? usuario.rutCliente : usuario.rutEmpleado;
+    let rol = "";
+    let rut = "";
+
+    if (cliente) {
+      rol = "cliente";
+      rut = usuario.rutCliente;
+    } else if (empleado) {
+      rol = usuario.rol;  
+      rut = usuario.rutEmpleado;
+    }
 
     // Generar token con rut y rol
     const token = jwt.sign(
@@ -40,7 +48,7 @@ export const login = async (req: Request, res: Response) => {
       success: true,
       token,
       user: {
-        rut,               // 👈 siempre tendrás rut aquí
+        rut,               
         email: usuario.mail,
         rol
       }

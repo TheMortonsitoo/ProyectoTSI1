@@ -27,9 +27,12 @@ const NavbarComponent = () => {
       if (!token || !rol) return;
 
       const endpoint =
-        rol === "admin"
-          ? `${API}/empleados/perfil`
-          : `${API}/clientes/perfil`;
+      rol === "admin"
+      ? `${API}/admin/perfil`
+      : rol === "empleado"
+      ? `${API}/empleados/perfil`
+      : `${API}/clientes/perfil`;
+
 
       try {
         const response = await axios.get(endpoint, {
