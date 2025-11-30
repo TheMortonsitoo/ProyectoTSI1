@@ -15,14 +15,14 @@ export const getVentaByID = async (request: Request, response: Response) => {
 
 export const agregarVenta = async (req: Request, res: Response) => {
   try {
-    const { codigoBase, rutCliente, fecha, total, estadoVenta } = req.body;
+    const { rutCliente, fecha, total, estadoVenta } = req.body;
 
-    const totalVentasBase = await Venta.count({ where: { codVenta: { [Op.like]: `${codigoBase}-%` } } });
-    const sufijo = totalVentasBase + 1;
-    const codVenta = `${codigoBase}-${sufijo}`; 
+    const prefijo = "PROD";
+    const totalVentas = await Venta.count();
+    const numero = totalVentas + 1;
 
-    console.log("Datos recibidos:", { codVenta, rutCliente, fecha, total, estadoVenta });
-    console.log("Body recibido:", req.body);
+    const codVenta = `${prefijo}${numero.toString().padStart(3, "0")}-${numero.toString().padStart(2, "0")}`;
+
     const venta = await Venta.create({
       codVenta,
       rutCliente,
@@ -37,6 +37,8 @@ export const agregarVenta = async (req: Request, res: Response) => {
     res.status(500).json({ error: "No se pudo registrar la venta" });
   }
 };
+
+
 
 
 export const editarVenta = async(request: Request, response: Response) => {

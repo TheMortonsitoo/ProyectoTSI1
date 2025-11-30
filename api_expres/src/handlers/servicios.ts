@@ -18,11 +18,36 @@ export const getServicioByID = async (request: Request, response: Response) => {
     response.json({data:servicio})
 }
 
-export const agregarServicio = async(request: Request, response: Response) => {
-    console.log(request.body)
-    const servicio = await Servicio.create(request.body)
-    response.json({data: servicio})
-}
+export const agregarServicio = async (req: Request, res: Response) => {
+  try {
+    const { nombreServicio, precio, descripcion, tiempo } = req.body; // 👈 usa tiempo
+
+    const precioNumber = Number(precio);
+    if (Number.isNaN(precioNumber)) {
+      return res.status(400).json({ error: "Precio inválido" });
+    }
+
+    const ultimo = await Servicio.findOne({ order: [["codServicio", "DESC"]] });
+    let nuevoCodigo = "SERV001";
+    if (ultimo?.codServicio) {
+      const numero = parseInt(ultimo.codServicio.replace("SERV", ""), 10);
+      nuevoCodigo = `SERV${(numero + 1).toString().padStart(3, "0")}`;
+    }
+
+    const servicio = await Servicio.create({
+      codServicio: nuevoCodigo,
+      nombreServicio,
+      precio: precioNumber,
+      descripcion,
+      tiempo, // 👈 ahora coincide con el modelo
+    });
+
+    res.status(201).json({ data: servicio });
+  } catch (error) {
+    console.error("Error al agregar servicio:", error);
+    res.status(500).json({ error: "No se pudo agregar el servicio" });
+  }
+};
 
 export const editarServicio = async(request: Request, response: Response) => {
     const {id} = request.params

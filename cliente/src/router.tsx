@@ -16,6 +16,7 @@ import Registro, { actionRegistro } from "./pages/Registro";
 import MainLayout from "./Layouts/Layout";
 import ProtectedRoute from "./Layouts/RouteProtegida";
 import ViewAgregarProducto from "./pages/Admin/ViewAgregarProducto";
+import ViewAgregarServicio from "./pages/Admin/ViewAgregarServicio";
 
 const router = createBrowserRouter([
   { path: "/", element: <MainLayout><Home /></MainLayout> },
@@ -61,6 +62,15 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute allowedRoles={["admin"]}>
         <MainLayout><ViewAgregarProducto/></MainLayout>
+      </ProtectedRoute>
+    ),
+  },
+
+      {
+    path: "/agregar-servicio",
+    element: (
+      <ProtectedRoute allowedRoles={["admin"]}>
+        <MainLayout><ViewAgregarServicio/></MainLayout>
       </ProtectedRoute>
     ),
   },
