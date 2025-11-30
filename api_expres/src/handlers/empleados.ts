@@ -7,7 +7,7 @@ import bcrypt from "bcrypt";
 export const getEmpleados = async (req: Request, res: Response) => {
   try {
     const empleados = await Empleado.findAll({
-      where: { rol: "empleado" } // 👈 solo empleados
+      attributes: ["rutEmpleado", "nombres", "apellidoPaterno", "fono", "mail", "rol"]
     });
     res.json({ data: empleados });
   } catch (error) {

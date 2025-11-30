@@ -12,11 +12,31 @@ export const getVehiculoByPatente = async (request: Request, response: Response)
     response.json({data:vehiculo})
 }
 
-export const agregarVehiculo = async(request: Request, response: Response) => {
-    console.log(request.body)
-    const vehiculo = await Vehiculo.create(request.body)
-    response.json({data: vehiculo})
-}
+export const agregarVehiculo = async (req: Request, res: Response) => {
+  try {
+    const { patente, marca, modelo, anio, rutCliente } = req.body;
+
+    if (!patente || !marca || !modelo || !anio || !rutCliente) {
+      return res.status(400).json({ mensaje: "Faltan datos obligatorios" });
+    }
+
+    const nuevoVehiculo = await Vehiculo.create({
+      patente,
+      marca,
+      modelo,
+      anio,
+      rutCliente,
+    });
+
+    return res.json({
+      mensaje: "Vehículo registrado correctamente",
+      vehiculo: nuevoVehiculo
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ mensaje: "Error interno", error });
+  }
+};
 
 export const editarVehiculo = async(request: Request, response: Response) => {
     const {patente} = request.params
