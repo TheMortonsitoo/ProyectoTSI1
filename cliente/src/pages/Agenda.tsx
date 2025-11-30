@@ -16,24 +16,31 @@ interface Empleado {
   nombres: string;
   apellido_paterno: string;
   apellido_materno: string;
-  rol: string; // 👈 ahora sí existe
+  rol: string; 
+}
+interface Ocupado {
+  hora: string;
+  rutEmpleado: string;
 }
 
 const Agendar = () => {
+  //-----------------------------------------------------
   const [date, setDate] = useState(new Date());
   const [hora, setHora] = useState("");
   const [servicios, setServicios] = useState<Servicio[]>([]);
   const [servicioSeleccionado, setServicioSeleccionado] = useState("");
   const [empleados, setEmpleados] = useState<Empleado[]>([]);
   const [empleadoRut, setEmpleadoRut] = useState("");
-    const [patente, setPatente] = useState("");
-    const [marca, setMarca] = useState("");
-    const [modelo, setModelo] = useState("");
+  const [patente, setPatente] = useState("");
+  const [marca, setMarca] = useState("");
+  const [modelo, setModelo] = useState("");
   const [anio, setAnio] = useState("");
   const [clienteRut, setClienteRut] = useState("");
-
+  const [ocupados, setOcupados] = useState<Ocupado[]>([]);
   const horasDisponibles = ["09:00","10:00","11:00","12:00","15:00","16:00","17:00"];
+  //-----------------------------------------------------
 
+  //-----------------------------------------------------
   // Obtener RUT del cliente desde localStorage o sesión
   useEffect(() => {
     const rut = localStorage.getItem("rut");
@@ -41,65 +48,92 @@ const Agendar = () => {
       setClienteRut(rut);
     }
   }, []);
+  //-----------------------------------------------------
 
+  //-----------------------------------------------------
+
+  // Cargar horas ocupadas para la fecha seleccionada
+  useEffect(() => {
+    const fechaSeleccionada = date.toISOString().split("T")[0];
+    axios
+      .get("http://localhost:3000/api/calendario/ocupados", {
+        params: { fecha: fechaSeleccionada },
+      })
+      .then((res) => setOcupados(res.data))
+      .catch((err) => console.error("Error cargando ocupados:", err));
+  }, [date]);
+
+  const horasFiltradas = horasDisponibles.filter((h) => {
+    // Si existe un registro ocupado con la misma hora y el mismo mecánico → bloquear la hora
+    const ocupado = ocupados.find(
+      (o) => o.hora === h && o.rutEmpleado === empleadoRut
+    );
+
+    return !ocupado;
+  });
+
+  //-----------------------------------------------------
   // Cargar servicios
   useEffect(() => {
-  axios.get("http://localhost:3000/api/servicios")
-    .then((res) => {
-      console.log("Servicios cargados:", res.data);
-      const data = res.data.data;
-      setServicios(Array.isArray(data) ? data : []);
-    })
-    .catch((err) => console.error("Error cargando servicios:", err));
-}, []);
+    axios.get("http://localhost:3000/api/servicios")
+      .then((res) => {
+        console.log("Servicios cargados:", res.data);
+        const data = res.data.data;
+        setServicios(Array.isArray(data) ? data : []);
+      })
+      .catch((err) => console.error("Error cargando servicios:", err));
+  }, []);
+  //-----------------------------------------------------
 
+  //-----------------------------------------------------
   // Cargar empleados
-useEffect(() => {
-  axios.get("http://localhost:3000/api/empleados")
-    .then((res) => {
-      console.log("Empleados cargados:", res.data);
-      const data = res.data.data;
-      setEmpleados(Array.isArray(data) ? data : []);
-    })
-    .catch((err) => console.error("Error cargando empleados:", err));
-}, []);
+  useEffect(() => {
+    axios.get("http://localhost:3000/api/empleados")
+      .then((res) => {
+        console.log("Empleados cargados:", res.data);
+        const data = res.data.data;
+        setEmpleados(Array.isArray(data) ? data : []);
+      })
+      .catch((err) => console.error("Error cargando empleados:", err));
+  }, []);
+  //-----------------------------------------------------
 
-
+  //-----------------------------------------------------
   const handleAgregarVehiculo = async () => {
     if (!patente || !marca || !modelo || !anio) {
       alert("⚠️ Debes rellenar todos los campos del vehículo.");
       return;
     }
     try {
-    const token = localStorage.getItem("token");
-    const rutCliente = localStorage.getItem("rut");
+      const token = localStorage.getItem("token");
+      const rutCliente = localStorage.getItem("rut");
 
-    await axios.post(
-      "http://localhost:3000/api/vehiculosjiji",
-      {
-        patente,
-        marca,
-        modelo,
-        anio,
-        rutCliente 
-      },
-      {
-        headers: { Authorization: `Bearer ${token}` }
+      await axios.post(
+        "http://localhost:3000/api/vehiculosjiji",
+        {
+          patente,
+          marca,
+          modelo,
+          anio,
+          rutCliente 
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+
+      alert("🚗 Vehículo agregado correctamente.");
+      
+      // limpiar campos
+      setPatente("");
+      setMarca("");
+      setModelo("");
+      setAnio("");
+
+    } catch (error) {
+        console.error("Error al guardar vehículo:", error);
+        alert("❌ No se pudo guardar el vehículo.");
       }
-    );
-
-    alert("🚗 Vehículo agregado correctamente.");
-    
-    // limpiar campos
-    setPatente("");
-    setMarca("");
-    setModelo("");
-    setAnio("");
-
-  } catch (error) {
-    console.error("Error al guardar vehículo:", error);
-    alert("❌ No se pudo guardar el vehículo.");
-  }
   }
   // Agendar servicio
   const handleAgendar = async () => {
@@ -117,8 +151,8 @@ useEffect(() => {
 
 
         await axios.post("http://localhost:3000/api/calendario/agendar", {
-          rutCliente: clienteRut,      // 👈 debe llamarse rutCliente
-          rutEmpleado: empleadoRut,   // 👈 debe ser el rut, no el nombre
+          rutCliente: clienteRut,      
+          rutEmpleado: empleadoRut,   
           patente,
           fecha: date.toISOString().split("T")[0],
           hora,
@@ -137,9 +171,7 @@ useEffect(() => {
     }
   };
 
-
-
-const [vehiculos, setVehiculos] = useState<any[]>([]);
+  const [vehiculos, setVehiculos] = useState<any[]>([]);
 
 useEffect(() => {
   const rut = localStorage.getItem("rut");
@@ -290,7 +322,10 @@ useEffect(() => {
             onChange={(e) => setHora(e.target.value)}
           >
             <option value="">Selecciona una hora</option>
-            {horasDisponibles.map((h) => (
+            {horasFiltradas.length === 0 && (
+              <option disabled>No hay horas disponibles</option>
+            )}
+            {horasFiltradas.map((h) => (
               <option key={h} value={h}>{h}</option>
             ))}
           </Form.Select>
@@ -302,9 +337,7 @@ useEffect(() => {
             onChange={(e) => setEmpleadoRut(e.target.value)}
           >
             <option value="">Selecciona un mecánico</option>
-              {empleados
-              .filter((emp) => emp.rol === "empleado")
-              .map((emp) => (
+              {empleados.filter((emp) => emp.rol === "empleado").map((emp) => (
                 <option key={emp.rutEmpleado} value={emp.rutEmpleado}>
                   {emp.nombres} {emp.apellido_paterno} {emp.apellido_materno}
                 </option>

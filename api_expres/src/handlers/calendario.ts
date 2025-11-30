@@ -62,6 +62,27 @@ export const agendarServicio = async (req: AuthRequest, res: Response) => {
     res.status(500).json({ mensaje: "Error al agendar servicio", error });
   }
 };
+//para obtener las horas tomadas.
+export const obtenerOcupados = async (req: Request, res: Response) => {
+  try {
+    const { fecha } = req.query;
+
+    if (!fecha) {
+      return res.status(400).json({ mensaje: "La fecha es obligatoria" });
+    }
+
+    const ocupados = await Agenda.findAll({
+      where: { fecha },
+      attributes: ["hora", "rutEmpleado"], 
+    });
+
+    return res.json(ocupados);
+  } catch (error) {
+    console.error("Error al obtener horas ocupadas:", error);
+    res.status(500).json({ mensaje: "Error al obtener horas ocupadas" });
+  }
+};
+
 
 
 
