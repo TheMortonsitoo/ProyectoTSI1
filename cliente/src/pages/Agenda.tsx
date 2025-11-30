@@ -37,8 +37,32 @@ const Agendar = () => {
   const [anio, setAnio] = useState("");
   const [clienteRut, setClienteRut] = useState("");
   const [ocupados, setOcupados] = useState<Ocupado[]>([]);
+  const [vehiculos, setVehiculos] = useState<any[]>([]);
   const horasDisponibles = ["09:00","10:00","11:00","12:00","15:00","16:00","17:00"];
   //-----------------------------------------------------
+  const cargarVehiculos = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    const rut = localStorage.getItem("rut");
+
+    if (!token || !rut) return;
+
+    const res = await axios.get(
+      `http://localhost:3000/api/vehiculosjiji/cliente/${rut}`,
+      {
+        headers: { Authorization: `Bearer ${token}` }
+      }
+    );
+
+    setVehiculos(res.data.data || res.data);
+  } catch (error) {
+    console.error("Error cargando vehículos:", error);
+  }
+};
+
+  useEffect(() => {
+  cargarVehiculos();
+  }, []);
 
   //-----------------------------------------------------
   // Obtener RUT del cliente desde localStorage o sesión
@@ -123,6 +147,7 @@ const Agendar = () => {
       );
 
       alert("🚗 Vehículo agregado correctamente.");
+      await cargarVehiculos();
       
       // limpiar campos
       setPatente("");
@@ -148,8 +173,6 @@ const Agendar = () => {
         alert("Debes iniciar sesión.");
         return;
       }
-
-
         await axios.post("http://localhost:3000/api/calendario/agendar", {
           rutCliente: clienteRut,      
           rutEmpleado: empleadoRut,   
@@ -160,18 +183,12 @@ const Agendar = () => {
         }, {
           headers: { Authorization: `Bearer ${token}` }
         });
-
-
-
-
       alert(`✅ Agendaste el ${date.toLocaleDateString()} a las ${hora}`);
     } catch (error) {
       console.error("Error al agendar:", error);
       alert("❌ Error al agendar servicio.");
     }
   };
-
-  const [vehiculos, setVehiculos] = useState<any[]>([]);
 
 useEffect(() => {
   const rut = localStorage.getItem("rut");
@@ -209,14 +226,14 @@ useEffect(() => {
             </p>
 
             <h4 className="fw-bold mt-4">PASO 1</h4>
-            <p>Selecciona el servicio que necesites agendar.</p>
+            <p>Rellenar los datos del vehiculo.</p>
 
             <h4 className="fw-bold">PASO 2</h4>
-            <p>Escoge el día y la hora que más te acomoda.</p>
+            <p>Seleccionar el tipo de servicios que se brindara, el mecanico que mas te guste, escoger el día y la hora que más te acomoda.</p>
 
             <h4 className="fw-bold">PASO 3</h4>
             <p>
-              Llena tus datos y los de tu vehículo. Al agendar te enviaremos un
+              Al final el agendamiento te enviaremos un
               correo confirmando tu cita.
             </p>
           </div>
@@ -288,10 +305,6 @@ useEffect(() => {
 
           <br />
 
-          <h4 className="fw-bold text-danger mb-3">
-            {date.toLocaleDateString("es-CL", { month: "long", year: "numeric" }).toUpperCase()}
-          </h4>
-
           {/* Calendario */}
           <Calendar
             onChange={(value) => value instanceof Date && setDate(value)}
@@ -302,60 +315,74 @@ useEffect(() => {
           />
 
           {/* Select servicio */}
-          <Form.Select
-            className="mt-3"
-            value={servicioSeleccionado}
-            onChange={(e) => setServicioSeleccionado(e.target.value)}
-          >
-            <option value="">Selecciona un servicio</option>
-            {Array.isArray(servicios) && servicios.map((s) => (
-              <option key={s.codServicio} value={s.codServicio}>
-                {s.nombreServicio} - ${s.precio} ({s.tiempo})
-              </option>
-            ))}
-          </Form.Select>
+          <Form.Group className="mt-2 w-100">
+            <Form.Label className="fw-semibold">Tipo de servicio</Form.Label>
 
-          {/* Select hora */}
-          <Form.Select
-            className="mt-3"
-            value={hora}
-            onChange={(e) => setHora(e.target.value)}
-          >
-            <option value="">Selecciona una hora</option>
-            {horasFiltradas.length === 0 && (
-              <option disabled>No hay horas disponibles</option>
-            )}
-            {horasFiltradas.map((h) => (
-              <option key={h} value={h}>{h}</option>
-            ))}
-          </Form.Select>
-
+            <Form.Select
+              value={servicioSeleccionado}
+              onChange={(e) => setServicioSeleccionado(e.target.value)}
+              className="shadow-sm"
+            >
+              <option value="">Selecciona un servicio</option>
+              {servicios.map((s) => (
+                <option key={s.codServicio} value={s.codServicio}>
+                  {s.nombreServicio} - ${s.precio} ({s.tiempo})
+                </option>
+              ))}
+            </Form.Select>
+          </Form.Group>
           {/* Select empleado */}
-          <Form.Select
-            className="mt-3"
-            value={empleadoRut}
-            onChange={(e) => setEmpleadoRut(e.target.value)}
-          >
+          <Form.Group className="mt-2 w-100">
+            <Form.Label className="fw-semibold">Seleccione Empleado</Form.Label>
+            <Form.Select
+              className="mt-1"
+              value={empleadoRut}
+              onChange={(e) => setEmpleadoRut(e.target.value)}
+            >
             <option value="">Selecciona un mecánico</option>
               {empleados.filter((emp) => emp.rol === "empleado").map((emp) => (
                 <option key={emp.rutEmpleado} value={emp.rutEmpleado}>
                   {emp.nombres} {emp.apellido_paterno} {emp.apellido_materno}
                 </option>
               ))}
-          </Form.Select>
-          <Form.Select
-            className="mt-3"
-            value={patente}
-            onChange={(e) => setPatente(e.target.value)}
-          >
-            <option value="">Selecciona tu vehículo</option>
-            {vehiculos.map((v) => (
-              <option key={v.patente} value={v.patente}>
-                {v.patente} - {v.marca} {v.modelo} ({v.anio})
-              </option>
-            ))}
-          </Form.Select>
+            </Form.Select>
+          </Form.Group>
 
+          {/* Select hora */}
+          <Form.Group className="mt-2 w-100">
+            <Form.Label className="fw-semibold">Seleccione una Hora</Form.Label>
+            <Form.Select
+              className="mt-1"
+              value={hora}
+              onChange={(e) => setHora(e.target.value)}
+              >
+              <option value="">Selecciona una hora</option>
+              {horasFiltradas.length === 0 && (
+                <option disabled>No hay horas disponibles</option>
+              )}
+              {horasFiltradas.map((h) => (
+                <option key={h} value={h}>{h}</option>
+              ))}
+            </Form.Select>
+          </Form.Group>
+
+          
+          {/* Select vehículo */}
+          <Form.Group className="mt-2 w-100">
+            <Form.Label className="fw-semibold">Seleccione el vehiculo</Form.Label>
+            <Form.Select
+              className="mt-1"
+              value={patente}
+              onChange={(e) => setPatente(e.target.value)}
+            >
+              <option value="">Selecciona tu vehículo</option>
+              {vehiculos.map((v) => (
+                <option key={v.patente} value={v.patente}>
+                  {v.patente} - {v.marca} {v.modelo} ({v.anio})
+                </option>
+              ))}
+            </Form.Select>
+          </Form.Group>
 
           {/* Botón */}
           <Button
