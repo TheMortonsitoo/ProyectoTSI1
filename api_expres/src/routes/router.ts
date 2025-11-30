@@ -4,7 +4,7 @@ import { agregarCliente, borrarCliente, editarCliente, getClienteByRut, getClien
 import { agregarEmpleado, borrarEmpleado, editarEmpleado, getEmpleadoByRut, getEmpleados, perfilEmpleado } from "../handlers/empleados";
 import { agregarPago, getPago, getPagoByID } from "../handlers/pagos";
 import { agregarServicio, borrarServicio, editarServicio, getServicioByID, getServicios } from "../handlers/servicios";
-import { agregarVehiculo, borrarVehiculo, editarVehiculo, getVehiculoByPatente, getVehiculos } from "../handlers/vehiculosjiji";
+import { agregarVehiculo, borrarVehiculo, editarVehiculo, getVehiculoByPatente, getVehiculos, getVehiculosByCliente } from "../handlers/vehiculosjiji";
 import { agregarVenta, borrarVenta, editarVenta, getVentaByID, getVentas } from "../handlers/ventas";
 import { agregarVentaProducto, borrarVentaProducto, editarVentaProducto, getVentaProductoByID, getVentasProductos } from "../handlers/ventasProductos";
 import { agregarVentaServicio, borrarVentaServicio, editarVentaServicio, getVentaServicioByID, getVentasServicios } from "../handlers/ventasServicios";
@@ -71,6 +71,8 @@ router.get("/vehiculosjiji/:patente", autenticar, verificarRol(["admin"]), getVe
 router.post("/vehiculosjiji", autenticar, verificarRol(["cliente","empleado","admin"]), agregarVehiculo);
 router.put("/vehiculosjiji/:patente", autenticar, verificarRol(["admin"]), editarVehiculo);
 router.delete("/vehiculosjiji/:patente", autenticar, verificarRol(["admin"]), borrarVehiculo);
+
+router.get("/vehiculosjiji/cliente/:rutCliente", autenticar, verificarRol(["cliente","empleado","admin"]), getVehiculosByCliente);
 
 // 💰 VENTAS
 router.get("/ventas", autenticar, verificarRol(["admin", "cliente"]), getVentas);

@@ -44,17 +44,26 @@ const Agendar = () => {
 
   // Cargar servicios
   useEffect(() => {
-    axios.get("http://localhost:3000/api/servicios")
-      .then((res) => setServicios(res.data))
-      .catch((err) => console.error("Error cargando servicios:", err));
-  }, []);
+  axios.get("http://localhost:3000/api/servicios")
+    .then((res) => {
+      console.log("Servicios cargados:", res.data);
+      const data = res.data.data;
+      setServicios(Array.isArray(data) ? data : []);
+    })
+    .catch((err) => console.error("Error cargando servicios:", err));
+}, []);
 
   // Cargar empleados
-  useEffect(() => {
-    axios.get("http://localhost:3000/api/empleados")
-      .then((res) => setEmpleados(res.data))
-      .catch((err) => console.error("Error cargando empleados:", err));
-  }, []);
+useEffect(() => {
+  axios.get("http://localhost:3000/api/empleados")
+    .then((res) => {
+      console.log("Empleados cargados:", res.data);
+      const data = res.data.data;
+      setEmpleados(Array.isArray(data) ? data : []);
+    })
+    .catch((err) => console.error("Error cargando empleados:", err));
+}, []);
+
 
   const handleAgregarVehiculo = async () => {
     if (!patente || !marca || !modelo || !anio) {
@@ -127,6 +136,25 @@ const Agendar = () => {
       alert("❌ Error al agendar servicio.");
     }
   };
+
+
+
+const [vehiculos, setVehiculos] = useState<any[]>([]);
+
+useEffect(() => {
+  const rut = localStorage.getItem("rut");
+  const token = localStorage.getItem("token");
+  if (rut && token) {
+    axios.get(`http://localhost:3000/api/vehiculosjiji/cliente/${rut}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    .then(res => {
+      const data = res.data.data;
+      setVehiculos(Array.isArray(data) ? data : []);
+    })
+    .catch(err => console.error("Error cargando vehículos:", err));
+  }
+}, []);
 
   return (
     <Container fluid className="my-5">
@@ -248,8 +276,8 @@ const Agendar = () => {
             onChange={(e) => setServicioSeleccionado(e.target.value)}
           >
             <option value="">Selecciona un servicio</option>
-            {servicios.map((s) => (
-              <option key={s.codServicio}  value={s.codServicio}>
+            {Array.isArray(servicios) && servicios.map((s) => (
+              <option key={s.codServicio} value={s.codServicio}>
                 {s.nombreServicio} - ${s.precio} ({s.tiempo})
               </option>
             ))}
@@ -274,51 +302,27 @@ const Agendar = () => {
             onChange={(e) => setEmpleadoRut(e.target.value)}
           >
             <option value="">Selecciona un mecánico</option>
-            {empleados.map((emp) => (
-              <option key={emp.rut_empleado} value={emp.rut_empleado}>
-                {emp.nombres} {emp.apellido_paterno} {emp.apellido_materno}
+              {empleados
+              .filter((emp) => emp.rol === "empleado")
+              .map((emp) => (
+                <option key={emp.rutEmpleado} value={emp.rutEmpleado}>
+                  {emp.nombres} {emp.apellido_paterno} {emp.apellido_materno}
+                </option>
+              ))}
+          </Form.Select>
+          <Form.Select
+            className="mt-3"
+            value={patente}
+            onChange={(e) => setPatente(e.target.value)}
+          >
+            <option value="">Selecciona tu vehículo</option>
+            {vehiculos.map((v) => (
+              <option key={v.patente} value={v.patente}>
+                {v.patente} - {v.marca} {v.modelo} ({v.anio})
               </option>
             ))}
           </Form.Select>
-          <Form.Group className="mt-3">
-            <Form.Label>Patente</Form.Label>
-            <Form.Control
-                type="text"
-                placeholder="Ej: ABCD12"
-                value={patente}
-                onChange={(e) => setPatente(e.target.value)}
-            />
-            </Form.Group>
 
-            <Form.Group className="mt-3">
-            <Form.Label>Marca</Form.Label>
-            <Form.Control
-                type="text"
-                placeholder="Ej: Toyota"
-                value={marca}
-                onChange={(e) => setMarca(e.target.value)}
-            />
-            </Form.Group>
-
-            <Form.Group className="mt-3">
-            <Form.Label>Modelo</Form.Label>
-            <Form.Control
-                type="text"
-                placeholder="Ej: Corolla"
-                value={modelo}
-                onChange={(e) => setModelo(e.target.value)}
-            />
-            </Form.Group>
-
-            <Form.Group className="mt-3">
-            <Form.Label>Año</Form.Label>
-            <Form.Control
-                type="number"
-                placeholder="Ej: 2020"
-                value={anio}
-                onChange={(e) => setAnio(e.target.value)}
-            />
-            </Form.Group>
 
           {/* Botón */}
           <Button

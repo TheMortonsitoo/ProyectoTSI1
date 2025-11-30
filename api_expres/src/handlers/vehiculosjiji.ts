@@ -52,3 +52,14 @@ export const borrarVehiculo = async(request: Request, response: Response) => {
     await borrarVehiculo.destroy()
     response.json({data: "Vehiculo eliminado"})
 }
+
+export const getVehiculosByCliente = async (req: Request, res: Response) => {
+  try {
+    const { rutCliente } = req.params;
+    const vehiculos = await Vehiculo.findAll({ where: { rutCliente } });
+    res.json({ data: vehiculos });
+  } catch (error) {
+    console.error("Error al obtener vehículos del cliente:", error);
+    res.status(500).json({ error: "No se pudo obtener los vehículos del cliente" });
+  }
+};
