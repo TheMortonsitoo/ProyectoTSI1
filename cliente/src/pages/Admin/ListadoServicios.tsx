@@ -5,7 +5,7 @@ interface Servicio {
   nombreServicio: string;
   precio: number;
   descripcion?: string;
-  duracion?: string; // minutos u horas, según tu modelo
+  tiempo?: string; // minutos u horas, según tu modelo
 }
 
 const ServiciosList = () => {
@@ -17,7 +17,7 @@ const ServiciosList = () => {
         const response = await fetch("http://localhost:3000/api/servicios");
         const data = await response.json();
         console.log("Servicios cargados:", data);
-        setServicios(data.data); // 👈 usa directamente el array
+        setServicios(data.data); // usa directamente el array
       } catch (error) {
         console.error("Error al cargar servicios:", error);
       }
@@ -51,7 +51,7 @@ const ServiciosList = () => {
               <br />
               precio: ${s.precio}
               <br />
-              {s.duracion && <span>Duración: {s.duracion}</span>}
+              {s.tiempo && <span>Duración: {s.tiempo}</span>}
             </li>
           ))}
       </ul>

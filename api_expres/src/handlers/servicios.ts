@@ -1,16 +1,15 @@
 import { Request, Response } from "express"
 import Servicio from "../models/Servicio"
 
-export const getServicios = async (request: Request, response: Response) => {
-    try {
-    const servicios = await Servicio.findAll({
-      attributes: ["codServicio", "nombreServicio", "precio", "tiempo"]
-    });
-    response.json(servicios);
+export const getServicios = async (req: Request, res: Response) => {
+  try {
+    const servicios = await Servicio.findAll();
+    res.json({ data: servicios }); // importante: envolver en { data: ... }
   } catch (error) {
-    response.status(500).json({ mensaje: "Error al obtener servicios", error });
+    console.error("Error al obtener servicios:", error);
+    res.status(500).json({ error: "No se pudo obtener la lista de servicios" });
   }
-}
+};
 
 export const getServicioByID = async (request: Request, response: Response) => {
     const {id} = request.params
@@ -39,7 +38,7 @@ export const agregarServicio = async (req: Request, res: Response) => {
       nombreServicio,
       precio: precioNumber,
       descripcion,
-      tiempo, // 👈 ahora coincide con el modelo
+      tiempo, // ahora coincide con el modelo
     });
 
     res.status(201).json({ data: servicio });
