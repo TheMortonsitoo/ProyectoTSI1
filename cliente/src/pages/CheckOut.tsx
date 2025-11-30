@@ -7,11 +7,18 @@ const Checkout = () => {
   const [carrito, setCarrito] = useState<any[]>([]);
 
   useEffect(() => {
-    const data = localStorage.getItem("carrito");
-    if (data) setCarrito(JSON.parse(data));
-  }, []);
+  const data = localStorage.getItem("carrito");
+  if (data) {
+    const parsed = JSON.parse(data);
+    console.log("🛒 Carrito cargado:", parsed);  // ← AQUI
+    setCarrito(parsed);
+  }
+}, []);
+
 
 const handleFinalizarCompra = async () => {
+  console.log("carrito:", carrito);
+
   try {
     const codVenta = await registrarVenta(carrito);
     localStorage.removeItem("carrito");
