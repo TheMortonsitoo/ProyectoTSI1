@@ -29,21 +29,41 @@ export const borrarFecha = async(request: Request, response: Response) => {
     response.json({data: "Fecha eliminado"})
 }
 
-
 export const agendarServicio = async (req: AuthRequest, res: Response) => {
   try {
-    const rutCliente = req.user.rut; // ← viene del token
-    const { codServicio, fecha, hora } = req.body;
+    const rutCliente = req.user?.rut || req.body.rutCliente || req.body.rut_cliente;
+    const { rutEmpleado, patente, fecha, hora, codServicio } = req.body;
+
+    console.log("req.body:", req.body);
+    console.log("rutCliente recibido:", rutCliente);
+    console.log("rutEmpleado recibido:", rutEmpleado);
+
+    const ultimo = await Agenda.findOne({ order: [["codAgenda", "DESC"]] });
+    let nuevoCodigo = "AGEN001";
+    if (ultimo?.codAgenda) {
+      const numero = parseInt(ultimo.codAgenda.replace("AGEN", ""), 10);
+      nuevoCodigo = `AGEN${(numero + 1).toString().padStart(3, "0")}`;
+    }
 
     const agendamiento = await Agenda.create({
+      codAgenda: nuevoCodigo,
+      rutEmpleado, 
       rutCliente,
-      codServicio,
+      patente,
       fecha,
-      hora
+      hora,
+      estado: "pendiente",
+      razonVisita: "Agendado"
     });
 
     res.json({ mensaje: "Servicio agendado con éxito", agendamiento });
   } catch (error) {
+    console.error("Error al agendar:", error);
     res.status(500).json({ mensaje: "Error al agendar servicio", error });
   }
 };
+
+
+
+
+

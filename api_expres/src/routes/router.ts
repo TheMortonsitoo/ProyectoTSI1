@@ -39,7 +39,7 @@ router.get("/admin/perfil", autenticar, verificarRol(["admin"]), perfilAdmin);
 
 
 // 👨‍💼 EMPLEADOS
-router.get("/empleados", autenticar, verificarRol(["admin"]), getEmpleados);
+router.get("/empleados", getEmpleados);
 router.get("/empleados/perfil", autenticar, verificarRol(["empleado", "admin"]), perfilEmpleado);
 router.get("/empleados/:rut", autenticar, verificarRol(["admin"]), getEmpleadoByRut);
 router.post("/empleados", autenticar, verificarRol(["admin"]), agregarEmpleado);

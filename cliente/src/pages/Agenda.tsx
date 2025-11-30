@@ -5,17 +5,18 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 interface Servicio {
-  codServicio: number;
+  codServicio: string;
   nombreServicio: string;
   precio: number;
   tiempo: string;
 }
 
 interface Empleado {
-  rut_empleado: string;
+  rutEmpleado: string;
   nombres: string;
   apellido_paterno: string;
   apellido_materno: string;
+  rol: string; // 👈 ahora sí existe
 }
 
 const Agendar = () => {
@@ -28,23 +29,43 @@ const Agendar = () => {
     const [patente, setPatente] = useState("");
     const [marca, setMarca] = useState("");
     const [modelo, setModelo] = useState("");
-    const [anio, setAnio] = useState("");
+  const [anio, setAnio] = useState("");
+  const [clienteRut, setClienteRut] = useState("");
 
   const horasDisponibles = ["09:00","10:00","11:00","12:00","15:00","16:00","17:00"];
 
-  // Cargar servicios
+  // Obtener RUT del cliente desde localStorage o sesión
   useEffect(() => {
-    axios.get("http://localhost:3000/api/servicios")
-      .then((res) => setServicios(res.data))
-      .catch((err) => console.error("Error cargando servicios:", err));
+    const rut = localStorage.getItem("rut");
+    if (rut) {
+      setClienteRut(rut);
+    }
   }, []);
 
+  // Cargar servicios
+useEffect(() => {
+  axios.get("http://localhost:3000/api/servicios")
+    .then((res) => {
+      console.log("Servicios cargados:", res.data);
+      setServicios(Array.isArray(res.data.data) ? res.data.data : []); // usa res.data.data
+    })
+    .catch((err) => console.error("Error cargando servicios:", err));
+}, []);
+
+
   // Cargar empleados
-  useEffect(() => {
-    axios.get("http://localhost:3000/api/empleados")
-      .then((res) => setEmpleados(res.data))
-      .catch((err) => console.error("Error cargando empleados:", err));
-  }, []);
+useEffect(() => {
+  axios.get("http://localhost:3000/api/empleados")
+    .then((res) => {
+      console.log("Empleados cargados:", res.data);
+      setEmpleados(Array.isArray(res.data.data) ? res.data.data : []);
+      console.log(res.data);
+    })
+    .catch((err) => console.error("Error cargando empleados:", err));
+    
+}, []);
+
+
 
   // Agendar servicio
   const handleAgendar = async () => {
@@ -60,14 +81,20 @@ const Agendar = () => {
         return;
       }
 
-      await axios.post("http://localhost:3000/api/calendario/agendar", {
-        codServicio: servicioSeleccionado,
-        fecha: date.toISOString().split("T")[0], // YYYY-MM-DD
-        hora,
-        rut_empleado: empleadoRut
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+
+        await axios.post("http://localhost:3000/api/calendario/agendar", {
+          rutCliente: clienteRut,      // 👈 debe llamarse rutCliente
+          rutEmpleado: empleadoRut,   // 👈 debe ser el rut, no el nombre
+          patente,
+          fecha: date.toISOString().split("T")[0],
+          hora,
+          codServicio: servicioSeleccionado
+        }, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+
+
 
       alert(`✅ Agendaste el ${date.toLocaleDateString()} a las ${hora}`);
     } catch (error) {
@@ -159,12 +186,15 @@ const Agendar = () => {
             onChange={(e) => setEmpleadoRut(e.target.value)}
           >
             <option value="">Selecciona un mecánico</option>
-            {empleados.map((emp) => (
-              <option key={emp.rut_empleado} value={emp.rut_empleado}>
-                {emp.nombres} {emp.apellido_paterno} {emp.apellido_materno}
-              </option>
-            ))}
+            {empleados
+              .filter((emp) => emp.rol === "empleado")
+              .map((emp) => (
+                <option key={emp.rutEmpleado} value={emp.rutEmpleado}>
+                  {emp.nombres} {emp.apellido_paterno} {emp.apellido_materno}
+                </option>
+              ))}
           </Form.Select>
+
           <Form.Group className="mt-3">
             <Form.Label>Patente</Form.Label>
             <Form.Control

@@ -3,16 +3,20 @@ import Empleado from "../models/Empleado";
 import bcrypt from "bcrypt";
 
 // Obtener empleados
+// handlers/empleados.ts
 export const getEmpleados = async (req: Request, res: Response) => {
   try {
     const empleados = await Empleado.findAll({
-      attributes: ["rutEmpleado", "nombres", "apellidoPaterno", "fono", "mail", "rol"]
+      where: { rol: "empleado" } // 👈 solo empleados
     });
-    res.json(empleados);
+    res.json({ data: empleados });
   } catch (error) {
-    res.status(500).json({ mensaje: "Error al obtener empleados", error });
+    console.error("Error al obtener empleados:", error);
+    res.status(500).json({ error: "No se pudo obtener la lista de empleados" });
   }
 };
+
+
 
 // Obtener empleado por RUT
 export const getEmpleadoByRut = async (req: Request, res: Response) => {
