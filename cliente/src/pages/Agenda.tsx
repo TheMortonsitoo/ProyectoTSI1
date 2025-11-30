@@ -35,17 +35,67 @@ const Agendar = () => {
   // Cargar servicios
   useEffect(() => {
     axios.get("http://localhost:3000/api/servicios")
-      .then((res) => setServicios(res.data))
+      .then((res) => {
+        if (Array.isArray(res.data.data)) {
+          setServicios(res.data.data);
+        } else {
+          console.error("Respuesta inesperada en servicios:", res.data);
+          setServicios([]);
+        }
+      })
       .catch((err) => console.error("Error cargando servicios:", err));
   }, []);
 
   // Cargar empleados
   useEffect(() => {
-    axios.get("http://localhost:3000/api/empleados")
-      .then((res) => setEmpleados(res.data))
-      .catch((err) => console.error("Error cargando empleados:", err));
-  }, []);
+  axios.get("http://localhost:3000/api/empleados")
+    .then((res) => {
+      if (Array.isArray(res.data)) {
+        setEmpleados(res.data);
+      } else {
+        console.error("Respuesta inesperada en empleados:", res.data);
+        setEmpleados([]);
+      }
+    })
+    .catch((err) => console.error("Error cargando empleados:", err));
+}, []);
 
+  const handleAgregarVehiculo = async () => {
+    if (!patente || !marca || !modelo || !anio) {
+      alert("⚠️ Debes rellenar todos los campos del vehículo.");
+      return;
+    }
+    try {
+    const token = localStorage.getItem("token");
+    const rutCliente = localStorage.getItem("rut");
+
+    await axios.post(
+      "http://localhost:3000/api/vehiculosjiji",
+      {
+        patente,
+        marca,
+        modelo,
+        anio,
+        rutCliente 
+      },
+      {
+        headers: { Authorization: `Bearer ${token}` }
+      }
+    );
+
+    alert("🚗 Vehículo agregado correctamente.");
+    
+    // limpiar campos
+    setPatente("");
+    setMarca("");
+    setModelo("");
+    setAnio("");
+
+  } catch (error) {
+    console.error("Error al guardar vehículo:", error);
+    alert("❌ No se pudo guardar el vehículo.");
+  }
+  }
   // Agendar servicio
   const handleAgendar = async () => {
     if (!servicioSeleccionado || !hora || !empleadoRut) {
@@ -113,6 +163,69 @@ const Agendar = () => {
 
         {/* Columna derecha con formulario */}
         <Col md={6} className="d-flex flex-column align-items-center justify-content-center p-5">
+          {/* agregar auto */}
+          <Row className="mt-3">
+            <Col md={6}>
+              <Form.Group>
+                <Form.Label>Patente</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Ej: ABCD12"
+                  value={patente}
+                  onChange={(e) => setPatente(e.target.value)}
+                />
+              </Form.Group>
+            </Col>
+
+            <Col md={6}>
+              <Form.Group>
+                <Form.Label>Marca</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Ej: Toyota"
+                  value={marca}
+                  onChange={(e) => setMarca(e.target.value)}
+                />
+              </Form.Group>
+            </Col>
+          </Row>
+
+          <Row className="mt-3">
+            <Col md={6}>
+              <Form.Group>
+                <Form.Label>Modelo</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Ej: Corolla"
+                  value={modelo}
+                  onChange={(e) => setModelo(e.target.value)}
+                />
+              </Form.Group>
+            </Col>
+
+            <Col md={6}>
+              <Form.Group>
+                <Form.Label>Año</Form.Label>
+                <Form.Control
+                  type="number"
+                  placeholder="Ej: 2020"
+                  value={anio}
+                  onChange={(e) => setAnio(e.target.value)}
+                />
+              </Form.Group>
+            </Col>
+          </Row>
+
+          <Button
+            variant="dark"
+            className="px-4 py-2 rounded-pill shadow-lg mt-4"
+            onClick={handleAgregarVehiculo}
+          >
+            Agregar Vehiculo
+          </Button>
+
+          <br />
+
           <h4 className="fw-bold text-danger mb-3">
             {date.toLocaleDateString("es-CL", { month: "long", year: "numeric" }).toUpperCase()}
           </h4>
@@ -164,46 +277,9 @@ const Agendar = () => {
                 {emp.nombres} {emp.apellido_paterno} {emp.apellido_materno}
               </option>
             ))}
+          
           </Form.Select>
-          <Form.Group className="mt-3">
-            <Form.Label>Patente</Form.Label>
-            <Form.Control
-                type="text"
-                placeholder="Ej: ABCD12"
-                value={patente}
-                onChange={(e) => setPatente(e.target.value)}
-            />
-            </Form.Group>
-
-            <Form.Group className="mt-3">
-            <Form.Label>Marca</Form.Label>
-            <Form.Control
-                type="text"
-                placeholder="Ej: Toyota"
-                value={marca}
-                onChange={(e) => setMarca(e.target.value)}
-            />
-            </Form.Group>
-
-            <Form.Group className="mt-3">
-            <Form.Label>Modelo</Form.Label>
-            <Form.Control
-                type="text"
-                placeholder="Ej: Corolla"
-                value={modelo}
-                onChange={(e) => setModelo(e.target.value)}
-            />
-            </Form.Group>
-
-            <Form.Group className="mt-3">
-            <Form.Label>Año</Form.Label>
-            <Form.Control
-                type="number"
-                placeholder="Ej: 2020"
-                value={anio}
-                onChange={(e) => setAnio(e.target.value)}
-            />
-            </Form.Group>
+          
 
           {/* Botón */}
           <Button

@@ -13,12 +13,10 @@ import Agendar from "./pages/Agenda";
 import AdminPanel from "./pages/Admin/PaginaAdmin";
 import Unauthorized from "./pages/NoAutorizacion";
 import Registro, { actionRegistro } from "./pages/Registro";
-
-
 import ViewAgregarProducto from "./pages/Admin/ViewAgregarProducto";
-import ProtectedRoute from "./Layouts/RouteProtegida";
-import MainLayout from "./Layouts/Layout";
 import ViewAgregarServicio from "./pages/Admin/ViewAgregarServicio";
+import MainLayout from "./layouts/Layout";
+import ProtectedRoute from "./layouts/RouteProtegida";
 
 const router = createBrowserRouter([
   { path: "/", element: <MainLayout><Home /></MainLayout> },
@@ -43,7 +41,7 @@ const router = createBrowserRouter([
   {
     path: "/agenda",
     element: (
-      <ProtectedRoute allowedRoles={["cliente", "admin"]}>
+      <ProtectedRoute allowedRoles={["cliente", "admin", "empleado"]}>
         <MainLayout><Agendar /></MainLayout>
       </ProtectedRoute>
     ),

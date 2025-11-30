@@ -39,7 +39,7 @@ router.get("/admin/perfil", autenticar, verificarRol(["admin"]), perfilAdmin);
 
 
 // 👨‍💼 EMPLEADOS
-router.get("/empleados", autenticar, verificarRol(["admin"]), getEmpleados);
+router.get("/empleados", getEmpleados);
 router.get("/empleados/perfil", autenticar, verificarRol(["empleado", "admin"]), perfilEmpleado);
 router.get("/empleados/:rut", autenticar, verificarRol(["admin"]), getEmpleadoByRut);
 router.post("/empleados", autenticar, verificarRol(["admin"]), agregarEmpleado);
@@ -66,9 +66,9 @@ router.put("/servicios/:id", autenticar, verificarRol(["admin"]), editarServicio
 router.delete("/servicios/:id", autenticar, verificarRol(["admin"]), borrarServicio);
 
 // 🚗 VEHÍCULOS
-router.get("/vehiculosjiji", autenticar, verificarRol(["admin"]), getVehiculos);
+router.get("/vehiculosjiji", autenticar, verificarRol(["cliente","empleado","admin"]), getVehiculos);
 router.get("/vehiculosjiji/:patente", autenticar, verificarRol(["admin"]), getVehiculoByPatente);
-router.post("/vehiculosjiji", autenticar, verificarRol(["admin"]), agregarVehiculo);
+router.post("/vehiculosjiji", autenticar, verificarRol(["cliente","empleado","admin"]), agregarVehiculo);
 router.put("/vehiculosjiji/:patente", autenticar, verificarRol(["admin"]), editarVehiculo);
 router.delete("/vehiculosjiji/:patente", autenticar, verificarRol(["admin"]), borrarVehiculo);
 
