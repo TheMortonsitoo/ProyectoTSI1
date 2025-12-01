@@ -11,6 +11,7 @@ const AgregarProducto = () => {
   });
 
   const [errores, setErrores] = useState<Record<string, string>>({});
+  const [mensajeGlobal, setMensajeGlobal] = useState<string>("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -41,11 +42,10 @@ const AgregarProducto = () => {
         setErrores(newErrors);
         return;
         }
-
     setErrores({}); // limpiar errores si todo está OK
-
     try {
       const token = localStorage.getItem("token");
+
       const response = await fetch("http://localhost:3000/api/productos", {
         method: "POST",
         headers: {
@@ -58,6 +58,17 @@ const AgregarProducto = () => {
       const data = await response.json();
       console.log("Producto guardado:", data);
 
+      // Si el producto ya existe 
+      if (!response.ok) {
+        if (data.error === "El producto ya está registrado") {
+          setMensajeGlobal("Este producto ya existe en el sistema.");
+        } else {
+          setMensajeGlobal("Error interno al agregar el producto.");
+        }
+        return; 
+      }
+
+      // Si todo salió bien 
       if (data?.data?.codProducto) {
         alert(`Producto agregado con éxito con código ${data.data.codProducto}`);
       } else {
@@ -65,15 +76,20 @@ const AgregarProducto = () => {
       }
 
       window.location.reload();
+
     } catch (error) {
       console.error("Error al guardar producto:", error);
+      setMensajeGlobal("Error inesperado al intentar agregar el producto");
     }
+
   };
 
   return (
     <div>
       <h2>Agregar Producto</h2>
-
+      {mensajeGlobal && (
+        <div className="alert alert-danger mb-3">{mensajeGlobal}</div>
+      )}
       <form
         onSubmit={handleSubmit}
         style={{

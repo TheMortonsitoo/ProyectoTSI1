@@ -20,6 +20,10 @@ export const agregarCliente = async (req: Request, res: Response) => {
   try {
     console.log("Body recibido:", req.body);
     const existeMail = await Cliente.findOne({ where: { mail: req.body.mail } });
+    const existeRut = await Cliente.findOne({ where: { rutCliente: req.body.rutCliente } });
+    if (existeRut) {
+      return res.status(400).json({ success: false, error: "El RUT ya está registrado" });
+    }
     if (existeMail) {
       return res.status(400).json({ error: "El correo ya está registrado" });
     }

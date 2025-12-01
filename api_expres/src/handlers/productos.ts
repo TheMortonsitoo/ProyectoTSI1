@@ -14,34 +14,45 @@ export const getProductosByID = async (request: Request, response: Response) => 
 
 export const agregarProducto = async (req: Request, res: Response) => {
   try {
-    // Buscar el último producto por código descendente
+    const { nombreProducto, precioUnitario, descripcion, stock } = req.body;
+
+    // 1️⃣ Validar si el nombre ya existe
+    const existeNombre = await Producto.findOne({
+      where: { nombreProducto }
+    });
+
+    if (existeNombre) {
+      return res.status(400).json({ error: "El producto ya está registrado" });
+    }
+
+    // 2️⃣ Buscar el último producto para generar código nuevo
     const ultimo = await Producto.findOne({
       order: [["codProducto", "DESC"]],
     });
 
-    // Generar nuevo código
     let nuevoCodigo = "P001";
     if (ultimo) {
-      const numero = parseInt(ultimo.codProducto.slice(1)); // quita la "P"
-      const siguiente = numero + 1;
-      nuevoCodigo = `P${siguiente.toString().padStart(3, "0")}`;
+      const numero = parseInt(ultimo.codProducto.slice(1));
+      nuevoCodigo = `P${String(numero + 1).padStart(3, "0")}`;
     }
 
-    // Crear el nuevo producto con el código generado
+    // 3️⃣ Crear producto
     const productoNuevo = await Producto.create({
       codProducto: nuevoCodigo,
-      nombreProducto: req.body.nombreProducto,
-      precioUnitario: req.body.precioUnitario,
-      descripcion: req.body.descripcion,
-      stock: req.body.stock,
+      nombreProducto,
+      precioUnitario,
+      descripcion,
+      stock,
     });
 
     res.json({ data: productoNuevo });
+
   } catch (error) {
     console.error("Error al agregar producto:", error);
     res.status(500).json({ error: "No se pudo agregar el producto" });
   }
 };
+
 
 
 

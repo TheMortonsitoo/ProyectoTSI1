@@ -1,4 +1,4 @@
-import { Form, redirect, useActionData, type ActionFunctionArgs } from "react-router-dom";
+import { Form, redirect, useActionData, useSearchParams, type ActionFunctionArgs } from "react-router-dom";
 import { login } from "../services/UsuarioServices";
 
 export async function action({ request}: ActionFunctionArgs){
@@ -18,6 +18,8 @@ export default function Login() {
   error?: string;
   detalleErrores?: { [key: string]: string[] };
 };
+  const [params] = useSearchParams();
+  const success = params.get("success");
   return (
     <div
       className="vh-80 vw-60 d-flex justify-content-center align-items-center"
@@ -37,6 +39,11 @@ export default function Login() {
         }}
       >
         <h2 className="text-center fw-bold mb-4">Iniciar Sesión</h2>
+        {success && (
+          <div className="alert alert-success mb-3">
+            Cuenta creada correctamente.
+          </div>
+        )}
         {actionData?.error && <div className = "alert alert-danger"> {actionData.error} </div>}
         <Form method="POST">
           {/* Email */}
