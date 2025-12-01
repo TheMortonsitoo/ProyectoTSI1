@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import { registrarVenta } from "../utils/ventas";
+import { useNavigate } from "react-router-dom";
 
 
 const Checkout = () => {
   const [carrito, setCarrito] = useState<any[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
   const data = localStorage.getItem("carrito");
@@ -24,6 +26,7 @@ const handleFinalizarCompra = async () => {
     localStorage.removeItem("carrito");
     setCarrito([]);
     alert(`Compra registrada con éxito. Código: ${codVenta}`);
+    navigate("/tienda");
   } catch (error) {
     console.error("Error al finalizar compra:", error);
     alert("Hubo un problema al registrar la venta");

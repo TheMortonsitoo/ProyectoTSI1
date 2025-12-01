@@ -24,18 +24,33 @@ const Tienda = () => {
 
   //--------------------------------------------------- Todo eso es el localStorage
   const agregarAlCarrito = (producto: any) => {
-    setCarrito((carritoActual) => {
-      const existe = carritoActual.find((item) => item.titulo === producto.titulo);
-      if (existe) {
-        return carritoActual.map((item) =>
-          item.titulo === producto.titulo
-            ? { ...item, cantidad: item.cantidad + 1 }
-            : item
-        );
+  setCarrito((carritoActual) => {
+    const existe = carritoActual.find((item) => item.titulo === producto.titulo);
+
+    // Si ya existe en el carrito
+    if (existe) {
+      // Si ya alcanzó el stock, NO agregar más
+      if (existe.cantidad >= producto.stock) {
+        alert(`No hay más unidades disponibles. Stock máximo: ${producto.stock}`);
+        return carritoActual;
       }
-      return [...carritoActual, { ...producto, cantidad: 1 }];
-    });
-  };
+
+      return carritoActual.map((item) =>
+        item.titulo === producto.titulo
+          ? { ...item, cantidad: item.cantidad + 1 }
+          : item
+      );
+    }
+
+    // Si no existe, verificar stock antes de agregar
+    if (producto.stock <= 0) {
+      alert("Este producto no tiene stock disponible.");
+      return carritoActual;
+    }
+
+    return [...carritoActual, { ...producto, cantidad: 1 }];
+  });
+};
 
   const [productos, setProductos] = useState<any[]>([]);
 
@@ -53,8 +68,19 @@ useEffect(() => {
 
 
   //suma 1
-    const incrementarCantidad = (titulo: string) => {
-    setCarrito((carritoActual) =>carritoActual.map((item) =>item.titulo === titulo? { ...item, cantidad: item.cantidad + 1 }: item));
+  const incrementarCantidad = (titulo: string) => {
+    setCarrito((carritoActual) =>
+      carritoActual.map((item) => {
+        if (item.titulo === titulo) {
+          if (item.cantidad >= item.stock) {
+            alert(`No puedes agregar más. Stock disponible: ${item.stock}`);
+            return item;
+          }
+          return { ...item, cantidad: item.cantidad + 1 };
+        }
+        return item;
+      })
+    );
   };
 //resta 1
   const disminuirCantidad = (titulo: string) => {
@@ -173,19 +199,23 @@ useEffect(() => {
       </div>
     </Col>
     <Row className="g-2">
-{Array.isArray(productos) &&
-  productos.map((producto, id) => (
+{/* Verifica que productos sea un arreglo verdadero antes de intentar recorrerlo. 
+[...productos] copia el arreglo de todo para asi no modificar el original
+sort((a, b) => b.stock - a.stock) Este es el ordenamiento. */}
+{Array.isArray(productos) && [...productos].sort((a, b) => b.stock - a.stock).map((producto, id) => (
     <Col xs={12} sm={6} md={4} lg={3} key={id}>
       <Cards
         titulo={producto.nombreProducto}
         descripcion={producto.descripcion}
         precio={Number(producto.precioUnitario ?? 0)}
+        stock={producto.stock}
         onAgregar={() =>
           agregarAlCarrito({
             cod_producto: producto.codProducto,
             titulo: producto.nombreProducto,
             descripcion: producto.descripcion,
             precio: Number(producto.precioUnitario ?? 0),
+            stock: producto.stock,
             cantidad: 1
           })
         }
