@@ -48,6 +48,11 @@ export const perfilEmpleado = async (req: Request, res: Response) => {
 // Crear empleado
 export const agregarEmpleado = async (req: Request, res: Response) => {
   try {
+    const existe = await Empleado.findOne({ where: { rutEmpleado: req.body.rutEmpleado } });
+
+    if (existe) {
+        return res.status(400).json({ error: "El RUT ya está registrado" });
+    }
     const { contrasena, ...resto } = req.body;
 
     if (!contrasena) {

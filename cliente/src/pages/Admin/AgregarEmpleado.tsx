@@ -14,6 +14,7 @@ const AgregarEmpleado = () => {
   });
 
   const [errores, setErrores] = useState<Record<string, string>>({});
+  const [mensajeGlobal, setMensajeGlobal] = useState<string>("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -22,26 +23,24 @@ const AgregarEmpleado = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    // Limpiar mensaje general
+    setMensajeGlobal("");
+
     // Validación con Valibot
     const validacion = safeParse(empleadoSchema, form);
 
     if (!validacion.success) {
-        const newErrors: Record<string, string> = {};
+      const newErrors: Record<string, string> = {};
 
-        validacion.issues.forEach((issue) => {
-            const field = issue.path?.map(p => p.key).join(".") as string;
+      validacion.issues.forEach((issue) => {
+        const field = issue.path?.map((p) => p.key).join(".") as string;
+        if (field) newErrors[field] = issue.message;
+      });
 
-            if (field) {
-            newErrors[field] = issue.message;
-            }
-        });
+      setErrores(newErrors);
+      return;
+    }
 
-        setErrores(newErrors);
-        return;
-        }
-
-
-    // Si no hay errores, limpiar mensajes
     setErrores({});
 
     try {
@@ -55,28 +54,34 @@ const AgregarEmpleado = () => {
         },
         body: JSON.stringify({
           ...form,
-          rol: "empleado", // Se asigna automáticamente
+          rol: "empleado",
         }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        alert(data.error || "Error al registrar empleado");
+        setMensajeGlobal(data.error || "Error al registrar empleado");
         return;
       }
 
-      alert("Empleado registrado correctamente");
+      setMensajeGlobal("Empleado registrado correctamente");
       window.location.reload();
+
     } catch (error) {
       console.error("Error al guardar empleado:", error);
-      alert("Error inesperado");
+      setMensajeGlobal("Error inesperado");
     }
   };
 
     return (
     <div>
-        <h2>Agregar Empleado</h2>
+      <h2>Agregar Empleado</h2>
+      {mensajeGlobal && (
+        <div className="alert alert-danger" style={{ marginBottom: "20px"  }}>
+          {mensajeGlobal}
+        </div>
+      )}
         <form
         onSubmit={handleSubmit}
         style={{
@@ -91,7 +96,9 @@ const AgregarEmpleado = () => {
             name="rutEmpleado"
             placeholder="RUT"
             value={form.rutEmpleado}
+            className={`form-control${errores?.rutEmpleado ? " is-invalid" : ""}`}
             onChange={handleChange}
+            
         />
         {errores.rutEmpleado && (
             <p style={{ color: "#d10000", fontSize: "12px", marginTop: "-6px", marginBottom: "4px" }}>
@@ -104,7 +111,9 @@ const AgregarEmpleado = () => {
             name="nombres"
             placeholder="Nombres"
             value={form.nombres}
+            className={`form-control${errores?.nombres ? " is-invalid" : ""}`}
             onChange={handleChange}
+            
         />
         {errores.nombres && (
             <p style={{ color: "#d10000", fontSize: "12px", marginTop: "-6px", marginBottom: "4px" }}>
@@ -117,7 +126,9 @@ const AgregarEmpleado = () => {
             name="apellidoPaterno"
             placeholder="Apellido paterno"
             value={form.apellidoPaterno}
+            className={`form-control${errores?.apellidoPaterno ? " is-invalid" : ""}`}
             onChange={handleChange}
+            
         />
         {errores.apellidoPaterno && (
             <p style={{ color: "#d10000", fontSize: "12px", marginTop: "-6px", marginBottom: "4px" }}>
@@ -130,7 +141,9 @@ const AgregarEmpleado = () => {
             name="apellidoMaterno"
             placeholder="Apellido materno"
             value={form.apellidoMaterno}
+            className={`form-control${errores?.apellidoMaterno ? " is-invalid" : ""}`}
             onChange={handleChange}
+            
         />
         {errores.apellidoMaterno && (
             <p style={{ color: "#d10000", fontSize: "12px", marginTop: "-6px", marginBottom: "4px" }}>
@@ -143,6 +156,7 @@ const AgregarEmpleado = () => {
             name="fono"
             placeholder="Teléfono"
             value={form.fono}
+            className={`form-control${errores?.fono ? " is-invalid" : ""}`}
             onChange={handleChange}
         />
         {errores.fono && (
@@ -156,6 +170,7 @@ const AgregarEmpleado = () => {
             name="mail"
             placeholder="Correo"
             value={form.mail}
+            className={`form-control${errores?.mail ? " is-invalid" : ""}`}
             onChange={handleChange}
         />
         {errores.mail && (
@@ -169,6 +184,7 @@ const AgregarEmpleado = () => {
             name="contrasena"
             placeholder="Contraseña"
             value={form.contrasena}
+            className={`form-control${errores?.contrasena ? " is-invalid" : ""}`}
             onChange={handleChange}
         />
         {errores.contrasena && (
