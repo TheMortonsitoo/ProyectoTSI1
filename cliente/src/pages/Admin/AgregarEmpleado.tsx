@@ -94,9 +94,9 @@ const AgregarEmpleado = () => {
         <input
             type="text"
             name="rutEmpleado"
-            placeholder="RUT"
+            placeholder="rut"
+          className={`form-control${errores?.rutEmpleado ? " is-invalid" : ""}`}
             value={form.rutEmpleado}
-            className={`form-control${errores?.rutEmpleado ? " is-invalid" : ""}`}
             onChange={handleChange}
             
         />
@@ -110,8 +110,8 @@ const AgregarEmpleado = () => {
             type="text"
             name="nombres"
             placeholder="Nombres"
+          className={`form-control${errores?.nombres ? " is-invalid" : ""}`}
             value={form.nombres}
-            className={`form-control${errores?.nombres ? " is-invalid" : ""}`}
             onChange={handleChange}
             
         />
@@ -125,8 +125,8 @@ const AgregarEmpleado = () => {
             type="text"
             name="apellidoPaterno"
             placeholder="Apellido paterno"
+          className={`form-control${errores?.apellidoPaterno ? " is-invalid" : ""}`}
             value={form.apellidoPaterno}
-            className={`form-control${errores?.apellidoPaterno ? " is-invalid" : ""}`}
             onChange={handleChange}
             
         />
@@ -140,8 +140,8 @@ const AgregarEmpleado = () => {
             type="text"
             name="apellidoMaterno"
             placeholder="Apellido materno"
+          className={`form-control${errores?.apellidoMaterno ? " is-invalid" : ""}`}
             value={form.apellidoMaterno}
-            className={`form-control${errores?.apellidoMaterno ? " is-invalid" : ""}`}
             onChange={handleChange}
             
         />
@@ -155,8 +155,8 @@ const AgregarEmpleado = () => {
             type="text"
             name="fono"
             placeholder="Teléfono"
+          className={`form-control${errores?.fono ? " is-invalid" : ""}`}
             value={form.fono}
-            className={`form-control${errores?.fono ? " is-invalid" : ""}`}
             onChange={handleChange}
         />
         {errores.fono && (
@@ -169,8 +169,8 @@ const AgregarEmpleado = () => {
             type="email"
             name="mail"
             placeholder="Correo"
+          className={`form-control${errores?.mail ? " is-invalid" : ""}`}
             value={form.mail}
-            className={`form-control${errores?.mail ? " is-invalid" : ""}`}
             onChange={handleChange}
         />
         {errores.mail && (
@@ -183,8 +183,8 @@ const AgregarEmpleado = () => {
             type="password"
             name="contrasena"
             placeholder="Contraseña"
+          className={`form-control${errores?.contrasena ? " is-invalid" : ""}`}
             value={form.contrasena}
-            className={`form-control${errores?.contrasena ? " is-invalid" : ""}`}
             onChange={handleChange}
         />
         {errores.contrasena && (

@@ -104,6 +104,7 @@ const AgregarProducto = () => {
           type="text"
           name="nombreProducto"
           placeholder="Nombre"
+          className={`form-control${errores?.nombreProducto ? " is-invalid" : ""}`}
           value={form.nombreProducto}
           onChange={handleChange}
         />
@@ -118,6 +119,7 @@ const AgregarProducto = () => {
           type="number"
           name="precioUnitario"
           placeholder="Precio"
+          className={`form-control${errores?.nombreProducto ? " is-invalid" : ""}`}
           value={form.precioUnitario}
           onChange={handleChange}
         />
@@ -132,6 +134,7 @@ const AgregarProducto = () => {
           type="text"
           name="descripcion"
           placeholder="Descripción"
+          className={`form-control${errores?.descripcion ? " is-invalid" : ""}`}
           value={form.descripcion}
           onChange={handleChange}
         />
@@ -146,6 +149,7 @@ const AgregarProducto = () => {
           type="number"
           name="stock"
           placeholder="Stock"
+          className={`form-control${errores?.stock ? " is-invalid" : ""}`}
           value={form.stock}
           onChange={handleChange}
         />

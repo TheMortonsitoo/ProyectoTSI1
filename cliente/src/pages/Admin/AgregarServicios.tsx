@@ -106,6 +106,7 @@ const AgregarServicio = () => {
           type="text"
           name="nombreServicio"
           placeholder="Nombre del servicio"
+          className={`form-control${errores?.nombreServicio ? " is-invalid" : ""}`}
           value={form.nombreServicio}
           onChange={handleChange}
         />
@@ -118,6 +119,7 @@ const AgregarServicio = () => {
           type="number"
           name="precio"
           placeholder="Precio"
+          className={`form-control${errores?.precio ? " is-invalid" : ""}`}
           value={form.precio}
           onChange={handleChange}
           
@@ -131,6 +133,7 @@ const AgregarServicio = () => {
           type="text"
           name="descripcion"
           placeholder="Descripción"
+          className={`form-control${errores?.descripcion ? " is-invalid" : ""}`}
           value={form.descripcion}
           onChange={handleChange}
         />
@@ -143,6 +146,7 @@ const AgregarServicio = () => {
           type="text"
           name="tiempo" 
           placeholder="Tiempo (ej: 60 min)"
+          className={`form-control${errores?.tiempo ? " is-invalid" : ""}`}
           value={form.tiempo}
           onChange={handleChange}
         />
