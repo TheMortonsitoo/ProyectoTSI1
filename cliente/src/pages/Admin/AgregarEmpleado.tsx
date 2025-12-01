@@ -17,8 +17,12 @@ const AgregarEmpleado = () => {
   const [mensajeGlobal, setMensajeGlobal] = useState<string>("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  const { name, value } = e.target;
+  setForm({ ...form, [name]: value });
+  if (errores[name]) {
+    setErrores({ ...errores, [name]: "" });
+  }
+};
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -94,7 +98,7 @@ const AgregarEmpleado = () => {
         <input
             type="text"
             name="rutEmpleado"
-            placeholder="rut"
+            placeholder="Rut"
           className={`form-control${errores?.rutEmpleado ? " is-invalid" : ""}`}
             value={form.rutEmpleado}
             onChange={handleChange}
@@ -152,7 +156,7 @@ const AgregarEmpleado = () => {
         )}
 
         <input
-            type="text"
+            type="number"
             name="fono"
             placeholder="Teléfono"
           className={`form-control${errores?.fono ? " is-invalid" : ""}`}
