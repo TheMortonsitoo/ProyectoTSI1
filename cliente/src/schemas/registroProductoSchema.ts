@@ -1,4 +1,4 @@
-import { nonEmpty, object, pipe, string } from "valibot";
+import { nonEmpty, object, pipe, string, transform } from "valibot";
 
 export const ProductoSchema = object({
   nombreProducto: pipe(
@@ -8,16 +8,18 @@ export const ProductoSchema = object({
 
   precioUnitario: pipe(
     string(),
-    nonEmpty("El precio requerido"),
+    nonEmpty("El precio es obligatorio"),
+    transform(Number)  
   ),
 
   descripcion: pipe(
     string(),
-    nonEmpty("Apellido materno requerido"),
+    nonEmpty("Ingrese una descripción del producto"),
   ),
 
   stock: pipe(
     string(),
-    nonEmpty("El teléfono es obligatorio"),
+    nonEmpty("Debe ingresar cantidad del producto"),
+    transform(Number)   
   ),
 });
