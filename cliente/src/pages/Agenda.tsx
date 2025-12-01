@@ -161,34 +161,43 @@ const Agendar = () => {
       }
   }
   // Agendar servicio
-  const handleAgendar = async () => {
-    if (!servicioSeleccionado || !hora || !empleadoRut) {
-      alert("⚠️ Debes rellenar todos los campos.");
+const handleAgendar = async () => {
+  if (!servicioSeleccionado || !hora || !empleadoRut) {
+    alert("⚠️ Debes rellenar todos los campos.");
+    return;
+  }
+
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Debes iniciar sesión.");
       return;
     }
 
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        alert("Debes iniciar sesión.");
-        return;
-      }
-        await axios.post("http://localhost:3000/api/calendario/agendar", {
-          rutCliente: clienteRut,      
-          rutEmpleado: empleadoRut,   
-          patente,
-          fecha: date.toISOString().split("T")[0],
-          hora,
-          codServicio: servicioSeleccionado
-        }, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-      alert(`✅ Agendaste el ${date.toLocaleDateString()} a las ${hora}`);
-    } catch (error) {
-      console.error("Error al agendar:", error);
-      alert("❌ Error al agendar servicio.");
-    }
-  };
+    // Buscar el servicio seleccionado en la lista
+    const servicio = servicios.find(s => s.codServicio === servicioSeleccionado);
+
+    await axios.post("http://localhost:3000/api/calendario/agendar", {
+      rutCliente: clienteRut,
+      rutEmpleado: empleadoRut,
+      patente,
+      fecha: date.toISOString().split("T")[0],
+      hora,
+      codServicio: servicioSeleccionado,
+      descripcion: servicio?.nombreServicio || "",   // nombre del servicio
+      observaciones: "-",                             // valor por defecto
+      precio_unitario: servicio?.precio || 0         // precio del servicio
+    }, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    alert(`✅ Agendaste el ${date.toLocaleDateString()} a las ${hora}`);
+  } catch (error) {
+    console.error("Error al agendar:", error);
+    alert("❌ Error al agendar servicio.");
+  }
+};
+
 
 useEffect(() => {
   const rut = localStorage.getItem("rut");
