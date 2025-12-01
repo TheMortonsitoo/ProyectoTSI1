@@ -11,6 +11,8 @@ const AgregarServicio = () => {
   });
 
   const [errores, setErrores] = useState<Record<string, string>>({});
+  const [mensajeGlobal, setMensajeGlobal] = useState<string>("");
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -60,21 +62,37 @@ const AgregarServicio = () => {
       const data = await response.json();
       console.log("Servicio guardado:", data);
 
-      if (data?.data?.codServicio) {
-        alert(`Servicio agregado con éxito con código ${data.data.codServicio}`);
+      if (!response.ok) {
+        if (data.error?.toLowerCase() === "el servicio ya está registrado") {
+          setMensajeGlobal("Este servicio ya existe en el sistema.");
+        } else {
+          setMensajeGlobal(data.error || "Error interno al agregar el servicio.");
+        }
+
+        return; 
+      }
+
+      // Si todo salió bien 
+      if (data?.data?.codProducto) {
+        alert(`Servicio agregado con éxito con código ${data.data.codProducto}`);
       } else {
         alert("Servicio agregado con éxito");
       }
 
       window.location.reload();
+
     } catch (error) {
-      console.error("Error al guardar servicio:", error);
+      console.error("Error al guardar Servicio:", error);
+      setMensajeGlobal("Error inesperado al intentar agregar el Servicio");
     }
   };
 
   return (
     <div>
       <h2>Agregar Servicio</h2>
+      {mensajeGlobal && (
+        <div className="alert alert-danger mb-3">{mensajeGlobal}</div>
+      )}
       <form
         onSubmit={handleSubmit}
         style={{

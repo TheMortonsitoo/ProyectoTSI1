@@ -25,26 +25,59 @@ export const agregarServicio = async (req: Request, res: Response) => {
     if (Number.isNaN(precioNumber)) {
       return res.status(400).json({ error: "Precio inválido" });
     }
+    const existeServicio = await Servicio.findOne({
+      where: { nombreServicio }
+    });
+
+    if (existeServicio) {
+      return res.status(400).json({
+        success: false,
+        error: "El servicio ya está registrado"
+      });
+    }
 
     const ultimo = await Servicio.findOne({ order: [["codServicio", "DESC"]] });
     let nuevoCodigo = "SERV001";
-    if (ultimo?.codServicio) {
-      const numero = parseInt(ultimo.codServicio.replace("SERV", ""), 10);
-      nuevoCodigo = `SERV${(numero + 1).toString().padStart(3, "0")}`;
-    }
+
+  if (ultimo?.codServicio) {
+    const numero = Number(ultimo.codServicio.replace("SERV", ""));
+
+    // Si NO es un número válido, reinicia a 1
+    const siguiente = isNaN(numero) ? 1 : numero + 1;
+
+    nuevoCodigo = `SERV${siguiente.toString().padStart(3, "0")}`;
+  }
+  let tiempoFormateado = tiempo.toString().trim();
+
+  // Si el usuario sólo escribió el número → agregar "minutos"
+  if (!tiempoFormateado.toLowerCase().includes("min")) {
+    tiempoFormateado += " minutos";
+  }
+
 
     const servicio = await Servicio.create({
       codServicio: nuevoCodigo,
       nombreServicio,
       precio: precioNumber,
       descripcion,
-      tiempo, // ahora coincide con el modelo
+      tiempo: tiempoFormateado
     });
 
     res.status(201).json({ data: servicio });
   } catch (error) {
     console.error("Error al agregar servicio:", error);
-    res.status(500).json({ error: "No se pudo agregar el servicio" });
+    if (error.name === "SequelizeUniqueConstraintError") {
+      return res.status(400).json({
+        success: false,
+        error: "El servicio ya está registrado"
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      error: "Error interno al agregar el servicio",
+      detalle: error.message
+    });
   }
 };
 
