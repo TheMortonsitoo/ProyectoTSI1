@@ -43,6 +43,8 @@ const AdminPanel = () => {
       <button onClick={() => navigate('/agregar-producto')}>Agregar producto</button>
 
       <button onClick={() => navigate('/agregar-servicio')}>Agregar servicio</button>
+
+      <button onClick={() => navigate('/agregar-empleado')}>Agregar empleado</button>
     </div> 
   );
 };
