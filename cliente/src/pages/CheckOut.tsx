@@ -12,7 +12,7 @@ const Checkout = () => {
   const data = localStorage.getItem("carrito");
   if (data) {
     const parsed = JSON.parse(data);
-    console.log("🛒 Carrito cargado:", parsed);  // ← AQUI
+    console.log("🛒 Carrito cargado:", parsed); 
     setCarrito(parsed);
   }
 }, []);
@@ -26,7 +26,7 @@ const handleFinalizarCompra = async () => {
     localStorage.removeItem("carrito");
     setCarrito([]);
     alert(`Compra registrada con éxito. Código: ${codVenta}`);
-    navigate("/tienda");
+    navigate(`/pago?venta=${codVenta}`);
   } catch (error) {
     console.error("Error al finalizar compra:", error);
     alert("Hubo un problema al registrar la venta");

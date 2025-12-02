@@ -15,9 +15,10 @@ import Unauthorized from "./pages/NoAutorizacion";
 import Registro, { actionRegistro } from "./pages/Registro";
 import ViewAgregarProducto from "./pages/Admin/ViewAgregarProducto";
 import ViewAgregarServicio from "./pages/Admin/ViewAgregarServicio";
-import MainLayout from "./layouts/Layout";
-import ProtectedRoute from "./layouts/RouteProtegida";
 import InventarioPage from "./pages/Admin/ViewAgregarEmpleado";
+import PagoPage from "./pages/Pago";
+import MainLayout from "./Layouts/Layout";
+import ProtectedRoute from "./Layouts/RouteProtegida";
 
 const router = createBrowserRouter([
   { path: "/", element: <MainLayout><Home /></MainLayout> },
@@ -29,7 +30,7 @@ const router = createBrowserRouter([
   { path: "/servicios/pintura", element: <MainLayout><Pintura /></MainLayout> },
   { path: "/servicios/baterias", element: <MainLayout><Baterías /></MainLayout> },
   { path: "/checkout", element: <MainLayout><CheckOut /></MainLayout> },
-
+  {path: "/pago", element: <MainLayout><PagoPage /></MainLayout>},
   // Rutas protegidas para clientes y admins
   {
     path: "/perfil",

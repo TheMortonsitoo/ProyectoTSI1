@@ -3,6 +3,7 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 interface Servicio {
   codServicio: string;
@@ -24,6 +25,7 @@ interface Ocupado {
 }
 
 const Agendar = () => {
+  const navigate = useNavigate();
   //-----------------------------------------------------
   const [date, setDate] = useState(new Date());
   const [hora, setHora] = useState("");
@@ -147,7 +149,7 @@ const Agendar = () => {
         }
       );
 
-      alert("🚗 Vehículo agregado correctamente.");
+      alert(" Vehículo agregado correctamente.");
       await cargarVehiculos();
       
       // limpiar campos
@@ -158,56 +160,61 @@ const Agendar = () => {
 
     } catch (error) {
         console.error("Error al guardar vehículo:", error);
-        alert("❌ No se pudo guardar el vehículo.");
+        alert(" No se pudo guardar el vehículo.");
       }
   }
   // Agendar servicio
-  const handleAgendar = async () => {
-    if (!servicioSeleccionado || !hora || !empleadoRut || !patente) {
-      alert("⚠️ Debes rellenar todos los campos.");
+ const handleAgendar = async () => {
+  if (!servicioSeleccionado || !hora || !empleadoRut || !patente) {
+    alert("Debes rellenar todos los campos.");
+    return;
+  }
+
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Debes iniciar sesión.");
       return;
     }
 
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        alert("Debes iniciar sesión.");
-        return;
+    const servicio = servicios.find(s => s.codServicio === servicioSeleccionado);
+    const fechaFormateada = date.toISOString().split("T")[0];
+
+    const res = await axios.post(
+      "http://localhost:3000/api/calendario/agendar",
+      {
+        rutCliente: clienteRut,
+        rutEmpleado: empleadoRut,
+        patente,
+        fecha: fechaFormateada,
+        hora,
+        codServicio: servicioSeleccionado,
+        descripcion: servicio?.nombreServicio || "",
+        observaciones: observaciones.trim() || "",
+        precio_unitario: servicio?.precio || 0
+      },
+      {
+        headers: { Authorization: `Bearer ${token}` }
       }
+    );
 
-      // Buscar servicio seleccionado para obtener precio + nombre
-      const servicio = servicios.find(s => s.codServicio === servicioSeleccionado);
+    const result = res.data;
+    alert(` Agendaste el ${date.toLocaleDateString()} a las ${hora}`);
 
-      const fechaFormateada = date.toISOString().split("T")[0];
+    // limpiar observaciones
+    setObservaciones("");
 
-      await axios.post(
-        "http://localhost:3000/api/calendario/agendar",
-        {
-          rutCliente: clienteRut,
-          rutEmpleado: empleadoRut,
-          patente,
-          fecha: fechaFormateada,
-          hora,
-          codServicio: servicioSeleccionado,
-          descripcion: servicio?.nombreServicio || "",
-          observaciones: observaciones.trim() || "",
-          precio_unitario: servicio?.precio || 0
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` }
-        }
-      );
-
-      alert(`✅ Agendaste el ${date.toLocaleDateString()} a las ${hora}`);
-
-      // limpiar observaciones
-      setObservaciones("");
-
-    } catch (error) {
-      console.error("Error al agendar:", error);
-      alert("❌ Error al agendar servicio.");
+    // Redirigir a PagoPage con el codAgenda
+   const codVenta = result.data?.codVenta;
+    if (codVenta) {
+      navigate(`/pago?venta=${codVenta}`); //  redirige con venta
     }
-  };
+
+  } catch (error) {
+    console.error("Error al agendar:", error);
+    alert(" Error al agendar servicio.");
+  }
+};
 
 
 
