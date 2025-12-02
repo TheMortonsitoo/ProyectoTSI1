@@ -63,8 +63,10 @@ export const agendarServicio = async (req: AuthRequest, res: Response) => {
       fecha,
       hora,
       estado: "pendiente",
-      razonVisita: "Agendado"
+      razonVisita: descripcion,
+      observaciones: observaciones ?? ""  // 👈 AGREGADO AQUÍ
     });
+
 
     // Generar código de venta secuencial
     const ultimaVenta = await Venta.findOne({

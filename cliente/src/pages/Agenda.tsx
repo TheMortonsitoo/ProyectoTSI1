@@ -38,6 +38,7 @@ const Agendar = () => {
   const [clienteRut, setClienteRut] = useState("");
   const [ocupados, setOcupados] = useState<Ocupado[]>([]);
   const [vehiculos, setVehiculos] = useState<any[]>([]);
+  const [observaciones, setObservaciones] = useState("");
   const horasDisponibles = ["09:00","10:00","11:00","12:00","15:00","16:00","17:00"];
   //-----------------------------------------------------
   const cargarVehiculos = async () => {
@@ -161,42 +162,53 @@ const Agendar = () => {
       }
   }
   // Agendar servicio
-const handleAgendar = async () => {
-  if (!servicioSeleccionado || !hora || !empleadoRut) {
-    alert("⚠️ Debes rellenar todos los campos.");
-    return;
-  }
-
-  try {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      alert("Debes iniciar sesión.");
+  const handleAgendar = async () => {
+    if (!servicioSeleccionado || !hora || !empleadoRut || !patente) {
+      alert("⚠️ Debes rellenar todos los campos.");
       return;
     }
 
-    // Buscar el servicio seleccionado en la lista
-    const servicio = servicios.find(s => s.codServicio === servicioSeleccionado);
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("Debes iniciar sesión.");
+        return;
+      }
 
-    await axios.post("http://localhost:3000/api/calendario/agendar", {
-      rutCliente: clienteRut,
-      rutEmpleado: empleadoRut,
-      patente,
-      fecha: date.toISOString().split("T")[0],
-      hora,
-      codServicio: servicioSeleccionado,
-      descripcion: servicio?.nombreServicio || "",   // nombre del servicio
-      observaciones: "-",                             // valor por defecto
-      precio_unitario: servicio?.precio || 0         // precio del servicio
-    }, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
+      // Buscar servicio seleccionado para obtener precio + nombre
+      const servicio = servicios.find(s => s.codServicio === servicioSeleccionado);
 
-    alert(`✅ Agendaste el ${date.toLocaleDateString()} a las ${hora}`);
-  } catch (error) {
-    console.error("Error al agendar:", error);
-    alert("❌ Error al agendar servicio.");
-  }
-};
+      const fechaFormateada = date.toISOString().split("T")[0];
+
+      await axios.post(
+        "http://localhost:3000/api/calendario/agendar",
+        {
+          rutCliente: clienteRut,
+          rutEmpleado: empleadoRut,
+          patente,
+          fecha: fechaFormateada,
+          hora,
+          codServicio: servicioSeleccionado,
+          descripcion: servicio?.nombreServicio || "",
+          observaciones: observaciones.trim() || "",
+          precio_unitario: servicio?.precio || 0
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+
+      alert(`✅ Agendaste el ${date.toLocaleDateString()} a las ${hora}`);
+
+      // limpiar observaciones
+      setObservaciones("");
+
+    } catch (error) {
+      console.error("Error al agendar:", error);
+      alert("❌ Error al agendar servicio.");
+    }
+  };
+
 
 
 useEffect(() => {
@@ -392,6 +404,18 @@ useEffect(() => {
               ))}
             </Form.Select>
           </Form.Group>
+          {/* Obervaciones */}
+          <Form.Group>
+            <Form.Label>Observaciones</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows={3}
+              placeholder="Escribe observaciones..."
+              value={observaciones}
+              onChange={(e) => setObservaciones(e.target.value)}
+            />
+          </Form.Group>
+
 
           {/* Botón */}
           <Button

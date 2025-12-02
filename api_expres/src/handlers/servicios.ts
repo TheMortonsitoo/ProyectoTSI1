@@ -1,6 +1,34 @@
 import { Request, Response } from "express"
 import Servicio from "../models/Servicio"
 
+const convertirATiempoEnMinutos = (valor: any): number => {
+  if (!valor) return 0;
+
+  const text = valor.toString().toLowerCase().trim();
+
+  // Solo número → minutos
+  if (/^\d+$/.test(text)) return Number(text);
+
+  // horas → minutos ("2 horas", "1.5h")
+  if (text.includes("hora")) {
+    const numero = parseFloat(text);
+    return Math.round(numero * 60);
+  }
+
+  if (text.includes("h")) {
+    const numero = parseFloat(text.replace("h", ""));
+    return Math.round(numero * 60);
+  }
+
+  // minutos explícitos
+  if (text.includes("min")) {
+    return parseInt(text);
+  }
+
+  return 0;
+};
+
+
 export const getServicios = async (req: Request, res: Response) => {
   try {
     const servicios = await Servicio.findAll();
@@ -47,21 +75,15 @@ export const agregarServicio = async (req: Request, res: Response) => {
 
     nuevoCodigo = `SERV${siguiente.toString().padStart(3, "0")}`;
   }
-  let tiempoFormateado = tiempo.toString().trim();
+  const tiempoEnMinutos = convertirATiempoEnMinutos(tiempo);
 
-  // Si el usuario sólo escribió el número → agregar "minutos"
-  if (!tiempoFormateado.toLowerCase().includes("min")) {
-    tiempoFormateado += " minutos";
-  }
-
-
-    const servicio = await Servicio.create({
-      codServicio: nuevoCodigo,
-      nombreServicio,
-      precio: precioNumber,
-      descripcion,
-      tiempo: tiempoFormateado
-    });
+  const servicio = await Servicio.create({
+    codServicio: nuevoCodigo,
+    nombreServicio,
+    precio: precioNumber,
+    descripcion,
+    tiempo: tiempoEnMinutos
+  });
 
     res.status(201).json({ data: servicio });
   } catch (error) {
@@ -81,13 +103,35 @@ export const agregarServicio = async (req: Request, res: Response) => {
   }
 };
 
-export const editarServicio = async(request: Request, response: Response) => {
-    const {id} = request.params
-    const editarServicio = await Servicio.findByPk(id)
-    await editarServicio.update(request.body)
-    await editarServicio.save()
-    response.json({data: editarServicio})
-}
+export const editarServicio = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const servicio = await Servicio.findByPk(id);
+
+    if (!servicio) {
+      return res.status(404).json({ error: "Servicio no encontrado" });
+    }
+
+    const { nombreServicio, precio, descripcion, tiempo } = req.body;
+
+    const tiempoEnMinutos = convertirATiempoEnMinutos(tiempo);
+
+    await servicio.update({
+      nombreServicio,
+      precio,
+      descripcion,
+      tiempo: tiempoEnMinutos
+    });
+
+    res.json({ data: servicio });
+
+  } catch (error) {
+    console.error("Error al editar servicio:", error);
+    res.status(500).json({ error: "Error interno al editar servicio" });
+  }
+};
+
 
 export const borrarServicio = async(request: Request, response: Response) => {
     const {id} = request.params

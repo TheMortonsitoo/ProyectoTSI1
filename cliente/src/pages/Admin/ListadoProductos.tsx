@@ -11,6 +11,13 @@ interface Producto {
 const ProductosList = () => {
   const [productos, setProductos] = useState<Producto[]>([]);
   const [cantidad, setCantidad] = useState<{ [key: string]: number }>({});
+  const [productoEditando, setProductoEditando] = useState<Producto | null>(null);
+
+  const [formEdit, setFormEdit] = useState({
+    nombreProducto: "",
+    precioUnitario: "",
+    descripcion: "",
+  });
   const rol = localStorage.getItem("rol"); // 👈 aquí guardas el rol del usuario
   const token = localStorage.getItem("token");
 
@@ -53,7 +60,45 @@ const ProductosList = () => {
       alert(" No se pudo actualizar el stock.");
     }
   };
+  const abrirEditor = (producto: Producto) => {
+    setProductoEditando(producto);
+    setFormEdit({
+      nombreProducto: producto.nombreProducto,
+      precioUnitario: String(producto.precioUnitario),
+      descripcion: producto.descripcion ?? "",
+    });
+  };
+  const guardarCambios = async () => {
+  if (!productoEditando) return;
 
+  try {
+    const response = await fetch(
+      `http://localhost:3000/api/productos/${productoEditando.codProducto}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          nombreProducto: formEdit.nombreProducto,
+          precioUnitario: Number(formEdit.precioUnitario),
+          descripcion: formEdit.descripcion,
+        }),
+      }
+    );
+
+    if (!response.ok) throw new Error("Error al actualizar");
+
+    alert("Producto actualizado con éxito");
+
+    setProductoEditando(null); // Cierra modal
+    fetchProductos(); // Recarga
+  } catch (error) {
+    console.error(error);
+    alert("❌ No se pudo actualizar el producto");
+  }
+};
   return (
     <div
       style={{
@@ -109,11 +154,106 @@ const ProductosList = () => {
                 >
                   + Agregar Stock
                 </button>
+                <button
+                  onClick={() => abrirEditor(p)}
+                  style={{
+                    padding: "4px 8px",
+                    backgroundColor: "#ffc107",
+                    color: "black",
+                    border: "none",
+                    borderRadius: "4px",
+                    marginLeft: "8px"
+                  }}
+                >
+                  ✏️ Editar
+                </button>
               </div>
             )}
           </li>
         ))}
       </ul>
+      {productoEditando && (
+        <div
+          style={{
+            position: "fixed",
+            top: "0",
+            left: "0",
+            width: "100%",
+            height: "100%",
+            background: "rgba(0,0,0,0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 999,
+          }}
+        >
+          <div
+            style={{
+              background: "white",
+              padding: "20px",
+              borderRadius: "8px",
+              width: "350px",
+            }}
+          >
+            <h4>Editar producto</h4>
+
+            <input
+              className="form-control mb-2"
+              placeholder="Nombre"
+              value={formEdit.nombreProducto}
+              onChange={(e) =>
+                setFormEdit({ ...formEdit, nombreProducto: e.target.value })
+              }
+            />
+
+            <input
+              className="form-control mb-2"
+              placeholder="Precio"
+              type="number"
+              value={formEdit.precioUnitario}
+              onChange={(e) =>
+                setFormEdit({ ...formEdit, precioUnitario: e.target.value })
+              }
+            />
+
+            <input
+              className="form-control mb-2"
+              placeholder="Descripción"
+              value={formEdit.descripcion}
+              onChange={(e) =>
+                setFormEdit({ ...formEdit, descripcion: e.target.value })
+              }
+            />
+
+            <button
+              style={{
+                padding: "6px 12px",
+                backgroundColor: "green",
+                color: "white",
+                border: "none",
+                borderRadius: "4px",
+                marginRight: "6px",
+              }}
+              onClick={guardarCambios}
+            >
+              Guardar
+            </button>
+
+            <button
+              style={{
+                padding: "6px 12px",
+                backgroundColor: "gray",
+                color: "white",
+                border: "none",
+                borderRadius: "4px",
+              }}
+              onClick={() => setProductoEditando(null)}
+            >
+              Cancelar
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

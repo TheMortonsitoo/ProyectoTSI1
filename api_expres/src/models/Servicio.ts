@@ -8,12 +8,14 @@ class Servicio extends Model{
     
     @Column({type: DataType.STRING(30), allowNull: true, field:"nombre_servicio" })
         declare nombreServicio: string
+    @Column({type: DataType.STRING(70), allowNull: true, field:"descripcion" })
+        declare descripcion: string
     
     @Column({type: DataType.INTEGER, allowNull: true, field:"precio" })
         declare precio: number
 
     @Column({type: DataType.STRING, allowNull: true, field:"tiempo" })
-        declare tiempo: string
+        declare tiempo: number
     
 }
 
