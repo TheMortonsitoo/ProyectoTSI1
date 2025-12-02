@@ -1,5 +1,5 @@
 import { agendarServicio, agregarFecha, borrarFecha, editarCalendario, getCalendario, obtenerOcupados } from "../handlers/calendario";
-import { agregarProducto, borrarProducto, editarProducto, getProductos, getProductosByID } from "../handlers/productos";
+import { agregarProducto, aumentarStock, borrarProducto, editarProducto, getProductos, getProductosByID } from "../handlers/productos";
 import { agregarCliente, borrarCliente, editarCliente, getClienteByRut, getClientes, perfilCliente } from "../handlers/clientes";
 import { agregarEmpleado, borrarEmpleado, editarEmpleado, getEmpleadoByRut, getEmpleados, perfilEmpleado } from "../handlers/empleados";
 import { agregarPago, getPago, getPagoByID } from "../handlers/pagos";
@@ -15,6 +15,7 @@ import { Router } from "express";
 import { login } from "../controllers/authController";
 import authRoutes from "./auth.routes";
 import { perfilAdmin } from "../handlers/admin";
+import { empleados } from "../config/data/empleados";
 
 const router = Router();
 router.use("/auth", authRoutes);
@@ -58,6 +59,8 @@ router.get("/productos/:id", getProductosByID); // público
 router.post("/productos", autenticar, verificarRol(["admin"]), agregarProducto);
 router.put("/productos/:id", autenticar, verificarRol(["admin"]), editarProducto);
 router.delete("/productos/:id", autenticar, verificarRol(["admin"]), borrarProducto);
+router.post("/productos/aumentar-stock", autenticar, verificarRol(["admin", "empleado"]), aumentarStock);
+
 
 // 🛠 SERVICIOS
 router.get("/servicios", getServicios); // público

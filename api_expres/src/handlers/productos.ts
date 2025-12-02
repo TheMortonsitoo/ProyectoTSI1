@@ -70,3 +70,26 @@ export const borrarProducto = async(request: Request, response: Response) => {
     await borrarProducto.destroy()
     response.json({data: "Producto eliminado"})
 }
+
+export const aumentarStock = async (req: Request, res: Response) => {
+  try {
+    const { codProducto, cantidad } = req.body;
+
+    if (!codProducto || typeof cantidad !== "number" || cantidad <= 0) {
+      return res.status(400).json({ mensaje: "Datos inválidos" });
+    }
+
+    const producto = await Producto.findByPk(codProducto);
+    if (!producto) {
+      return res.status(404).json({ mensaje: "Producto no encontrado" });
+    }
+
+    producto.stock += cantidad;
+    await producto.save();
+
+    res.json({ mensaje: "Stock actualizado", producto });
+  } catch (error) {
+    console.error("Error al aumentar stock:", error);
+    res.status(500).json({ mensaje: "Error al aumentar stock" });
+  }
+};
