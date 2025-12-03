@@ -62,7 +62,7 @@ export const agendarServicio = async (req: AuthRequest, res: Response) => {
       nuevoCodigo = `AGEN${(numero + 1).toString().padStart(3, "0")}`;
     }
 
-    // Crear la agenda
+    // Crear la agenda (sin codVenta aún)
     const agendamiento = await Agenda.create({
       codAgenda: nuevoCodigo,
       rutEmpleado,
@@ -70,7 +70,7 @@ export const agendarServicio = async (req: AuthRequest, res: Response) => {
       patente,
       fecha,
       hora,
-      estado: "pendiente", // 👈 usar campo correcto
+      estado: "pendiente",
       razonVisita: descripcion,
       observaciones_cliente: observaciones_cliente ?? ""
     });
@@ -108,6 +108,10 @@ export const agendarServicio = async (req: AuthRequest, res: Response) => {
       subtotal: precio_unitario ?? 0
     });
 
+    // 🔗 Vincular agenda con la venta
+    agendamiento.codVenta = venta.codVenta;
+    await agendamiento.save();
+
     // ✅ Respuesta clara para frontend
     res.status(201).json({
       mensaje: "Servicio agendado y venta registrada con éxito",
@@ -123,6 +127,7 @@ export const agendarServicio = async (req: AuthRequest, res: Response) => {
     res.status(500).json({ mensaje: "Error al agendar y registrar venta", error });
   }
 };
+
 
 
 //para obtener las horas tomadas.
@@ -205,10 +210,6 @@ export const cambiarEstadoAgenda = async (req: Request, res: Response) => {
 
 
 
-
-
-
-
 export const cancelarAgenda = async (req: Request, res: Response) => {
   try {
     const { codAgenda } = req.body;
@@ -232,9 +233,4 @@ export const cancelarAgenda = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Error interno al cancelar agenda" });
   }
 }
-
-
-
-
-
 

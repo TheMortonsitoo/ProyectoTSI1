@@ -17,8 +17,8 @@ import ViewAgregarProducto from "./pages/Admin/ViewAgregarProducto";
 import ViewAgregarServicio from "./pages/Admin/ViewAgregarServicio";
 import InventarioPage from "./pages/Admin/ViewAgregarEmpleado";
 import PagoPage from "./pages/Pago";
-import MainLayout from "./layouts/Layout";
-import ProtectedRoute from "./layouts/RouteProtegida";
+import MainLayout from "./Layouts/Layout";
+import ProtectedRoute from "./Layouts/RouteProtegida";
 import OrdenesCompra from "./pages/OrdenesCompra";
 import ServiciosAsignados from "./pages/Empleado/ServiciosAgendados";
 

@@ -43,6 +43,10 @@ class Agenda extends Model{
 
     @Column({type: DataType.STRING(100), allowNull: true, field:"razon_visita" })
         declare razonVisita: string
+
+    @Column({ type: DataType.STRING(20), allowNull: true, field: "cod_venta" })
+        declare codVenta: string;
+
 }
 
 export default Agenda

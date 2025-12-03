@@ -13,11 +13,22 @@ export const getVentas = async (request: Request, response: Response) => {
     response.json({data:venta})
 }
 
-export const getVentaByID = async (request: Request, response: Response) => {
-    const {id} = request.params
-    const venta = await Venta.findByPk(id)
-    response.json({data:venta})
-}
+export const getVentaByID = async (req: Request, res: Response) => {
+  const { codVenta } = req.params;
+
+  const venta = await Venta.findByPk(codVenta);
+  if (!venta) return res.status(404).json({ error: "Venta no encontrada" });
+
+  const agenda = await Agenda.findOne({ where: { codVenta } });
+
+  res.json({
+    data: {
+      ...venta.toJSON(),
+      codAgenda: agenda?.codAgenda || null
+    }
+  });
+};
+
 
 export const getVentasCliente = async (req: AuthRequest, res: Response) => {
   try {
@@ -198,27 +209,62 @@ export const cancelarVenta = async (req: Request, res: Response) => {
   try {
     const { codVenta, codAgenda } = req.body;
 
-    const venta = await Venta.findOne({ where: { codVenta } });
-    if (!venta) return res.status(404).json({ error: "Venta no encontrada" });
+    if (!codVenta) {
+      return res.status(400).json({ error: "Debe proporcionar codVenta" });
+    }
 
+    // Buscar la venta
+    const venta = await Venta.findOne({ where: { codVenta } });
+    if (!venta) {
+      return res.status(404).json({ error: "Venta no encontrada" });
+    }
+
+    // Actualizar estado de la venta
     venta.estadoVenta = "cancelada";
     await venta.save();
 
-    if (codAgenda) {
-      const agenda = await Agenda.findOne({ where: { codAgenda } });
-      if (agenda) {
-        agenda.estado = "cancelada";
-        await agenda.save();
+    // Eliminar productos asociados y devolver stock
+    const productos = await VentaProducto.findAll({ where: { codVenta } });
+    for (const p of productos) {
+      const producto = await Producto.findByPk(p.codProducto);
+      if (producto) {
+        await producto.update({ stock: producto.stock + p.cantidad });
       }
+    }
+    const productosEliminados = await VentaProducto.destroy({ where: { codVenta } });
+
+    // Eliminar servicios asociados
+    const serviciosEliminados = await VentaServicio.destroy({ where: { codVenta } });
+
+    // Cancelar agenda vinculada
+    let agendaCancelada = null;
+    const agenda = codAgenda
+      ? await Agenda.findOne({ where: { codAgenda } })
+      : await Agenda.findOne({ where: { codVenta } });
+
+    if (agenda) {
+      agenda.estado = "cancelada";
+      await agenda.save();
+      agendaCancelada = agenda;
+      console.log("Agenda cancelada:", agenda.codAgenda);
+    } else {
+      console.warn("⚠️ No se encontró agenda vinculada a la venta:", codVenta);
     }
 
     res.status(200).json({
-      mensaje: "Venta y agenda canceladas correctamente",
-      data: { venta }
+      mensaje: "Venta cancelada correctamente",
+      productosEliminados,
+      serviciosEliminados,
+      data: {
+        venta,
+        agenda: agendaCancelada
+      }
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error al cancelar venta:", error);
-    res.status(500).json({ error: "Error interno al cancelar venta" });
+    res.status(500).json({
+      error: "Error interno al cancelar venta",
+      detalle: error.message
+    });
   }
 };
-

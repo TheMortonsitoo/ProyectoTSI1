@@ -85,7 +85,7 @@ router.get("/vehiculosjiji/cliente/:rutCliente", autenticar, verificarRol(["clie
 
 // 💰 VENTAS
 router.get("/ventas", autenticar, verificarRol(["admin", "cliente"]), getVentas);
-router.get("/ventas/:id", autenticar, verificarRol(["admin", "cliente"]), getVentaByID);
+router.get("/ventas/:codVenta", autenticar, verificarRol(["admin", "cliente"]), getVentaByID);
 router.get("/mis-ordenes", autenticar, getVentasCliente);
 router.put("/ventas/cancelar", autenticar, verificarRol(["admin", "cliente", "empleado"]), cancelarVenta);
 router.post("/ventas", autenticar, verificarRol(["admin", "cliente"]), agregarVenta);

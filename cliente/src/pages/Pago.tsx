@@ -4,7 +4,7 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 
 const PagoPage = () => {
   const [searchParams] = useSearchParams();
-  const codVenta = searchParams.get("venta"); // 👈 solo usamos venta
+  const codVenta = searchParams.get("venta"); 
   const [data, setData] = useState<any>(null);
   const [metodoPago, setMetodoPago] = useState("efectivo");
   const navigate = useNavigate();
@@ -98,7 +98,7 @@ const PagoPage = () => {
 
       if (response.ok) {
         alert(" Venta cancelada correctamente");
-        navigate("/tienda");
+        navigate("/");
       } else {
         alert(result.error || " Error al cancelar la venta");
       }
@@ -132,8 +132,8 @@ const PagoPage = () => {
             Confirmar y Finalizar
           </Button>
 
-          <Button variant="danger" onClick={handleCancelarVenta}>
-            Cancelar
+          <Button variant="danger" className="me-2" onClick={handleCancelarVenta}>
+            Cancelar Venta
           </Button>
         </>
       ) : (
