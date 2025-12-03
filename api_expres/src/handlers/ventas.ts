@@ -101,9 +101,6 @@ export const agregarVenta = async (req: Request, res: Response) => {
   }
 };
 
-
-
-
 export const editarVenta = async(request: Request, response: Response) => {
     const {id} = request.params
     const venta = await Venta.findByPk(id)
@@ -122,6 +119,7 @@ export const borrarVenta = async(request: Request, response: Response) => {
 export const cancelarVenta = async (req: Request, res: Response) => {
   try {
     const { codVenta } = req.body;
+    console.log("Cancelando venta:", codVenta);
 
     const venta = await Venta.findOne({ where: { codVenta } });
     if (!venta) return res.status(404).json({ error: "Venta no encontrada" });
@@ -129,9 +127,13 @@ export const cancelarVenta = async (req: Request, res: Response) => {
     venta.estadoVenta = "cancelada";
     await venta.save();
 
-    res.status(200).json({ mensaje: "Venta cancelada correctamente" });
+    res.status(200).json({
+      mensaje: "Venta cancelada correctamente",
+      data: venta
+    });
   } catch (error) {
     console.error("Error al cancelar venta:", error);
     res.status(500).json({ error: "Error interno al cancelar venta" });
   }
 };
+

@@ -14,7 +14,10 @@ const PagoPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        if (!codVenta || codVenta === "undefined") return;
+        if (!codVenta || codVenta === "undefined") {
+          console.warn("⚠️ codVenta inválido:", codVenta);
+          return;
+        }
 
         const url = `http://localhost:3000/api/ventas/${codVenta}`;
 
@@ -37,10 +40,13 @@ const PagoPage = () => {
   }, [codVenta, token]);
 
   const handleConfirmarPago = async () => {
-    if (!data) return;
+    if (!data || !codVenta) {
+      alert("⚠️ No hay venta válida para pagar.");
+      return;
+    }
 
     const payload = {
-      codVenta, // 👈 siempre enviamos venta
+      codVenta,
       metodoPago,
       fecha: new Date().toISOString().slice(0, 10),
       montoPagado: data.total || 0
@@ -61,16 +67,23 @@ const PagoPage = () => {
 
       if (!res.ok) throw new Error(result.error || "Error al registrar pago");
 
-      alert(" Pago registrado y operación finalizada");
+      alert("✅ Pago registrado y operación finalizada");
       navigate("/");
     } catch (error) {
       console.error("Error al pagar:", error);
-      alert(" No se pudo registrar el pago");
+      alert("❌ No se pudo registrar el pago");
     }
   };
 
   const handleCancelarVenta = async () => {
+    if (!codVenta) {
+      alert("⚠️ No hay venta válida para cancelar.");
+      return;
+    }
+
     try {
+      console.log("Cancelando venta con codVenta:", codVenta);
+
       const response = await fetch("http://localhost:3000/api/ventas/cancelar", {
         method: "PUT",
         headers: {
@@ -80,16 +93,18 @@ const PagoPage = () => {
         body: JSON.stringify({ codVenta })
       });
 
-      const result = await response.json();
+      const result = await response.json().catch(() => ({}));
+      console.log("Respuesta cancelar:", response.status, result);
+
       if (response.ok) {
-        alert("Venta cancelada correctamente");
+        alert(" Venta cancelada correctamente");
         navigate("/tienda");
       } else {
-        alert(result.error || "Error al cancelar la venta");
+        alert(result.error || " Error al cancelar la venta");
       }
     } catch (error) {
       console.error("Error al cancelar venta:", error);
-      alert("Error interno al cancelar la venta");
+      alert(" Error interno al cancelar la venta");
     }
   };
 
