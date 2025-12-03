@@ -10,13 +10,13 @@ interface Producto {
 
 const ProductosList = () => {
   const [productos, setProductos] = useState<Producto[]>([]);
-  const [cantidad, setCantidad] = useState<{ [key: string]: number }>({});
   const [productoEditando, setProductoEditando] = useState<Producto | null>(null);
 
   const [formEdit, setFormEdit] = useState({
     nombreProducto: "",
     precioUnitario: "",
     descripcion: "",
+    stock:"",
   });
   const rol = localStorage.getItem("rol"); // 👈 aquí guardas el rol del usuario
   const token = localStorage.getItem("token");
@@ -35,39 +35,37 @@ const ProductosList = () => {
     fetchProductos();
   }, []);
 
-  const handleAgregarStock = async (codProducto: string) => {
-    const cantidadAgregar = cantidad[codProducto];
-    if (!cantidadAgregar || cantidadAgregar <= 0) {
-      alert("⚠️ Ingresa una cantidad válida.");
-      return;
-    }
 
-    try {
-      await fetch("http://localhost:3000/api/productos/aumentar-stock", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({ codProducto, cantidad: cantidadAgregar })
-      });
-
-      alert(" Stock actualizado");
-      setCantidad((prev) => ({ ...prev, [codProducto]: 0 }));
-      fetchProductos();
-    } catch (error) {
-      console.error("Error al aumentar stock:", error);
-      alert(" No se pudo actualizar el stock.");
-    }
-  };
   const abrirEditor = (producto: Producto) => {
     setProductoEditando(producto);
     setFormEdit({
       nombreProducto: producto.nombreProducto,
       precioUnitario: String(producto.precioUnitario),
       descripcion: producto.descripcion ?? "",
+      stock: producto.stock ? String(producto.stock) : "0",
     });
   };
+  const borrarProducto = async (codProducto: string, nombreProducto: string) => {
+    if (!window.confirm(`¿Desea eliminar el producto ${nombreProducto}?`)) return;
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/productos/${codProducto}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (!response.ok) throw new Error("Error al eliminar");
+      alert("Producto eliminado con éxito");
+      fetchProductos(); // Recarga
+    } catch (error) {
+      console.error(error);
+      alert("❌ No se pudo eliminar el producto");
+    }
+  };
+
   const guardarCambios = async () => {
   if (!productoEditando) return;
 
@@ -84,6 +82,7 @@ const ProductosList = () => {
           nombreProducto: formEdit.nombreProducto,
           precioUnitario: Number(formEdit.precioUnitario),
           descripcion: formEdit.descripcion,
+          stock: Number(formEdit.stock),
         }),
       }
     );
@@ -130,42 +129,32 @@ const ProductosList = () => {
             {/* Solo visible si el usuario es admin */}
             {rol === "admin" && (
               <div style={{ marginTop: "8px" }}>
-                <input
-                  type="number"
-                  placeholder="Cantidad"
-                  value={cantidad[p.codProducto] || ""}
-                  onChange={(e) =>
-                    setCantidad((prev) => ({
-                      ...prev,
-                      [p.codProducto]: parseInt(e.target.value, 10)
-                    }))
-                  }
-                  style={{ width: "90px", marginRight: "8px", padding: "4px", fontSize: "14px" }}
-                />
-                <button
-                  onClick={() => handleAgregarStock(p.codProducto)}
-                  style={{
-                    padding: "4px 8px",
-                    backgroundColor: "#28a745",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "4px"
-                  }}
-                >
-                  + Agregar Stock
-                </button>
+                
                 <button
                   onClick={() => abrirEditor(p)}
                   style={{
                     padding: "4px 8px",
-                    backgroundColor: "#ffc107",
-                    color: "black",
+                    backgroundColor: "#1d8c0fff",
+                    color: "white",
                     border: "none",
                     borderRadius: "4px",
                     marginLeft: "8px"
                   }}
                 >
                   ✏️ Editar
+                </button>
+                <button
+                  onClick={() => borrarProducto(p.codProducto, p.nombreProducto)}
+                  style={{
+                    padding: "4px 8px",
+                    backgroundColor: "#ff0000ff",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "4px",
+                    marginLeft: "8px"
+                  }}
+                >
+                  🗑️ Eliminar
                 </button>
               </div>
             )}
@@ -222,6 +211,14 @@ const ProductosList = () => {
               value={formEdit.descripcion}
               onChange={(e) =>
                 setFormEdit({ ...formEdit, descripcion: e.target.value })
+              }
+            />
+            <input
+              className="form-control mb-2"
+              placeholder="stock  "
+              value={formEdit.stock}
+              onChange={(e) =>
+                setFormEdit({ ...formEdit, stock: e.target.value })
               }
             />
 

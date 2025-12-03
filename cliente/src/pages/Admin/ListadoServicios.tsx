@@ -32,6 +32,27 @@ const fetchServicios = async () => {
   setModalVisible(true);
 };
 
+const borrarServicio = async (codServicio: string, nombreServicio: string) => {
+  if (!window.confirm(`¿Desea eliminar el servicio de ${nombreServicio}?`)) return;
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/servicios/${codServicio}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (!response.ok) throw new Error("Error al eliminar");
+      alert("Servicio eliminado con éxito");
+      fetchServicios(); // Recarga
+    } catch (error) {
+      console.error(error);
+      alert("❌ No se pudo eliminar el servicio");
+    }
+  };
+  
 const handleEditarServicio = async () => {
   if (!servicioEditar) return;
 
@@ -100,6 +121,19 @@ const handleEditarServicio = async () => {
               >
                 ✏ Editar
               </button>
+              <button
+                  onClick={() => borrarServicio(s.codServicio, s.nombreServicio)}
+                  style={{
+                    padding: "4px 8px",
+                    backgroundColor: "#ff0000ff",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "4px",
+                    marginLeft: "8px"
+                  }}
+                >
+                  🗑️ Eliminar
+                </button>
 
             </li>
           ))}

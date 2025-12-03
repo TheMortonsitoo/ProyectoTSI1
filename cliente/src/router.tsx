@@ -66,6 +66,14 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
   },
+  {
+    path: "/disminuir-producto",
+    element: (
+      <ProtectedRoute allowedRoles={["admin"]}>
+        <MainLayout><ViewAgregarProducto/></MainLayout>
+      </ProtectedRoute>
+    ),
+  },
 
       {
     path: "/agregar-servicio",

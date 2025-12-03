@@ -25,64 +25,77 @@ const AgregarEmpleado = () => {
 };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    // Limpiar mensaje general
-    setMensajeGlobal("");
+  // Limpiar mensaje global
+  setMensajeGlobal("");
 
-    // Validación con Valibot
-    const validacion = safeParse(empleadoSchema, form);
+  // Validación con Valibot
+  const validacion = safeParse(empleadoSchema, form);
 
-    if (!validacion.success) {
-      const newErrors: Record<string, string> = {};
+  if (!validacion.success) {
+    const newErrors: Record<string, string> = {};
 
-      validacion.issues.forEach((issue) => {
-        const field = issue.path?.map((p) => p.key).join(".") as string;
-        if (field) newErrors[field] = issue.message;
-      });
+    validacion.issues.forEach((issue) => {
+      const field = issue.path?.map((p) => p.key).join(".") as string;
+      if (field) newErrors[field] = issue.message;
+    });
 
-      setErrores(newErrors);
+    setErrores(newErrors);
+    return;
+  }
+
+  setErrores({});
+
+  try {
+    const token = localStorage.getItem("token");
+
+    const response = await fetch("http://localhost:3000/api/empleados", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        ...form,
+        rol: "empleado",
+      }),
+    });
+
+    const data = await response.json();
+    console.log("Empleado guardado:", data);
+
+    // ❌ Si el backend responde con error
+    if (!response.ok) {
+      setMensajeGlobal(data.error || "Error al registrar empleado");
       return;
     }
 
-    setErrores({});
+    // ✅ Mensaje de éxito
+    setMensajeGlobal("Empleado registrado correctamente");
 
-    try {
-      const token = localStorage.getItem("token");
+    // ⏳ Esperar un poco y recargar
+    setTimeout(() => window.location.reload(), 1200);
 
-      const response = await fetch("http://localhost:3000/api/empleados", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          ...form,
-          rol: "empleado",
-        }),
-      });
+  } catch (error) {
+    console.error("Error al guardar empleado:", error);
+    setMensajeGlobal("Error inesperado al intentar registrar el empleado");
+  }
+};
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        setMensajeGlobal(data.error || "Error al registrar empleado");
-        return;
-      }
-
-      setMensajeGlobal("Empleado registrado correctamente");
-      window.location.reload();
-
-    } catch (error) {
-      console.error("Error al guardar empleado:", error);
-      setMensajeGlobal("Error inesperado");
-    }
-  };
 
     return (
     <div>
       <h2>Agregar Empleado</h2>
       {mensajeGlobal && (
-        <div className="alert alert-danger" style={{ marginBottom: "20px"  }}>
+        <div
+          className={`alert ${
+            mensajeGlobal.includes("correctamente")
+              ? "alert-success"
+              : "alert-danger"
+          }`}
+          style={{ marginBottom: "20px" }}
+        >
           {mensajeGlobal}
         </div>
       )}

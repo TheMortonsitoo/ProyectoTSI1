@@ -71,15 +71,9 @@ const AgregarServicio = () => {
 
         return; 
       }
+      setMensajeGlobal("Se agregado el servicio correctamente.");
 
-      // Si todo salió bien 
-      if (data?.data?.codProducto) {
-        alert(`Servicio agregado con éxito con código ${data.data.codProducto}`);
-      } else {
-        alert("Servicio agregado con éxito");
-      }
-
-      window.location.reload();
+      setTimeout(() => window.location.reload(), 1200);
 
     } catch (error) {
       console.error("Error al guardar Servicio:", error);
@@ -91,7 +85,16 @@ const AgregarServicio = () => {
     <div>
       <h2>Agregar Servicio</h2>
       {mensajeGlobal && (
-        <div className="alert alert-danger mb-3">{mensajeGlobal}</div>
+        <div
+          className={`alert ${
+            mensajeGlobal.includes("correctamente")
+              ? "alert-success"
+              : "alert-danger"
+          }`}
+          style={{ marginBottom: "20px" }}
+        >
+          {mensajeGlobal}
+        </div>
       )}
       <form
         onSubmit={handleSubmit}

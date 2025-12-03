@@ -67,15 +67,10 @@ const AgregarProducto = () => {
         }
         return; 
       }
+      setMensajeGlobal("Se agregado el Producto correctamente.");
 
-      // Si todo salió bien 
-      if (data?.data?.codProducto) {
-        alert(`Producto agregado con éxito con código ${data.data.codProducto}`);
-      } else {
-        alert("Producto agregado con éxito");
-      }
+      setTimeout(() => window.location.reload(), 1200);
 
-      window.location.reload();
 
     } catch (error) {
       console.error("Error al guardar producto:", error);
@@ -88,7 +83,16 @@ const AgregarProducto = () => {
     <div>
       <h2>Agregar Producto</h2>
       {mensajeGlobal && (
-        <div className="alert alert-danger mb-3">{mensajeGlobal}</div>
+        <div
+          className={`alert ${
+            mensajeGlobal.includes("correctamente")
+              ? "alert-success"
+              : "alert-danger"
+          }`}
+          style={{ marginBottom: "20px" }}
+        >
+          {mensajeGlobal}
+        </div>
       )}
       <form
         onSubmit={handleSubmit}
