@@ -3,11 +3,11 @@ import { agregarProducto, aumentarStock, borrarProducto, editarProducto, getProd
 import { agregarCliente, borrarCliente, editarCliente, getClienteByRut, getClientes, perfilCliente } from "../handlers/clientes";
 import { agregarEmpleado, borrarEmpleado, editarEmpleado, getEmpleadoByRut, getEmpleados, perfilEmpleado } from "../handlers/empleados";
 import { agregarPago, getPago, getPagoByID } from "../handlers/pagos";
-import { agregarServicio, borrarServicio, editarServicio, getServicioByID, getServicios } from "../handlers/servicios";
+import { agregarServicio, borrarServicio, editarServicio, getServicioByID, getServicios, getVentasServicios } from "../handlers/servicios";
 import { agregarVehiculo, borrarVehiculo, editarVehiculo, getVehiculoByPatente, getVehiculos, getVehiculosByCliente } from "../handlers/vehiculosjiji";
 import { agregarVenta, borrarVenta, cancelarVenta, editarVenta, getVentaByID, getVentas, getVentasCliente } from "../handlers/ventas";
-import { agregarVentaProducto, borrarVentaProducto, editarVentaProducto, getVentaProductoByID, getVentasProductos } from "../handlers/ventasProductos";
-import { agregarVentaServicio, borrarVentaServicio, editarVentaServicio, getVentaServicioByID, getVentasServicios } from "../handlers/ventasServicios";
+import { agregarVentaProducto, borrarVentaProducto, editarVentaProducto, getVentaProductoByID, getVentasProductos, } from "../handlers/ventasProductos";
+import { agregarVentaServicio, borrarVentaServicio, editarVentaServicio, getVentaServicioByID } from "../handlers/ventasServicios";
 import { autenticar, verificarRol } from "../middleware/auth";
 import { sincronizarAdmins } from "../handlers/sincronizarAdmins";
 import { Router } from "express";
