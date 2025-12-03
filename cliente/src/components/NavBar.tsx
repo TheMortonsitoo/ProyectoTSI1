@@ -72,61 +72,99 @@ const NavbarComponent = () => {
       </Container>
 
       {logeado ? (
-        <ul className="nav justify-content-end">
-          <div className="dropdown">
-            <button
-              className="btn dropdown-toggle"
-              type="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              <img
-                src="public/Images/persona.png"
-                alt="Cuenta"
-                style={{
-                  width: "25px",
-                  height: "25px",
-                  marginRight: "8px",
-                  backgroundColor: "white",
-                  borderRadius: "50%",
-                }}
-              />
-              {mail || "Mi cuenta"}
-            </button>
-            <ul className="dropdown-menu dropdown-menu-end">
-              <li>
-                <NavLink className="dropdown-item" to="/perfil">Perfil</NavLink>
-              </li>
-              <li>
-                <NavLink className="dropdown-item" to="/ordenes">Mis ordenes de compra</NavLink>
-              </li>
-              <li>
-                <NavLink className="dropdown-item" to="/login" onClick={handleLogout}>
-                  Cerrar Sesión
-                </NavLink>
-              </li>
-            </ul>
-          </div>
-        </ul>
-      ) : (
-        <ul className="nav justify-content-end">
-          <li className="nav-item active">
-            <NavLink to="/login" className="nav-link">
-              <img
-                src="public/Images/persona.png"
-                alt="Registrarse"
-                style={{
-                  width: "25px",
-                  height: "25px",
-                  marginRight: "8px",
-                  backgroundColor: "white",
-                  borderRadius: "50%",
-                }}
-              />
+  <ul className="nav justify-content-end">
+    <div className="dropdown">
+      <button
+        className="btn dropdown-toggle text-white"
+        type="button"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+      >
+        <img
+          src="public/Images/persona.png"
+          alt="Cuenta"
+          style={{
+            width: "25px",
+            height: "25px",
+            marginRight: "8px",
+            backgroundColor: "white",
+            borderRadius: "50%",
+          }}
+        />
+        {mail || "Mi cuenta"}
+      </button>
+
+      <ul className="dropdown-menu dropdown-menu-end">
+        {/* PERFIL - TODOS LOS ROLES */}
+        <li>
+          <NavLink className="dropdown-item" to="/perfil">
+            Perfil
+          </NavLink>
+        </li>
+
+        {/* ================= CLIENTE ================= */}
+        {localStorage.getItem("rol") === "cliente" && (
+          <li>
+            <NavLink className="dropdown-item" to="/ordenes">
+              Mis órdenes de compra
             </NavLink>
           </li>
-        </ul>
-      )}
+        )}
+
+        {/* ================= EMPLEADO ================= */}
+        {localStorage.getItem("rol") === "empleado" && (
+          <li>
+            <NavLink className="dropdown-item" to="/servicios-panel">
+              Servicios asignados
+            </NavLink>
+          </li>
+        )}
+
+        {/* ================= ADMIN ================= */}
+        {localStorage.getItem("rol") === "admin" && (
+          <>
+            <li>
+              <NavLink className="dropdown-item" to="/ventas-servicios">
+                Ventas de servicios
+              </NavLink>
+            </li>
+            <li>
+              <NavLink className="dropdown-item" to="/ventas-productos">
+                Ventas de productos
+              </NavLink>
+            </li>
+          </>
+        )}
+
+        {/* CERRAR SESIÓN */}
+        <li>
+          <NavLink className="dropdown-item" to="/login" onClick={handleLogout}>
+            Cerrar Sesión
+          </NavLink>
+        </li>
+      </ul>
+    </div>
+  </ul>
+) : (
+  <ul className="nav justify-content-end">
+    <li className="nav-item active">
+      <NavLink to="/login">
+        <button
+          className="btn btn-outline-light"
+          style={{ 
+            padding: "6px 14px",
+            borderRadius: "20px",
+            fontWeight: "500"
+          }}
+        >
+          Iniciar Sesión
+        </button>
+      </NavLink>
+    </li>
+  </ul>
+)
+}
+
     </Navbar>
   );
 };
