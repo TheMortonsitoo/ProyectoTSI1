@@ -80,15 +80,18 @@ const Agendar = () => {
   //-----------------------------------------------------
 
   // Cargar horas ocupadas para la fecha seleccionada
-  useEffect(() => {
-    const fechaSeleccionada = date.toISOString().split("T")[0];
-    axios
-      .get("http://localhost:3000/api/calendario/ocupados", {
-        params: { fecha: fechaSeleccionada },
-      })
-      .then((res) => setOcupados(res.data))
-      .catch((err) => console.error("Error cargando ocupados:", err));
-  }, [date]);
+useEffect(() => {
+  const fechaSeleccionada = date.toISOString().split("T")[0];
+  const token = localStorage.getItem("token");
+
+  axios.get("http://localhost:3000/api/calendario/ocupados", {
+    params: { fecha: fechaSeleccionada },
+    headers: { Authorization: `Bearer ${token}` }
+  })
+  .then((res) => setOcupados(res.data.data)) // 👈 usa res.data.data
+  .catch((err) => console.error("Error cargando ocupados:", err));
+}, [date, empleadoRut]);
+
 
   const horasFiltradas = horasDisponibles.filter((h) => {
     // Si existe un registro ocupado con la misma hora y el mismo mecánico → bloquear la hora
