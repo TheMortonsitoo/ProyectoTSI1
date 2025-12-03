@@ -6,6 +6,7 @@ import db from "../config/database"
 import { AuthRequest } from "../middleware/auth"
 import VentaServicio from "../models/VentaServicio"
 import Servicio from "../models/Servicio"
+import Agenda from "../models/Agenda"
 
 export const getVentas = async (request: Request, response: Response) => {
     const venta = await Venta.findAll()
@@ -194,8 +195,7 @@ export const borrarVenta = async(request: Request, response: Response) => {
 
 export const cancelarVenta = async (req: Request, res: Response) => {
   try {
-    const { codVenta } = req.body;
-    console.log("Cancelando venta:", codVenta);
+    const { codVenta, codAgenda } = req.body;
 
     const venta = await Venta.findOne({ where: { codVenta } });
     if (!venta) return res.status(404).json({ error: "Venta no encontrada" });
@@ -203,9 +203,17 @@ export const cancelarVenta = async (req: Request, res: Response) => {
     venta.estadoVenta = "cancelada";
     await venta.save();
 
+    if (codAgenda) {
+      const agenda = await Agenda.findOne({ where: { codAgenda } });
+      if (agenda) {
+        agenda.estado = "cancelada";
+        await agenda.save();
+      }
+    }
+
     res.status(200).json({
-      mensaje: "Venta cancelada correctamente",
-      data: venta
+      mensaje: "Venta y agenda canceladas correctamente",
+      data: { venta }
     });
   } catch (error) {
     console.error("Error al cancelar venta:", error);

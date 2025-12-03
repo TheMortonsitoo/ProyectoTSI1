@@ -70,7 +70,7 @@ export const agendarServicio = async (req: AuthRequest, res: Response) => {
       patente,
       fecha,
       hora,
-      estadoAgenda: "pendiente", // 👈 usar campo correcto
+      estado: "pendiente", // 👈 usar campo correcto
       razonVisita: descripcion,
       observaciones: observaciones ?? ""
     });
@@ -135,14 +135,17 @@ export const getOcupados = async (req: Request, res: Response) => {
 
     // Buscar todas las agendas de esa fecha
     const agendas = await Agenda.findAll({
-      where: { fecha },
-      attributes: ["hora", "rutEmpleado", "estadoAgenda"]
+      where: {
+        fecha,
+        estado: { [Op.in]: ["pendiente", "finalizada"] } 
+      },
+      attributes: ["hora", "rutEmpleado", "estado"]
     });
 
-    // Filtrar solo las horas ocupadas (pendientes o finalizadas)
+    // Devolver ocupados con los nombres correctos
     const ocupados = agendas.map(a => ({
       hora: a.hora,
-      empleado: a.rutEmpleado,
+      rutEmpleado: a.rutEmpleado,
       estado: a.estado
     }));
 
@@ -152,6 +155,8 @@ export const getOcupados = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Error interno al obtener ocupados" });
   }
 };
+
+
 
 export const cancelarAgenda = async (req: Request, res: Response) => {
   try {

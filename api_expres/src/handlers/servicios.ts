@@ -47,7 +47,7 @@ export const getServicioByID = async (request: Request, response: Response) => {
 
 export const agregarServicio = async (req: Request, res: Response) => {
   try {
-    const { nombreServicio, precio, descripcion, tiempo } = req.body; // 👈 usa tiempo
+    const { nombreServicio, precio, descripcion, tiempo } = req.body; // usa tiempo
 
     const precioNumber = Number(precio);
     if (Number.isNaN(precioNumber)) {
