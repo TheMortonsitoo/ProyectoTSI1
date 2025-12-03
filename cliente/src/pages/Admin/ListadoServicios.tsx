@@ -108,33 +108,35 @@ const handleEditarServicio = async () => {
               precio: ${s.precio}
               <br />
               {s.tiempo && <span>Duración: {s.tiempo} minutos</span>}
-              <button
-                onClick={() => abrirEditarServicio(s)}
-                style={{
-                  padding: "4px 8px",
-                  backgroundColor: "#007bff",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "4px",
-                  marginLeft: "10px"
-                }}
-              >
-                ✏ Editar
-              </button>
-              <button
-                  onClick={() => borrarServicio(s.codServicio, s.nombreServicio)}
+              
+              <div style={{ marginTop: "8px" }}>
+                <button
+                  onClick={() => abrirEditarServicio(s)}
                   style={{
                     padding: "4px 8px",
-                    backgroundColor: "#ff0000ff",
+                    backgroundColor: "#1d8c0fff",
                     color: "white",
                     border: "none",
                     borderRadius: "4px",
-                    marginLeft: "8px"
+                    marginLeft: "10px"
                   }}
                 >
-                  🗑️ Eliminar
+                  ✏ Editar
                 </button>
-
+                <button
+                    onClick={() => borrarServicio(s.codServicio, s.nombreServicio)}
+                    style={{
+                      padding: "4px 8px",
+                      backgroundColor: "#ff0000ff",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "4px",
+                      marginLeft: "8px"
+                    }}
+                  >
+                    🗑️ Eliminar
+                </button>
+              </div>
             </li>
           ))}
       </ul>

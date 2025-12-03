@@ -185,7 +185,7 @@ const ProductosList = () => {
             }}
           >
             <h4>Editar producto</h4>
-
+            <label>Nombre del producto</label>
             <input
               className="form-control mb-2"
               placeholder="Nombre"
@@ -193,8 +193,10 @@ const ProductosList = () => {
               onChange={(e) =>
                 setFormEdit({ ...formEdit, nombreProducto: e.target.value })
               }
+              style={{ width: "100%", marginBottom: "10px" }}
             />
-
+            
+            <label>Precio</label>
             <input
               className="form-control mb-2"
               placeholder="Precio"
@@ -203,23 +205,28 @@ const ProductosList = () => {
               onChange={(e) =>
                 setFormEdit({ ...formEdit, precioUnitario: e.target.value })
               }
+              style={{ width: "100%", marginBottom: "10px" }}
             />
-
-            <input
+            <label>Descripcion</label>
+            <textarea
               className="form-control mb-2"
               placeholder="Descripción"
               value={formEdit.descripcion}
               onChange={(e) =>
                 setFormEdit({ ...formEdit, descripcion: e.target.value })
               }
+              style={{ width: "100%", marginBottom: "10px" }}
             />
+            <label>Stock</label>
             <input
               className="form-control mb-2"
-              placeholder="stock  "
+              placeholder="stock"
+              type="number"
               value={formEdit.stock}
               onChange={(e) =>
                 setFormEdit({ ...formEdit, stock: e.target.value })
               }
+              style={{ width: "100%", marginBottom: "10px" }}
             />
 
             <button

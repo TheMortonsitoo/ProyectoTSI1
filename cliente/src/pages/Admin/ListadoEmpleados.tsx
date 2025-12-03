@@ -125,37 +125,34 @@ const ListadoEmpleados = () => {
                 <br />
                 <span>Rol: {emp.rol}</span>
                 <br />
-
-                <button
-                  onClick={() => abrirEditarEmpleado(emp)}
-                  style={{
-                    padding: "4px 8px",
-                    backgroundColor: "#1d8c0fff",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "4px",
-                    marginLeft: "8px",
-                  }}
-                >
-                  ✏️ Editar
-                </button>
-
-                <button
-                  onClick={() =>
-                    borrarEmpleado(emp.rutEmpleado, emp.nombres, emp.apellidoPaterno)
-                  }
-                  style={{
-                    padding: "4px 8px",
-                    backgroundColor: "#ff0000",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "4px",
-                    marginTop: "8px",
-                    cursor: "pointer",
-                  }}
-                >
-                  🗑️ Eliminar
-                </button>
+                <div style={{ marginTop: "8px" }}>
+                  <button
+                    onClick={() => abrirEditarEmpleado(emp)}
+                    style={{
+                      padding: "4px 8px",
+                      backgroundColor: "#1d8c0fff",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "4px",
+                      marginLeft: "10px"
+                    }}
+                  >
+                    ✏ Editar
+                  </button>
+                  <button
+                      onClick={() => borrarEmpleado(emp.rutEmpleado, emp.nombres, emp.apellidoPaterno)}
+                      style={{
+                        padding: "4px 8px",
+                        backgroundColor: "#ff0000ff",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "4px",
+                        marginLeft: "8px"
+                      }}
+                    >
+                      🗑️ Eliminar
+                  </button>
+                </div>
               </li>
             ))}
       </ul>
@@ -192,6 +189,7 @@ const ListadoEmpleados = () => {
               onChange={(e) =>
                 setEmpleadoEditar({ ...EmpleadoEditar, nombres: e.target.value })
               }
+              style={{ width: "100%", marginBottom: "10px" }}
             />
 
             <label>Apellido Paterno</label>
@@ -201,6 +199,7 @@ const ListadoEmpleados = () => {
               onChange={(e) =>
                 setEmpleadoEditar({ ...EmpleadoEditar, apellidoPaterno: e.target.value })
               }
+              style={{ width: "100%", marginBottom: "10px" }}
             />
 
             <label>Apellido Materno</label>
@@ -210,6 +209,7 @@ const ListadoEmpleados = () => {
               onChange={(e) =>
                 setEmpleadoEditar({ ...EmpleadoEditar, apellidoMaterno: e.target.value })
               }
+              style={{ width: "100%", marginBottom: "10px" }}
             />
 
             <label>Teléfono</label>
@@ -220,6 +220,7 @@ const ListadoEmpleados = () => {
               onChange={(e) =>
                 setEmpleadoEditar({ ...EmpleadoEditar, fono: e.target.value })
               }
+              style={{ width: "100%", marginBottom: "10px" }}
             />
 
             <label>Correo</label>
@@ -230,6 +231,7 @@ const ListadoEmpleados = () => {
               onChange={(e) =>
                 setEmpleadoEditar({ ...EmpleadoEditar, mail: e.target.value })
               }
+              style={{ width: "100%", marginBottom: "10px" }}
             />
 
             <div style={{ display: "flex", justifyContent: "space-between" }}>
