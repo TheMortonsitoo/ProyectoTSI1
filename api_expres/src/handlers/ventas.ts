@@ -77,8 +77,9 @@ export const getVentasCliente = async (req: AuthRequest, res: Response) => {
       codProducto: p.codProducto,
       nombre: p.producto?.nombreProducto || "Producto",
       cantidad: p.cantidad,
-      precioUnitario: p.precioUnitario,
-      subtotal: p.subtotal,
+      precioUnitario: p.precioVenta ?? 0,
+      subtotal: p.subtotal ?? 0,
+
     })) || []
   };
 });
