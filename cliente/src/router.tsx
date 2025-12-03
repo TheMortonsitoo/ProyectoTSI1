@@ -17,8 +17,10 @@ import ViewAgregarProducto from "./pages/Admin/ViewAgregarProducto";
 import ViewAgregarServicio from "./pages/Admin/ViewAgregarServicio";
 import InventarioPage from "./pages/Admin/ViewAgregarEmpleado";
 import PagoPage from "./pages/Pago";
-import MainLayout from "./Layouts/Layout";
-import ProtectedRoute from "./Layouts/RouteProtegida";
+import MainLayout from "./layouts/Layout";
+import ProtectedRoute from "./layouts/RouteProtegida";
+import OrdenesCompra from "./pages/OrdenesCompra";
+
 
 const router = createBrowserRouter([
   { path: "/", element: <MainLayout><Home /></MainLayout> },
@@ -40,6 +42,15 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
   },
+  {
+    path: "/ordenes",
+    element: (
+      <ProtectedRoute allowedRoles={["cliente", "empleado", "admin"]}>
+        <MainLayout><OrdenesCompra /></MainLayout>
+      </ProtectedRoute>
+    ),
+  },
+
   {
     path: "/agenda",
     element: (

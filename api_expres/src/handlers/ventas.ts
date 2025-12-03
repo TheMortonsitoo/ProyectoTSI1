@@ -3,6 +3,9 @@ import Venta from "../models/Venta"
 import Producto from "../models/Producto"
 import VentaProducto from "../models/VentaProducto"
 import db from "../config/database"
+import { AuthRequest } from "../middleware/auth"
+import VentaServicio from "../models/VentaServicio"
+import Servicio from "../models/Servicio"
 
 export const getVentas = async (request: Request, response: Response) => {
     const venta = await Venta.findAll()
@@ -14,6 +17,79 @@ export const getVentaByID = async (request: Request, response: Response) => {
     const venta = await Venta.findByPk(id)
     response.json({data:venta})
 }
+
+export const getVentasCliente = async (req: AuthRequest, res: Response) => {
+  try {
+    const rutCliente = req.user?.rut;
+
+    if (!rutCliente) {
+      return res.status(401).json({ error: "No autenticado" });
+    }
+
+    const ventas = await Venta.findAll({
+      where: { rutCliente },
+      order: [["fecha", "DESC"]],
+      include: [
+        {
+          model: VentaServicio,
+          as: "detalles",
+          include: [
+            { model: Servicio, as: "servicio" }
+          ]
+        },
+        {
+          model: VentaProducto,
+          as: "productos",
+          include: [
+            {
+              model: Producto,
+              as: "producto",
+            },
+          ],
+        }
+      ],
+    });
+
+    // ================
+    // FORMATEAR DATOS
+    // ================
+    const ventasFormateadas = ventas.map(v => {
+  const json = v.toJSON();
+
+  return {
+    codVenta: json.codVenta,
+    fecha: json.fecha,
+    rutCliente: json.rutCliente,
+    total: json.total,
+    estadoVenta: json.estadoVenta,
+
+    servicios: json.detalles?.map(d => ({
+      codServicio: d.codServicio,
+      nombreServicio: d.servicio?.nombreServicio,
+      descripcionDetalle: d.descripcionDetalle,
+      observaciones: d.observaciones,
+      precioUnitario: d.precioUnitario,
+      subtotal: d.subtotal,
+    })) || [],
+
+    productos: json.productos?.map(p => ({
+      codProducto: p.codProducto,
+      nombre: p.producto?.nombreProducto || "Producto",
+      cantidad: p.cantidad,
+      precioUnitario: p.precioUnitario,
+      subtotal: p.subtotal,
+    })) || []
+  };
+});
+
+
+    return res.json({ data: ventasFormateadas });
+
+  } catch (error) {
+    console.error("Error al obtener ventas del cliente:", error);
+    return res.status(500).json({ error: "Error interno al obtener órdenes del cliente" });
+  }
+};
 
 export const agregarVenta = async (req: Request, res: Response) => {
   const t = await db.transaction();

@@ -1,5 +1,7 @@
-import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
+import { BelongsTo, Column, DataType, ForeignKey, HasMany, Model, Table } from "sequelize-typescript";
 import Cliente from "./Cliente";
+import VentaServicio from "./VentaServicio";
+import VentaProducto from "./VentaProducto";
 
 @Table({tableName: "ventas" })
 class Venta extends Model{
@@ -20,6 +22,11 @@ class Venta extends Model{
     
     @Column({type: DataType.STRING(20), allowNull: true, field:"estado_venta" })
         declare estadoVenta: string
+    @HasMany(() => VentaServicio, { foreignKey: "codVenta", as: "detalles" })
+        declare detalles?: VentaServicio[];
+    @HasMany(() => VentaProducto, { foreignKey: "codVenta", as: "productos" })
+        declare productos?: VentaProducto[];
+        
 }
 
 export default Venta

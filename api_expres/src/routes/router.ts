@@ -5,7 +5,7 @@ import { agregarEmpleado, borrarEmpleado, editarEmpleado, getEmpleadoByRut, getE
 import { agregarPago, getPago, getPagoByID } from "../handlers/pagos";
 import { agregarServicio, borrarServicio, editarServicio, getServicioByID, getServicios } from "../handlers/servicios";
 import { agregarVehiculo, borrarVehiculo, editarVehiculo, getVehiculoByPatente, getVehiculos, getVehiculosByCliente } from "../handlers/vehiculosjiji";
-import { agregarVenta, borrarVenta, cancelarVenta, editarVenta, getVentaByID, getVentas } from "../handlers/ventas";
+import { agregarVenta, borrarVenta, cancelarVenta, editarVenta, getVentaByID, getVentas, getVentasCliente } from "../handlers/ventas";
 import { agregarVentaProducto, borrarVentaProducto, editarVentaProducto, getVentaProductoByID, getVentasProductos } from "../handlers/ventasProductos";
 import { agregarVentaServicio, borrarVentaServicio, editarVentaServicio, getVentaServicioByID, getVentasServicios } from "../handlers/ventasServicios";
 import { autenticar, verificarRol } from "../middleware/auth";
@@ -83,6 +83,7 @@ router.get("/vehiculosjiji/cliente/:rutCliente", autenticar, verificarRol(["clie
 // 💰 VENTAS
 router.get("/ventas", autenticar, verificarRol(["admin", "cliente"]), getVentas);
 router.get("/ventas/:id", autenticar, verificarRol(["admin", "cliente"]), getVentaByID);
+router.get("/mis-ordenes", autenticar, getVentasCliente);
 router.put("/ventas/cancelar", autenticar, verificarRol(["admin", "cliente", "empleado"]), cancelarVenta);
 router.post("/ventas", autenticar, verificarRol(["admin", "cliente"]), agregarVenta);
 router.put("/ventas/:id", autenticar, verificarRol(["admin"]), editarVenta);

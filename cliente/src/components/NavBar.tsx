@@ -98,6 +98,9 @@ const NavbarComponent = () => {
                 <NavLink className="dropdown-item" to="/perfil">Perfil</NavLink>
               </li>
               <li>
+                <NavLink className="dropdown-item" to="/ordenes">Mis ordenes de compra</NavLink>
+              </li>
+              <li>
                 <NavLink className="dropdown-item" to="/login" onClick={handleLogout}>
                   Cerrar Sesión
                 </NavLink>
