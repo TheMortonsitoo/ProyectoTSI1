@@ -4,8 +4,8 @@ import Venta from "./Venta";
 @Table({tableName: "pagos"})
 class Pago extends Model{
 
-    @Column({type: DataType.INTEGER, primaryKey: true, allowNull: false, field:"cod_pago" })
-        declare codPago: number
+    @Column({type: DataType.STRING(50), primaryKey: true, allowNull: false, field:"cod_pago" })
+        declare codPago: string
     
     @Column({type: DataType.STRING(30), allowNull:false, field:"cod_venta" })
     @ForeignKey(()=>Venta)

@@ -16,7 +16,7 @@ export const registrarVenta = async (carrito: any[]) => {
     rutCliente,
     fecha,
     productos,
-    estadoVenta: "finalizada"
+    estadoVenta: "Pendiente"
   });
 
   // 📌 Paso 1: crear venta
@@ -30,7 +30,7 @@ export const registrarVenta = async (carrito: any[]) => {
       rutCliente,
       fecha,
       productos,       // ← AHORA SÍ ENVIAMOS ESTO
-      estadoVenta: "finalizada"
+      estadoVenta: "Pendiente"
     })
   });
 

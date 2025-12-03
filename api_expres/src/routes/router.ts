@@ -1,11 +1,11 @@
-import { agendarServicio, agregarFecha, borrarFecha, editarCalendario, getCalendario, obtenerOcupados } from "../handlers/calendario";
+import { agendarServicio, agregarFecha, borrarFecha, cancelarAgenda, editarCalendario, getAgendaByID, getCalendario, getOcupados, } from "../handlers/calendario";
 import { agregarProducto, aumentarStock, borrarProducto, editarProducto, getProductos, getProductosByID } from "../handlers/productos";
 import { agregarCliente, borrarCliente, editarCliente, getClienteByRut, getClientes, perfilCliente } from "../handlers/clientes";
 import { agregarEmpleado, borrarEmpleado, editarEmpleado, getEmpleadoByRut, getEmpleados, perfilEmpleado } from "../handlers/empleados";
 import { agregarPago, getPago, getPagoByID } from "../handlers/pagos";
 import { agregarServicio, borrarServicio, editarServicio, getServicioByID, getServicios } from "../handlers/servicios";
 import { agregarVehiculo, borrarVehiculo, editarVehiculo, getVehiculoByPatente, getVehiculos, getVehiculosByCliente } from "../handlers/vehiculosjiji";
-import { agregarVenta, borrarVenta, editarVenta, getVentaByID, getVentas } from "../handlers/ventas";
+import { agregarVenta, borrarVenta, cancelarVenta, editarVenta, getVentaByID, getVentas } from "../handlers/ventas";
 import { agregarVentaProducto, borrarVentaProducto, editarVentaProducto, getVentaProductoByID, getVentasProductos } from "../handlers/ventasProductos";
 import { agregarVentaServicio, borrarVentaServicio, editarVentaServicio, getVentaServicioByID, getVentasServicios } from "../handlers/ventasServicios";
 import { autenticar, verificarRol } from "../middleware/auth";
@@ -22,11 +22,14 @@ router.use("/auth", authRoutes);
 
 // 📅 CALENDARIO
 router.get("/calendario", getCalendario);
+router.get("/calendario/ocupados", autenticar, verificarRol(["cliente","admin"]), getOcupados);
+router.get("/calendario/:id", getAgendaByID);
 router.post("/calendario", agregarFecha);
 router.put("/calendario/:id", editarCalendario);
 router.delete("/calendario/:id", borrarFecha);
 router.post("/calendario/agendar", agendarServicio);
-router.get("/calendario/ocupados", obtenerOcupados)
+router.put("/calendario/cancelar", autenticar, verificarRol(["cliente", "admin"]), cancelarAgenda);
+
 
 // 👤 CLIENTES
 router.post("/cliente/registrar", agregarCliente); // registro abierto
@@ -51,7 +54,7 @@ router.delete("/empleados/:rut", autenticar, verificarRol(["admin"]), borrarEmpl
 // 💳 PAGOS
 router.get("/pagos", autenticar, verificarRol(["admin"]), getPago);
 router.get("/pagos/:id", autenticar, verificarRol(["admin"]), getPagoByID);
-router.post("/pagos", autenticar, verificarRol(["admin"]), agregarPago);
+router.post("/pagos", autenticar, verificarRol(["admin", "cliente"]), agregarPago);
 
 // 🛒 PRODUCTOS
 router.get("/productos", getProductos); // público
@@ -79,10 +82,13 @@ router.get("/vehiculosjiji/cliente/:rutCliente", autenticar, verificarRol(["clie
 
 // 💰 VENTAS
 router.get("/ventas", autenticar, verificarRol(["admin", "cliente"]), getVentas);
-router.get("/ventas/:id", autenticar, verificarRol(["admin"]), getVentaByID);
+router.get("/ventas/:id", autenticar, verificarRol(["admin", "cliente"]), getVentaByID);
+router.put("/ventas/cancelar", autenticar, verificarRol(["admin", "cliente", "empleado"]), cancelarVenta);
 router.post("/ventas", autenticar, verificarRol(["admin", "cliente"]), agregarVenta);
 router.put("/ventas/:id", autenticar, verificarRol(["admin"]), editarVenta);
 router.delete("/ventas/:id", autenticar, verificarRol(["admin"]), borrarVenta);
+
+
 
 // 📦 VENTA DE PRODUCTOS
 router.get("/ventasProductos", autenticar, verificarRol(["admin"]), getVentasProductos);

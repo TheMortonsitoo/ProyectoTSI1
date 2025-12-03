@@ -10,6 +10,14 @@ export const getCalendario = async(request: Request, response: Response) => {
     response.json({data: calendario})
 }
 
+export const getAgendaByID = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const agenda = await Agenda.findByPk(id);
+  if (!agenda) return res.status(404).json({ error: "Agenda no encontrada" });
+  res.json({ data: agenda });
+};
+
+
 export const agregarFecha = async(request: Request, response: Response) => {
     console.log(request.body)
     const fecha = await Agenda.create(request.body)
@@ -62,11 +70,10 @@ export const agendarServicio = async (req: AuthRequest, res: Response) => {
       patente,
       fecha,
       hora,
-      estado: "pendiente",
+      estadoAgenda: "pendiente", // 👈 usar campo correcto
       razonVisita: descripcion,
-      observaciones: observaciones ?? ""  // 👈 AGREGADO AQUÍ
+      observaciones: observaciones ?? ""
     });
-
 
     // Generar código de venta secuencial
     const ultimaVenta = await Venta.findOne({
@@ -88,16 +95,7 @@ export const agendarServicio = async (req: AuthRequest, res: Response) => {
       rutCliente,
       fecha,
       total: precio_unitario,
-      estadoVenta: "finalizada"
-    });
-
-    console.log("Insertando en venta_servicios:", {
-      codVenta,
-      codServicio,
-      descripcionDetalle: descripcion,
-      observaciones,
-      precioUnitario: precio_unitario,
-      subtotal: precio_unitario
+      estadoVenta: "Pendiente"
     });
 
     // Registrar el servicio vendido
@@ -110,36 +108,74 @@ export const agendarServicio = async (req: AuthRequest, res: Response) => {
       subtotal: precio_unitario ?? 0
     });
 
-    res.json({
+    // ✅ Respuesta clara para frontend
+    res.status(201).json({
       mensaje: "Servicio agendado y venta registrada con éxito",
-      agendamiento,
-      venta
+      data: {
+        codAgenda: agendamiento.codAgenda,
+        codVenta: venta.codVenta,
+        agenda: agendamiento,
+        venta
+      }
     });
   } catch (error) {
     console.error("Error al agendar y registrar venta:", error);
     res.status(500).json({ mensaje: "Error al agendar y registrar venta", error });
   }
 };
+
+
 //para obtener las horas tomadas.
-export const obtenerOcupados = async (req: Request, res: Response) => {
+export const getOcupados = async (req: Request, res: Response) => {
   try {
     const { fecha } = req.query;
-
     if (!fecha) {
-      return res.status(400).json({ mensaje: "La fecha es obligatoria" });
+      return res.status(400).json({ error: "Debe proporcionar una fecha" });
     }
 
-    const ocupados = await Agenda.findAll({
+    // Buscar todas las agendas de esa fecha
+    const agendas = await Agenda.findAll({
       where: { fecha },
-      attributes: ["hora", "rutEmpleado"], 
+      attributes: ["hora", "rutEmpleado", "estadoAgenda"]
     });
 
-    return res.json(ocupados);
+    // Filtrar solo las horas ocupadas (pendientes o finalizadas)
+    const ocupados = agendas.map(a => ({
+      hora: a.hora,
+      empleado: a.rutEmpleado,
+      estado: a.estado
+    }));
+
+    res.json({ data: ocupados });
   } catch (error) {
-    console.error("Error al obtener horas ocupadas:", error);
-    res.status(500).json({ mensaje: "Error al obtener horas ocupadas" });
+    console.error("Error al obtener ocupados:", error);
+    res.status(500).json({ error: "Error interno al obtener ocupados" });
   }
 };
+
+export const cancelarAgenda = async (req: Request, res: Response) => {
+  try {
+    const { codAgenda } = req.body;
+
+    // Buscar la agenda
+    const agenda = await Agenda.findOne({ where: { codAgenda } });
+    if (!agenda) {
+      return res.status(404).json({ error: "Agenda no encontrada" });
+    }
+
+    // Actualizar estado
+    agenda.estado = "cancelada";
+    await agenda.save();
+
+    res.status(200).json({
+      mensaje: "Agenda cancelada correctamente",
+      data: agenda
+    });
+  } catch (error) {
+    console.error("Error al cancelar agenda:", error);
+    res.status(500).json({ error: "Error interno al cancelar agenda" });
+  }
+}
 
 
 
