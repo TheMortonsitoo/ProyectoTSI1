@@ -21,6 +21,8 @@ import MainLayout from "./layouts/Layout";
 import ProtectedRoute from "./layouts/RouteProtegida";
 import OrdenesCompra from "./pages/OrdenesCompra";
 import ServiciosAsignados from "./pages/Empleado/ServiciosAgendados";
+import VentasProductos from "./pages/Admin/VentasProductos";
+import VentasServicios from "./pages/Admin/VentasServicios";
 
 
 const router = createBrowserRouter([
@@ -56,6 +58,22 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute allowedRoles={["empleado"]}>
         <MainLayout><ServiciosAsignados /></MainLayout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/admin/ventas/servicios",
+    element: (
+      <ProtectedRoute allowedRoles={["admin"]}>
+        <MainLayout><VentasServicios /></MainLayout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/admin/ventas/productos",
+    element: (
+      <ProtectedRoute allowedRoles={["admin"]}>
+        <MainLayout><VentasProductos /></MainLayout>
       </ProtectedRoute>
     ),
   },

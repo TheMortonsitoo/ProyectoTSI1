@@ -81,7 +81,7 @@ const NavbarComponent = () => {
         aria-expanded="false"
       >
         <img
-          src="public/Images/persona.png"
+          src="public/images/persona.png"
           alt="Cuenta"
           style={{
             width: "25px",
@@ -124,12 +124,12 @@ const NavbarComponent = () => {
         {localStorage.getItem("rol") === "admin" && (
           <>
             <li>
-              <NavLink className="dropdown-item" to="/ventas-servicios">
+              <NavLink className="dropdown-item" to="/admin/ventas/servicios">
                 Ventas de servicios
               </NavLink>
             </li>
             <li>
-              <NavLink className="dropdown-item" to="/ventas-productos">
+              <NavLink className="dropdown-item" to="/admin/ventas/productos">
                 Ventas de productos
               </NavLink>
             </li>

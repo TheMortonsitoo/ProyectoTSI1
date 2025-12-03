@@ -1,10 +1,36 @@
 import { Request, Response } from "express"
 import VentaProductos from "../models/VentaProducto"
+import Producto from "../models/Producto";
+import Venta from "../models/Venta";
+import Cliente from "../models/Cliente";
 
-export const getVentasProductos = async (request: Request, response: Response) => {
-    const venta = await VentaProductos.findAll()
-    response.json({data:venta})
-}
+export const getVentasProductos = async (req: Request, res: Response) => {
+  try {
+    const ventas = await VentaProductos.findAll({
+      include: [
+        {
+          model: Producto,
+          as: "producto",
+        },
+        {
+          model: Venta,
+          as: "venta",
+          include: [
+            {
+              model: Cliente,
+              as: "cliente",
+            }
+          ]
+        }
+      ]
+    });
+
+    res.json({ data: ventas });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error obteniendo ventas de productos" });
+  }
+};
 
 export const getVentaProductoByID = async (request: Request, response: Response) => {
     const {id} = request.params

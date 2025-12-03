@@ -1,5 +1,8 @@
 import { Request, Response } from "express"
 import Servicio from "../models/Servicio"
+import VentaServicio from "../models/VentaServicio";
+import Venta from "../models/Venta";
+import Cliente from "../models/Cliente";
 
 const convertirATiempoEnMinutos = (valor: any): number => {
   if (!valor) return 0;
@@ -131,6 +134,30 @@ export const editarServicio = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Error interno al editar servicio" });
   }
 };
+//lo acabo de agregar, para probar.
+export const getVentasServicios = async (req: Request, res: Response) => {
+    const ventas = await VentaServicio.findAll({
+        include: [
+            {
+                model: Servicio,
+                as: "servicio",
+            },
+            {
+                model: Venta,
+                as: "venta",
+                include: [
+                    {
+                        model: Cliente,
+                        as: "cliente"
+                    }
+                ]
+            }
+        ]
+    });
+
+    res.json({ data: ventas });
+};
+
 
 
 export const borrarServicio = async(request: Request, response: Response) => {
