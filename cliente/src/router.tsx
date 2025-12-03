@@ -20,6 +20,7 @@ import PagoPage from "./pages/Pago";
 import MainLayout from "./layouts/Layout";
 import ProtectedRoute from "./layouts/RouteProtegida";
 import OrdenesCompra from "./pages/OrdenesCompra";
+import ServiciosAsignados from "./pages/Empleado/ServiciosAgendados";
 
 
 const router = createBrowserRouter([
@@ -47,6 +48,14 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute allowedRoles={["cliente", "empleado", "admin"]}>
         <MainLayout><OrdenesCompra /></MainLayout>
+      </ProtectedRoute>
+    ),
+  },
+   {
+    path: "/ServiciosAgendados",
+    element: (
+      <ProtectedRoute allowedRoles={["empleado"]}>
+        <MainLayout><ServiciosAsignados /></MainLayout>
       </ProtectedRoute>
     ),
   },

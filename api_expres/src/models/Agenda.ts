@@ -35,8 +35,11 @@ class Agenda extends Model{
     @Column({type: DataType.STRING(20), allowNull: true, field:"estado" })
         declare estado: string
 
-    @Column({type: DataType.STRING(255), allowNull: true, field:"observaciones" })
-        declare observaciones: string
+    @Column({ type: DataType.STRING(255), allowNull: true })
+        declare observaciones_cliente: string;
+
+    @Column({ type: DataType.STRING(255), allowNull: true })
+        declare observaciones_empleado: string;
 
     @Column({type: DataType.STRING(100), allowNull: true, field:"razon_visita" })
         declare razonVisita: string

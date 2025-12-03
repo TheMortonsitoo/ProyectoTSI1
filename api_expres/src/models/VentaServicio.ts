@@ -18,9 +18,9 @@ class VentaServicio extends Model {
 
   @BelongsTo(() => Servicio, { as: "servicio" })
   declare servicio: Servicio;
-
-  @Column({ type: DataType.STRING(30), allowNull: false, field: "cod_venta" })
+  
   @ForeignKey(() => Venta)
+  @Column({ type: DataType.STRING(30), allowNull: false, field: "cod_venta" })
   declare codVenta: string;
 
   @BelongsTo(() => Venta, { as: "venta" })
@@ -29,8 +29,11 @@ class VentaServicio extends Model {
   @Column({ type: DataType.STRING(100), allowNull: true })
   declare descripcionDetalle: string;
 
-  @Column({ type: DataType.STRING(100), allowNull: true })
+  @Column({ type: DataType.STRING(200), allowNull: true })
   declare observaciones: string;
+
+  @Column({ type: DataType.STRING(255), allowNull: true })
+  declare observacionesEmpleado: string;
 
   @Column({ type: DataType.INTEGER, allowNull: true })
   declare precioUnitario: number;

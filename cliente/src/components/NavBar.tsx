@@ -114,7 +114,7 @@ const NavbarComponent = () => {
         {/* ================= EMPLEADO ================= */}
         {localStorage.getItem("rol") === "empleado" && (
           <li>
-            <NavLink className="dropdown-item" to="/servicios-panel">
+            <NavLink className="dropdown-item" to="/ServiciosAgendados">
               Servicios asignados
             </NavLink>
           </li>

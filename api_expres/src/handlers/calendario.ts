@@ -50,7 +50,7 @@ export const agendarServicio = async (req: AuthRequest, res: Response) => {
       hora,
       codServicio,
       descripcion,
-      observaciones,
+      observaciones_cliente,
       precio_unitario
     } = req.body;
 
@@ -72,7 +72,7 @@ export const agendarServicio = async (req: AuthRequest, res: Response) => {
       hora,
       estado: "pendiente", // 👈 usar campo correcto
       razonVisita: descripcion,
-      observaciones: observaciones ?? ""
+      observaciones_cliente: observaciones_cliente ?? ""
     });
 
     // Generar código de venta secuencial
@@ -103,7 +103,7 @@ export const agendarServicio = async (req: AuthRequest, res: Response) => {
       codVenta,
       codServicio,
       descripcionDetalle: descripcion ?? "",
-      observaciones: observaciones ?? "",
+      observaciones: observaciones_cliente ?? "",
       precioUnitario: precio_unitario ?? 0,
       subtotal: precio_unitario ?? 0
     });
@@ -155,6 +155,57 @@ export const getOcupados = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Error interno al obtener ocupados" });
   }
 };
+export const getAgendasEmpleado = async (req, res) => {
+  const { rutEmpleado } = req.params;
+
+  const agendas = await Agenda.findAll({
+    where: { rutEmpleado },
+  });
+
+  res.json({ data: agendas });
+};
+export const agregarObservacionEmpleado = async (req: Request, res: Response) => {
+  try {
+    const { codAgenda } = req.params;
+    const { observaciones_empleado } = req.body;
+
+    const agenda = await Agenda.findOne({ where: { codAgenda } });
+    if (!agenda) return res.status(404).json({ mensaje: "Agenda no encontrada" });
+
+    agenda.observaciones_empleado = observaciones_empleado;
+    await agenda.save();
+
+    res.json({ mensaje: "Observación guardada", data: agenda });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ mensaje: "Error al guardar observación" });
+  }
+};
+
+export const cambiarEstadoAgenda = async (req: Request, res: Response) => {
+  try {
+    const { codAgenda } = req.params;
+    const { estado } = req.body;
+
+    const agenda = await Agenda.findOne({ where: { codAgenda } });
+    if (!agenda) {
+      return res.status(404).json({ mensaje: "Agenda no encontrada" });
+    }
+
+    agenda.estado = estado;
+    await agenda.save();
+
+    res.json({ mensaje: "Estado actualizado correctamente", data: agenda });
+  } catch (error) {
+    console.error("ERROR CAMBIAR ESTADO:", error);
+    res.status(500).json({ mensaje: "Error al cambiar estado" });
+  }
+};
+
+
+
+
 
 
 

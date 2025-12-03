@@ -40,7 +40,7 @@ const Agendar = () => {
   const [clienteRut, setClienteRut] = useState("");
   const [ocupados, setOcupados] = useState<Ocupado[]>([]);
   const [vehiculos, setVehiculos] = useState<any[]>([]);
-  const [observaciones, setObservaciones] = useState("");
+  const [observaciones_cliente, setObservacionesCliente] = useState("");
   const horasDisponibles = ["09:00","10:00","11:00","12:00","15:00","16:00","17:00"];
   //-----------------------------------------------------
   const cargarVehiculos = async () => {
@@ -193,7 +193,7 @@ useEffect(() => {
         hora,
         codServicio: servicioSeleccionado,
         descripcion: servicio?.nombreServicio || "",
-        observaciones: observaciones.trim() || "",
+        observaciones_cliente: observaciones_cliente.trim() || "",
         precio_unitario: servicio?.precio || 0
       },
       {
@@ -205,7 +205,7 @@ useEffect(() => {
     alert(` Agendaste el ${date.toLocaleDateString()} a las ${hora}`);
 
     // limpiar observaciones
-    setObservaciones("");
+    setObservacionesCliente("");
 
     // Redirigir a PagoPage con el codAgenda
    const codVenta = result.data?.codVenta;
@@ -415,16 +415,13 @@ useEffect(() => {
             </Form.Select>
           </Form.Group>
           {/* Obervaciones */}
-          <Form.Group>
-            <Form.Label>Observaciones</Form.Label>
-            <Form.Control
-              as="textarea"
-              rows={3}
-              placeholder="Escribe observaciones..."
-              value={observaciones}
-              onChange={(e) => setObservaciones(e.target.value)}
-            />
-          </Form.Group>
+          <Form.Control
+            as="textarea"
+            rows={3}
+            placeholder="Escribe observaciones del cliente..."
+            value={observaciones_cliente}
+            onChange={(e) => setObservacionesCliente(e.target.value)}
+          />
 
 
           {/* Botón */}

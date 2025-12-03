@@ -30,9 +30,10 @@ interface Orden {
 
 const OrdenesCompra = () => {
   const [ordenes, setOrdenes] = useState<Orden[]>([]);
-  const [vista, setVista] = useState<"dashboard">("dashboard");
+  const [vista] = useState<"dashboard">("dashboard");
   const [ordenSeleccionada, setOrdenSeleccionada] = useState<Orden | null>(null);
   const [mostrarModal, setMostrarModal] = useState(false);
+  const [estadoServicio, setEstadoServicio] = useState<string>("-");
 
   const token = localStorage.getItem("token");
 
@@ -115,15 +116,32 @@ const OrdenesCompra = () => {
 
 
   // ================== Modal ======================
-  const abrirDetalle = (orden: Orden) => {
-    setOrdenSeleccionada(orden);
-    setMostrarModal(true);
-  };
+  const abrirDetalle = async (orden: Orden) => {
+  setOrdenSeleccionada(orden);
+  setMostrarModal(true);
+
+  try {
+    const res = await fetch(
+      `http://localhost:3000/api/agenda/estado-por-venta/${orden.codVenta}`,
+      {
+        headers: { Authorization: `Bearer ${token}` }
+      }
+    );
+
+    const data = await res.json();
+    setEstadoServicio(data.estado || "-");
+  } catch (error) {
+    console.error("Error cargando estado del servicio:", error);
+    setEstadoServicio("-");
+  }
+};
+
 
   const cerrarDetalle = () => {
     setMostrarModal(false);
     setOrdenSeleccionada(null);
   };
+  
 
   // ================== Helpers ======================
   const formatearFecha = (fecha: string) => {
@@ -224,6 +242,7 @@ const OrdenesCompra = () => {
 
       {/* ===================== MODAL DETALLE ===================== */}
       <Modal show={mostrarModal} onHide={cerrarDetalle} size="lg">
+        
         <Modal.Header closeButton>
           <Modal.Title>Detalle de orden</Modal.Title>
         </Modal.Header>
@@ -246,6 +265,7 @@ const OrdenesCompra = () => {
                   <thead>
                     <tr>
                       <th>Servicio</th>
+                      <th>Estado</th>
                       <th>Obs.</th>
                       <th>Unit.</th>
                       <th>Subtotal</th>
@@ -255,6 +275,9 @@ const OrdenesCompra = () => {
                     {ordenSeleccionada.servicios.map((s, i) => (
                       <tr key={i}>
                         <td>{s.nombreServicio || s.codServicio}</td>
+                        <td>
+                          <span className="badge bg-info"> {estadoServicio} </span>
+                        </td>
                         <td>{s.observaciones || "-"}</td>
                         <td>${s.precioUnitario.toLocaleString()}</td>
                         <td>${s.subtotal.toLocaleString()}</td>
