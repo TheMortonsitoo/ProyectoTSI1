@@ -66,14 +66,19 @@ const OrdenesCompra = () => {
 
   // ================== Dashboard Stats =====================
   const stats = useMemo(() => {
-  const totalOrdenes = ordenes.length;
-  const totalGastado = ordenes.reduce((acc, o) => acc + (o.total ?? 0), 0);
+  // Filtrar solo las órdenes finalizadas
+  const ordenesValidas = ordenes.filter(
+    (o) => o.estadoVenta?.toLowerCase() === "finalizada"
+  );
+
+  const totalOrdenes = ordenesValidas.length;
+  const totalGastado = ordenesValidas.reduce((acc, o) => acc + (o.total ?? 0), 0);
 
   // Contadores
   const serviciosCount: Record<string, number> = {};
   const productosCount: Record<string, number> = {};
 
-  ordenes.forEach((o) => {
+  ordenesValidas.forEach((o) => {
     // Contar servicios
     o.servicios?.forEach((s) => {
       const key = s.descripcionDetalle || s.codServicio || "Servicio";
@@ -115,6 +120,7 @@ const OrdenesCompra = () => {
 }, [ordenes]);
 
 
+
   // ================== Modal ======================
   const abrirDetalle = async (orden: Orden) => {
   setOrdenSeleccionada(orden);
@@ -122,19 +128,26 @@ const OrdenesCompra = () => {
 
   try {
     const res = await fetch(
-      `http://localhost:3000/api/agenda/estado-por-venta/${orden.codVenta}`,
+      `http://localhost:3000/api/calendario/estado-por-venta/${orden.codVenta}`,
       {
         headers: { Authorization: `Bearer ${token}` }
       }
     );
 
     const data = await res.json();
-    setEstadoServicio(data.estado || "-");
+    console.log("Estado agenda recibido:", data);
+
+    if (data.ok) {
+      setEstadoServicio(data.estado || "-");
+    } else {
+      setEstadoServicio("-");
+    }
   } catch (error) {
     console.error("Error cargando estado del servicio:", error);
     setEstadoServicio("-");
   }
 };
+
 
 
   const cerrarDetalle = () => {
@@ -151,12 +164,17 @@ const OrdenesCompra = () => {
   };
 
   const badgeEstado = (estado: string) => {
-    const est = estado?.toLowerCase() || "";
-    if (est.includes("pend")) return <Badge bg="warning">Pendiente</Badge>;
-    if (est.includes("final")) return <Badge bg="success">Finalizada</Badge>;
-    if (est.includes("anul")) return <Badge bg="danger">Anulada</Badge>;
-    return <Badge bg="secondary">{estado}</Badge>;
-  };
+  const e = estado?.toLowerCase() || "";
+
+  if (e.includes("pend")) return <Badge bg="warning">Pendiente</Badge>;
+  if (e.includes("fin")) return <Badge bg="success">Finalizada</Badge>;
+  if (e.includes("prog")) return <Badge bg="primary">En progreso</Badge>;
+  if (e.includes("canc")) return <Badge bg="danger">Cancelado</Badge>;
+  if (e.includes("anul")) return <Badge bg="danger">Anulada</Badge>;
+
+  return <Badge bg="secondary">{estado}</Badge>;
+};
+
 
   // ==========================================================
   return (
@@ -276,7 +294,7 @@ const OrdenesCompra = () => {
                       <tr key={i}>
                         <td>{s.nombreServicio || s.codServicio}</td>
                         <td>
-                          <span className="badge bg-info"> {estadoServicio} </span>
+                          {badgeEstado(estadoServicio)}
                         </td>
                         <td>{s.observaciones || "-"}</td>
                         <td>${s.precioUnitario.toLocaleString()}</td>

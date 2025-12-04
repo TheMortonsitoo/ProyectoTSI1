@@ -3,7 +3,8 @@ import Agenda from "../models/Agenda"
 import { AuthRequest } from "../middleware/auth"
 import Venta from "../models/Venta"
 import VentaServicio from "../models/VentaServicio"
-import { Op } from "sequelize"
+import { Op, QueryTypes } from "sequelize"
+import db from "../config/database"
 
 export const getCalendario = async(request: Request, response: Response) => {
     const calendario = await Agenda.findAll()
@@ -205,6 +206,35 @@ export const cambiarEstadoAgenda = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("ERROR CAMBIAR ESTADO:", error);
     res.status(500).json({ mensaje: "Error al cambiar estado" });
+  }
+};
+
+export const getEstadoAgendaPorVenta = async (req: Request, res: Response) => {
+  const { codVenta } = req.params;
+
+  try {
+    // Buscamos la agenda que tenga asociada esa venta
+    const agenda = await Agenda.findOne({ where: { codVenta } });
+
+    if (!agenda) {
+      return res.status(404).json({
+        ok: false,
+        msg: "No existe agenda asociada a esta venta",
+      });
+    }
+
+    // OJO: aquí usamos el nombre REAL de la columna en la tabla agenda
+    // si tu campo se llama distinto (ej: estadoAgenda), cámbialo acá:
+    return res.json({
+      ok: true,
+      estado: agenda.estado,
+    });
+  } catch (error) {
+    console.error("ERROR getEstadoAgendaPorVenta:", error);
+    return res.status(500).json({
+      ok: false,
+      msg: "Error obteniendo estado del servicio",
+    });
   }
 };
 

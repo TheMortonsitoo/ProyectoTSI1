@@ -1,4 +1,4 @@
-import { agendarServicio, agregarFecha, agregarObservacionEmpleado, borrarFecha, cambiarEstadoAgenda, cancelarAgenda, editarCalendario, getAgendaByID, getAgendasEmpleado, getCalendario, getOcupados, } from "../handlers/calendario";
+import { agendarServicio, agregarFecha, agregarObservacionEmpleado, borrarFecha, cambiarEstadoAgenda, cancelarAgenda, editarCalendario, getAgendaByID, getAgendasEmpleado, getCalendario, getEstadoAgendaPorVenta, getOcupados, } from "../handlers/calendario";
 import { agregarProducto, aumentarStock, borrarProducto, editarProducto, getProductos, getProductosByID } from "../handlers/productos";
 import { agregarCliente, borrarCliente, editarCliente, getClienteByRut, getClientes, perfilCliente } from "../handlers/clientes";
 import { agregarEmpleado, borrarEmpleado, editarEmpleado, getEmpleadoByRut, getEmpleados, perfilEmpleado } from "../handlers/empleados";
@@ -25,6 +25,12 @@ router.get("/calendario", getCalendario);
 router.get("/calendario/ocupados", autenticar, verificarRol(["cliente","admin"]), getOcupados);
 router.get("/calendario/:id", getAgendaByID);
 router.get("/calendario/empleados/:rutEmpleado", autenticar, verificarRol(["empleado", "admin"]), getAgendasEmpleado );
+router.get(
+  "/calendario/estado-por-venta/:codVenta",
+  autenticar,
+  verificarRol(["cliente", "empleado", "admin"]),
+  getEstadoAgendaPorVenta
+);
 router.post("/calendario", agregarFecha);
 router.post("/calendario/observacion-empleado/:codAgenda", autenticar, verificarRol(["empleado","admin"]), agregarObservacionEmpleado )
 router.post("/calendario/cambiar-estado/:codAgenda", autenticar, verificarRol(["empleado","admin"]), cambiarEstadoAgenda )

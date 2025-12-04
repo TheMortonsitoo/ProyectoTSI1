@@ -88,7 +88,7 @@ useEffect(() => {
     params: { fecha: fechaSeleccionada },
     headers: { Authorization: `Bearer ${token}` }
   })
-  .then((res) => setOcupados(res.data.data)) // 👈 usa res.data.data
+  .then((res) => setOcupados(res.data.data)) 
   .catch((err) => console.error("Error cargando ocupados:", err));
 }, [date, empleadoRut]);
 
@@ -152,7 +152,7 @@ useEffect(() => {
         }
       );
 
-      alert(" Vehículo agregado correctamente.");
+      alert(" ✅ Vehículo agregado correctamente.");
       await cargarVehiculos();
       
       // limpiar campos

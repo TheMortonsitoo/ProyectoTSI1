@@ -25,7 +25,7 @@ const handleFinalizarCompra = async () => {
     const codVenta = await registrarVenta(carrito);
     localStorage.removeItem("carrito");
     setCarrito([]);
-    alert(`Compra registrada con éxito. Código: ${codVenta}`);
+    alert(`✅ Compra registrada con éxito.`);
     navigate(`/pago?venta=${codVenta}`);
   } catch (error) {
     console.error("Error al finalizar compra:", error);
