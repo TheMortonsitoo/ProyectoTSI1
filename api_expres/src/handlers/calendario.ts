@@ -4,7 +4,6 @@ import { AuthRequest } from "../middleware/auth"
 import Venta from "../models/Venta"
 import VentaServicio from "../models/VentaServicio"
 import { Op, QueryTypes } from "sequelize"
-import db from "../config/database"
 
 export const getCalendario = async(request: Request, response: Response) => {
     const calendario = await Agenda.findAll()
@@ -32,6 +31,60 @@ export const editarCalendario = async(request: Request, response: Response) => {
     await editarCalendario.save()
     response.json({data: editarCalendario})
 }
+
+export const getAgendasClienteAutenticado = async (req: AuthRequest, res: Response) => {
+  try {
+    const rutCliente = req.user?.rut; // viene del token
+
+    if (!rutCliente) {
+      return res.status(400).json({
+        ok: false,
+        msg: "No se pudo obtener el rut del cliente"
+      });
+    }
+
+    const agendas = await Agenda.findAll({
+      where: { rutCliente },
+      order: [["fecha", "ASC"]]
+    });
+
+    res.json({
+      ok: true,
+      data: agendas
+    });
+
+  } catch (error) {
+    console.error("Error en getAgendasClienteAutenticado:", error);
+    res.status(500).json({
+      ok: false,
+      msg: "Error obteniendo agendas del cliente"
+    });
+  }
+};
+
+export const getAgendasCliente = async (req: Request, res: Response) => {
+  try {
+    const { rutCliente } = req.params;
+
+    const rows = await Agenda.findAll({
+      where: { rutCliente },
+      order: [["fecha", "ASC"]]
+    });
+
+    res.json({
+      ok: true,
+      data: rows
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      ok: false,
+      msg: "Error obteniendo agendas del cliente"
+    });
+  }
+};
+
 
 
 export const borrarFecha = async(request: Request, response: Response) => {
@@ -242,25 +295,29 @@ export const getEstadoAgendaPorVenta = async (req: Request, res: Response) => {
 
 export const cancelarAgenda = async (req: Request, res: Response) => {
   try {
-    const { codAgenda } = req.body;
+    const { codAgenda } = req.params;   
+    console.log("↪ Cancelar agenda:", codAgenda);
 
-    // Buscar la agenda
+    if (!codAgenda) {
+      return res.status(400).json({ error: "No se envió codAgenda" });
+    }
+
     const agenda = await Agenda.findOne({ where: { codAgenda } });
+
     if (!agenda) {
       return res.status(404).json({ error: "Agenda no encontrada" });
     }
 
-    // Actualizar estado
     agenda.estado = "cancelada";
     await agenda.save();
 
-    res.status(200).json({
+    return res.status(200).json({
       mensaje: "Agenda cancelada correctamente",
-      data: agenda
+      data: agenda,
     });
   } catch (error) {
     console.error("Error al cancelar agenda:", error);
-    res.status(500).json({ error: "Error interno al cancelar agenda" });
+    return res.status(500).json({ error: "Error interno al cancelar agenda" });
   }
-}
+};
 

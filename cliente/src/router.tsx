@@ -17,14 +17,13 @@ import ViewAgregarProducto from "./pages/Admin/ViewAgregarProducto";
 import ViewAgregarServicio from "./pages/Admin/ViewAgregarServicio";
 import InventarioPage from "./pages/Admin/ViewAgregarEmpleado";
 import PagoPage from "./pages/Pago";
-import MainLayout from "./Layouts/Layout";
-import ProtectedRoute from "./Layouts/RouteProtegida";
 import OrdenesCompra from "./pages/OrdenesCompra";
 import ServiciosAsignados from "./pages/Empleado/ServiciosAgendados";
 import VentasProductos from "./pages/Admin/VentasProductos";
 import VentasServicios from "./pages/Admin/VentasServicios";
-
-
+import MainLayout from "./layouts/Layout";
+import ProtectedRoute from "./layouts/RouteProtegida";
+import MisAgendas from "./pages/ServiciosAgendados";
 const router = createBrowserRouter([
   { path: "/", element: <MainLayout><Home /></MainLayout> },
   { path: "/login", element: <MainLayout><Login /></MainLayout>, action: loginAction },
@@ -50,6 +49,14 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute allowedRoles={["cliente", "empleado", "admin"]}>
         <MainLayout><OrdenesCompra /></MainLayout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/MisAgendas",
+    element: (
+      <ProtectedRoute allowedRoles={["cliente", "admin"]}>
+        <MainLayout><MisAgendas /></MainLayout>
       </ProtectedRoute>
     ),
   },

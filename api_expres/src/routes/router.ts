@@ -1,4 +1,4 @@
-import { agendarServicio, agregarFecha, agregarObservacionEmpleado, borrarFecha, cambiarEstadoAgenda, cancelarAgenda, editarCalendario, getAgendaByID, getAgendasEmpleado, getCalendario, getEstadoAgendaPorVenta, getOcupados, } from "../handlers/calendario";
+import { agendarServicio, agregarFecha, agregarObservacionEmpleado, borrarFecha, cambiarEstadoAgenda, cancelarAgenda, editarCalendario, getAgendaByID, getAgendasCliente, getAgendasClienteAutenticado, getAgendasEmpleado, getCalendario, getEstadoAgendaPorVenta, getOcupados, } from "../handlers/calendario";
 import { agregarProducto, aumentarStock, borrarProducto, editarProducto, getProductos, getProductosByID } from "../handlers/productos";
 import { agregarCliente, borrarCliente, editarCliente, getClienteByRut, getClientes, perfilCliente } from "../handlers/clientes";
 import { agregarEmpleado, borrarEmpleado, editarEmpleado, getEmpleadoByRut, getEmpleados, perfilEmpleado } from "../handlers/empleados";
@@ -26,6 +26,18 @@ router.get("/calendario/ocupados", autenticar, verificarRol(["cliente","admin"])
 router.get("/calendario/:id", getAgendaByID);
 router.get("/calendario/empleados/:rutEmpleado", autenticar, verificarRol(["empleado", "admin"]), getAgendasEmpleado );
 router.get(
+  "/mis-agendas",
+  autenticar,
+  verificarRol(["cliente"]),
+  getAgendasClienteAutenticado
+);
+router.get(
+  "/calendario/cliente/:rutCliente",
+  autenticar,
+  verificarRol(["cliente", "admin"]),
+  getAgendasCliente
+);
+router.get(
   "/calendario/estado-por-venta/:codVenta",
   autenticar,
   verificarRol(["cliente", "empleado", "admin"]),
@@ -35,9 +47,15 @@ router.post("/calendario", agregarFecha);
 router.post("/calendario/observacion-empleado/:codAgenda", autenticar, verificarRol(["empleado","admin"]), agregarObservacionEmpleado )
 router.post("/calendario/cambiar-estado/:codAgenda", autenticar, verificarRol(["empleado","admin"]), cambiarEstadoAgenda )
 router.put("/calendario/:id", editarCalendario);
+router.put(
+  "/calendario/cancelar/:codAgenda",
+  autenticar,
+  verificarRol(["cliente", "admin"]),
+  cancelarAgenda
+);
 router.delete("/calendario/:id", borrarFecha);
 router.post("/calendario/agendar", agendarServicio);
-router.put("/calendario/cancelar", autenticar, verificarRol(["cliente", "admin"]), cancelarAgenda);
+
 
 
 // 👤 CLIENTES

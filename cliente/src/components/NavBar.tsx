@@ -106,7 +106,10 @@ const NavbarComponent = () => {
         {localStorage.getItem("rol") === "cliente" && (
           <li>
             <NavLink className="dropdown-item" to="/ordenes">
-              Mis órdenes de compra
+              Órdenes de compra
+            </NavLink>
+            <NavLink className="dropdown-item" to="/MisAgendas">
+              Mi Agenda
             </NavLink>
           </li>
         )}
