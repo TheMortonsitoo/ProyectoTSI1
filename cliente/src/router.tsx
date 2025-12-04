@@ -24,6 +24,7 @@ import VentasServicios from "./pages/Admin/VentasServicios";
 import MainLayout from "./layouts/Layout";
 import ProtectedRoute from "./layouts/RouteProtegida";
 import MisAgendas from "./pages/ServiciosAgendados";
+import InventarioPagee from "./pages/Admin/ViewEliminarClientes";
 const router = createBrowserRouter([
   { path: "/", element: <MainLayout><Home /></MainLayout> },
   { path: "/login", element: <MainLayout><Login /></MainLayout>, action: loginAction },
@@ -134,6 +135,14 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute allowedRoles={["admin"]}>
         <MainLayout><InventarioPage/></MainLayout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/eliminar-cliente",
+    element: (
+      <ProtectedRoute allowedRoles={["admin"]}>
+        <MainLayout><InventarioPagee/></MainLayout>
       </ProtectedRoute>
     ),
   },
