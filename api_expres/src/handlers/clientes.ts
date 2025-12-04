@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { AuthRequest } from "../middleware/auth";
 import Empleado from "../models/Empleado";
+import Agenda from "../models/Agenda";
 
 export const getClientes = async (request: Request, response: Response) => {
     const clientes = await Cliente.findAll()
@@ -60,12 +61,44 @@ export const editarCliente = async(request: Request, response: Response) => {
     response.json({data: editarCliente})
 }
 
-export const borrarCliente = async(request: Request, response: Response) => {
-    const {rut} = request.params
-    const borrarCliente = await Cliente.findByPk(rut)
-    await borrarCliente.destroy()
-    response.json({data: "Cliente eliminado"})
-}
+export const borrarCliente = async (req: Request, res: Response) => {
+  try {
+    const { rut } = req.params;
+
+    // 1. Buscar cliente
+    const cliente = await Cliente.findByPk(rut);
+    if (!cliente) {
+      return res.status(404).json({ success: false, message: "Cliente no encontrado" });
+    }
+
+    // 2. Validar si el cliente tiene agendas
+    const agendaAsociada = await Agenda.findOne({
+      where: { rutCliente: rut }
+    });
+
+    if (agendaAsociada) {
+      return res.status(400).json({
+        success: false,
+        message: "No se puede eliminar el cliente porque tiene agendas asociadas."
+      });
+    }
+
+    // 3. Eliminar cliente si no tiene agendas
+    await cliente.destroy();
+
+    return res.json({
+      success: true,
+      message: "Cliente eliminado correctamente"
+    });
+
+  } catch (error) {
+    console.error("Error al eliminar cliente:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Error interno del servidor"
+    });
+  }
+};
 
 export const perfilCliente = async (req: AuthRequest, res: Response) => {
   try {

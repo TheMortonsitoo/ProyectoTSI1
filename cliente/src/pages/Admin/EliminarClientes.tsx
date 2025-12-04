@@ -34,29 +34,35 @@ const ClientesList = () => {
     fetchClientes();
   }, []);
 
-  const borrarCliente = async (rut: string, nombre: string) => {
-    if (!window.confirm(`¿Desea eliminar al cliente ${nombre}?`)) return;
+ const borrarCliente = async (rut: string, nombre: string) => {
+  if (!window.confirm(`¿Desea eliminar al cliente ${nombre}?`)) return;
 
-    try {
-      const response = await fetch(
-        `http://localhost:3000/api/clientes/${rut}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+  try {
+    const response = await fetch(
+      `http://localhost:3000/api/clientes/${rut}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
-      if (!response.ok) throw new Error("Error al eliminar");
+    const data = await response.json(); // ← leer respuesta
 
-      alert("Cliente eliminado con éxito");
-      fetchClientes(); // Recargar lista
-    } catch (error) {
-      console.error(error);
-      alert("❌ No se pudo eliminar el cliente");
+    if (!response.ok) {
+      alert(`❌ ${data.message || "No se pudo eliminar el cliente"}`);
+      return;
     }
-  };
+
+    alert("Cliente eliminado con éxito");
+    fetchClientes();
+  } catch (error) {
+    console.error(error);
+    alert("❌ Error al intentar eliminar el cliente.");
+  }
+};
+
 
   return (
     <div
